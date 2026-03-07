@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OVA — Teoría General de Sistemas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy2: #0f2040;
+    --blue: #1a3a6b;
+    --accent: #c9a84c;
+    --gold: #f0c040;
+    --teal: #1e7a8c;
+    --light: #e8edf5;
+    --white: #ffffff;
+    --text-dim: #a0b0c8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    z-index: 100;
+    box-shadow: 0 0 10px var(--gold);
+  }
+
+  /* ─── SLIDE COUNTER ─── */
+  #counter {
+    position: fixed;
+    bottom: 22px; right: 28px;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    z-index: 100;
+  }
+  #counter span { color: var(--accent); font-weight: 700; }
+
+  /* ─── NAV BUTTONS ─── */
+  .nav-btn {
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--accent);
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.25s;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .nav-btn:hover { background: rgba(201,168,76,0.28); transform: translateY(-50%) scale(1.1); }
+  #btn-prev { left: 18px; }
+  #btn-next { right: 18px; }
+
+  /* ─── DOT NAVIGATION ─── */
+  #dots {
+    position: fixed;
+    bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 7px; z-index: 100;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .dot.active { background: var(--accent); width: 22px; border-radius: 4px; }
+
+  /* ─── SLIDE CONTAINER ─── */
+  #slides-wrapper {
+    width: 100vw; height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.6s cubic-bezier(.4,0,.2,1), transform 0.6s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    padding: 60px 80px;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ─── BACKGROUND EFFECTS ─── */
+  .bg-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .bg-particles::before, .bg-particles::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    animation: float 12s ease-in-out infinite;
+  }
+  .bg-particles::before {
+    width: 500px; height: 500px;
+    background: var(--teal);
+    top: -100px; right: -100px;
+  }
+  .bg-particles::after {
+    width: 400px; height: 400px;
+    background: var(--accent);
+    bottom: -100px; left: -80px;
+    animation-delay: -6s;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(30px, 20px) scale(1.08); }
+  }
+
+  /* grid overlay */
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+  }
+
+  .slide-content { position: relative; z-index: 1; width: 100%; max-width: 1200px; }
+
+  /* ─── TYPOGRAPHY ─── */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    font-family: 'Lato', sans-serif;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  h1 em { color: var(--accent); font-style: italic; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 3.5vw, 44px);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+  h2 em { color: var(--accent); font-style: italic; }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 28px);
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  p, li { font-size: clamp(13px, 1.4vw, 17px); line-height: 1.7; color: var(--light); }
+
+  /* ─── LAYOUT HELPERS ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 22px 20px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.4); }
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card h3 { font-size: 15px; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: var(--text-dim); }
+
+  /* accent card */
+  .card.gold { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+  .card.teal { border-color: rgba(30,122,140,0.5); background: rgba(30,122,140,0.08); }
+
+  /* ─── LISTS ─── */
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .bullet-list li { display: flex; gap: 12px; align-items: flex-start; }
+  .bullet-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin: 12px 0 24px;
+    border-radius: 2px;
+  }
+
+  /* ─── QUOTE BOX ─── */
+  .quote {
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    background: rgba(201,168,76,0.07);
+    border-radius: 0 10px 10px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.5vw, 18px);
+    color: var(--gold);
+    margin: 16px 0;
+  }
+
+  /* ─── TABLE ─── */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: rgba(201,168,76,0.2);
+    color: var(--accent);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+  }
+  td {
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--light);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  tr:hover td { background: rgba(255,255,255,0.04); }
+  .td-icon { font-size: 18px; padding-right: 8px; }
+
+  /* ─── BADGE ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--accent);
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  /* ─── IMAGE PANELS ─── */
+  .img-panel {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/9;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .img-panel img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .img-panel:hover img { opacity: 0.9; transform: scale(1.03); }
+  .img-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(10,22,40,0.6) 0%, transparent 60%);
+  }
+
+  /* thumbnail strip */
+  .img-thumb {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 180px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .img-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+
+  /* ─── DIAGRAM: SISTEMA FLOW ─── */
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 20px 0;
+    flex-wrap: nowrap;
+  }
+  .flow-box {
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 130px;
+    position: relative;
+  }
+  .flow-box.dark {
+    background: rgba(10,22,40,0.9);
+    border-color: var(--accent);
+  }
+  .flow-box .fb-icon { font-size: 24px; margin-bottom: 6px; }
+  .flow-box .fb-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; }
+  .flow-box .fb-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .flow-arrow {
+    font-size: 22px;
+    color: var(--accent);
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+  .feedback-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -6px;
+    color: var(--teal);
+    font-size: 13px;
+    font-style: italic;
+    gap: 6px;
+  }
+  .feedback-line {
+    flex: 1;
+    max-width: 340px;
+    height: 1px;
+    background: var(--teal);
+    position: relative;
+  }
+  .feedback-line::after {
+    content: '◀';
+    position: absolute;
+    left: -8px;
+    top: -9px;
+    font-size: 12px;
+    color: var(--teal);
+  }
+
+  /* ─── CONCENTRIC HIERARCHY ─── */
+  .hierarchy-wrap {
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px 0;
+  }
+  .concentric {
+    position: relative;
+    width: 280px; height: 280px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    border: 2px solid;
+    transition: all 0.4s;
+  }
+  .ring:hover { filter: brightness(1.2); }
+  .ring-1 {
+    width: 280px; height: 280px;
+    background: rgba(30,122,140,0.1);
+    border-color: rgba(30,122,140,0.5);
+    color: var(--teal);
+  }
+  .ring-2 {
+    width: 190px; height: 190px;
+    background: rgba(26,58,107,0.3);
+    border-color: rgba(100,160,220,0.5);
+    color: #6db3e0;
+  }
+  .ring-3 {
+    width: 110px; height: 110px;
+    background: rgba(201,168,76,0.2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .ring-text {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .ring-1 .ring-text { top: 12px; }
+  .ring-2 .ring-text { top: 10px; }
+  .ring-3 .ring-text { }
+
+  /* ─── OBJECTIVE PILLS ─── */
+  .obj-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 22px;
+    margin-bottom: 12px;
+    transition: all 0.3s;
+  }
+  .obj-item:hover { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.3); }
+  .obj-num {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), #a07820);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .obj-text { font-size: 15px; color: var(--light); }
+
+  /* ─── CONCLUSION ITEMS ─── */
+  .concl-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .concl-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: rgba(201,168,76,0.25);
+    line-height: 1;
+    min-width: 36px;
+  }
+  .concl-text strong { color: var(--accent); display: block; font-size: 15px; margin-bottom: 3px; }
+  .concl-text p { font-size: 13px; color: var(--text-dim); }
+
+  /* ─── PHASE STEPS ─── */
+  .step-item {
+    display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px;
+  }
+  .step-circle {
+    width: 44px; height: 44px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: rgba(201,168,76,0.1);
+  }
+
+  /* ─── TEAM CARD ─── */
+  .team-card {
+    border-radius: 16px;
+    padding: 24px 18px;
+    text-align: center;
+    border: 1px solid;
+    transition: transform 0.3s;
+  }
+  .team-card:hover { transform: translateY(-6px); }
+  .team-card .tc-icon { font-size: 40px; margin-bottom: 12px; }
+  .team-card .tc-role { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .team-card .tc-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .tc-gold { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.4); }
+  .tc-gold .tc-role { color: var(--accent); }
+  .tc-blue { background: rgba(30,90,180,0.08); border-color: rgba(30,90,180,0.4); }
+  .tc-blue .tc-role { color: #6db3e0; }
+  .tc-teal { background: rgba(30,122,140,0.08); border-color: rgba(30,122,140,0.4); }
+  .tc-teal .tc-role { color: #4dd0e1; }
+  .tc-green { background: rgba(40,140,80,0.08); border-color: rgba(40,140,80,0.4); }
+  .tc-green .tc-role { color: #66bb6a; }
+
+  /* ─── INTEGRATOR MAP ─── */
+  .map-node {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    text-align: center;
+  }
+  .map-node.top { border-color: rgba(30,122,140,0.5); background: rgba(30,122,140,0.12); color: #4dd0e1; font-weight: 700; }
+  .map-node.center { border-color: rgba(26,58,107,0.8); background: rgba(26,58,107,0.4); }
+  .map-node.bottom { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.08); color: var(--accent); }
+  .map-arrow-v { text-align: center; color: var(--text-dim); font-size: 18px; line-height: 1; padding: 4px 0; }
+
+  /* ─── REFERENCE CARD ─── */
+  .ref-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .ref-icon { font-size: 28px; flex-shrink: 0; }
+  .ref-title { font-weight: 700; font-size: 14px; color: var(--white); }
+  .ref-author { font-size: 12px; color: var(--accent); margin-top: 2px; }
+  .ref-year { font-size: 11px; color: var(--text-dim); }
+
+  /* ─── SLIDE 1 SPECIAL ─── */
+  #slide-1 {
+    background: var(--navy);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .hero-img {
+    position: absolute;
+    top: 0; right: 0;
+    width: 55%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+    mask-image: linear-gradient(90deg, transparent 0%, black 40%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 40%);
+  }
+  .hero-text { max-width: 560px; }
+  .hero-module {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  /* slide backgrounds */
+  .slide { background: var(--navy); }
+
+  /* Entrance animations for active slide children */
+  .slide.active .slide-content > * {
+    animation: slideUp 0.6s cubic-bezier(.4,0,.2,1) both;
+  }
+  .slide.active .slide-content > *:nth-child(1) { animation-delay: 0.05s; }
+  .slide.active .slide-content > *:nth-child(2) { animation-delay: 0.12s; }
+  .slide.active .slide-content > *:nth-child(3) { animation-delay: 0.19s; }
+  .slide.active .slide-content > *:nth-child(4) { animation-delay: 0.26s; }
+  .slide.active .slide-content > *:nth-child(5) { animation-delay: 0.33s; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── KEYBOARD HINT ─── */
+  #kbd-hint {
+    position: fixed;
+    bottom: 22px;
+    left: 80px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+  }
+  kbd {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 10px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .slide { padding: 50px 28px; }
+    .two-col, .three-col, .four-col { grid-template-columns: 1fr; gap: 14px; }
+    .hero-img { width: 100%; opacity: 0.15; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; }
+    .flow-diagram { flex-direction: column; }
+    .concentric { width: 200px; height: 200px; }
+    .ring-1 { width: 200px; height: 200px; }
+    .ring-2 { width: 136px; height: 136px; }
+    .ring-3 { width: 80px; height: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS -->
+<div id="progress-bar"></div>
+<div id="counter">Diapositiva <span id="cur">1</span> / <span id="tot">13</span></div>
+<div id="kbd-hint"><kbd>←</kbd><kbd>→</kbd> navegar</div>
+
+<!-- NAV -->
+<button class="nav-btn" id="btn-prev">&#8592;</button>
+<button class="nav-btn" id="btn-next">&#8594;</button>
+<div id="dots"></div>
+
+<div id="slides-wrapper">
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 1 — PORTADA
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide active" id="slide-1">
+    <div class="bg-particles"></div>
+    <img class="hero-img"
+      src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&q=80"
+      alt="Red sistémica global" loading="eager">
+    <div class="slide-content hero-text">
+      <div class="tag">OVA · Módulo Completo</div>
+      <h1>Teoría General<br>de <em>Sistemas</em></h1>
+      <div class="divider"></div>
+      <p style="font-size:18px; color:var(--text-dim); max-width:440px; line-height:1.8;">
+        Aplicada al Análisis de Procesos de Negocio. Desde los fundamentos filosóficos hasta la metodología práctica.
+      </p>
+      <div class="hero-module">
+        <span class="badge">📚 13 Diapositivas</span>
+        <span class="badge">🎯 4 Objetivos</span>
+        <span class="badge">⌨️ Interactivo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 2 — OBJETIVOS
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-2">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Introducción</div>
+      <h2>Objetivos de <em>Aprendizaje</em></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-dim); margin-bottom:28px;">Al finalizar este OVA, el estudiante será capaz de:</p>
+
+      <div class="obj-item">
+        <div class="obj-num">1</div>
+        <div class="obj-text"><strong style="color:var(--white);">Comprender</strong> los fundamentos de la Teoría General de Sistemas y su origen histórico.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">2</div>
+        <div class="obj-text"><strong style="color:var(--white);">Identificar</strong> los componentes de un sistema: entradas, procesos, salidas y retroalimentación.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">3</div>
+        <div class="obj-text"><strong style="color:var(--white);">Aplicar</strong> el enfoque sistémico al análisis de procesos de negocio reales.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">4</div>
+        <div class="obj-text"><strong style="color:var(--white);">Reconocer</strong> los roles clave en un equipo de análisis organizacional.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 3 — QUÉ ES LA TGS
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-3">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 1 · Fundamentos</div>
+      <div class="two-col">
+        <div>
+          <h2>El Legado de<br><em>Ludwig von Bertalanffy</em></h2>
+          <div class="divider"></div>
+          <p style="color:var(--text-dim); margin-bottom:20px;">Biólogo austríaco · Siglo XX · Padre de la TGS</p>
+          <div class="quote">
+            "Un sistema es un conjunto de partes interrelacionadas que funcionan como un todo."
+          </div>
+          <div class="two-col" style="gap:14px; margin-top:18px;">
+            <div class="card" style="border-color:rgba(255,60,60,0.3); background:rgba(255,60,60,0.05);">
+              <div class="card-icon">❌</div>
+              <div class="card h3" style="font-size:13px; color:#ff8888; margin-bottom:4px;">Reduccionismo</div>
+              <p style="font-size:12px;">Estudia cada parte de forma aislada e independiente</p>
+            </div>
+            <div class="card gold">
+              <div class="card-icon">✅</div>
+              <div class="card h3" style="font-size:13px; color:var(--accent); margin-bottom:4px;">Enfoque Sistémico</div>
+              <p style="font-size:12px;">Comprende las relaciones e interacciones entre partes</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="img-panel">
+            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80"
+              alt="Ciencia y biología - laboratorio" loading="lazy">
+          </div>
+          <div class="card" style="margin-top:14px; text-align:center; background:rgba(201,168,76,0.06);">
+            <p style="font-size:13px;">La TGS es <strong style="color:var(--accent);">interdisciplinaria</strong>: aplica a biología, economía, ingeniería, administración y más.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 4 — HOLISMO
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-4">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 2 · Enfoque Sistémico</div>
+      <h2>Holismo: <em>El Todo es Mayor</em><br>que la Suma de sus Partes</h2>
+      <div class="divider"></div>
+      <div class="two-col">
+        <div>
+          <div class="img-thumb" style="margin-bottom:18px;">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+              alt="Conexiones y redes sistémicas" loading="lazy">
+          </div>
+          <div class="quote" style="font-size:14px;">
+            El comportamiento del sistema <strong>no puede entenderse</strong> solo mirando sus componentes individuales — debemos observar sus relaciones.
+          </div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:18px;">Métodos Científicos de Análisis</h3>
+          <div class="card gold" style="margin-bottom:12px;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <span style="font-size:28px;">🖥️</span>
+              <div>
+                <div style="font-weight:700; color:var(--accent); font-size:15px;">Simulación</div>
+                <p style="font-size:13px;">Modelar escenarios complejos sin intervenir la operación real</p>
+              </div>
+            </div>
+          </div>
+          <div class="card teal" style="margin-bottom:12px;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <span style="font-size:28px;">⏱️</span>
+              <div>
+                <div style="font-weight:700; color:#4dd0e1; font-size:15px;">Teoría de Colas</div>
+                <p style="font-size:13px;">Optimizar flujos de espera y recursos en procesos</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="border-color:rgba(120,80,200,0.4); background:rgba(120,80,200,0.07);">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <span style="font-size:28px;">♟️</span>
+              <div>
+                <div style="font-weight:700; color:#b39ddb; font-size:15px;">Teoría de Juegos</div>
+                <p style="font-size:13px;">Analizar decisiones estratégicas entre actores del sistema</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 5 — DINÁMICA DE SISTEMAS
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-5">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 3 · Dinámica de Sistemas</div>
+      <h2>¿Cómo Funciona un <em>Sistema</em>?</h2>
+      <div class="divider"></div>
+
+      <!-- FLOW DIAGRAM -->
+      <div class="flow-diagram" style="margin-bottom:8px;">
+        <div class="flow-box">
+          <div class="fb-icon">⚡</div>
+          <div class="fb-label">Entradas</div>
+          <div class="fb-sub">Energía, datos,<br>materia, recursos</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box dark">
+          <div class="fb-icon">📦</div>
+          <div class="fb-label">Proceso</div>
+          <div class="fb-sub" style="color:rgba(201,168,76,0.6);">Caja Negra</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <div class="fb-icon">⭐</div>
+          <div class="fb-label">Salidas</div>
+          <div class="fb-sub">Productos,<br>servicios, info</div>
+        </div>
+      </div>
+      <div class="feedback-row">
+        <div class="feedback-line"></div>
+        <span>🔄 Retroalimentación</span>
+        <div class="feedback-line" style="transform:scaleX(-1);"></div>
+      </div>
+
+      <div class="three-col" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3 style="font-size:14px;">Entradas</h3>
+          <p>Todo lo que ingresa al sistema: información, energía, materia, personas o capital.</p>
+        </div>
+        <div class="card gold">
+          <div class="card-icon">📦</div>
+          <h3 style="font-size:14px;">Caja Negra</h3>
+          <p>Procesos internos que no observamos directamente. Solo vemos qué entra y qué sale.</p>
+        </div>
+        <div class="card teal">
+          <div class="card-icon">🔄</div>
+          <h3 style="font-size:14px;">Retroalimentación</h3>
+          <p>La salida regresa como nueva entrada para corregir, ajustar o mejorar el sistema.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 6 — JERARQUÍA
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-6">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 4 · Jerarquía de Sistemas</div>
+      <div class="two-col">
+        <div>
+          <h2>Sistemas<br>dentro de <em>Sistemas</em></h2>
+          <div class="divider"></div>
+          <div class="step-item">
+            <div class="step-circle" style="border-color:rgba(30,122,140,0.8); background:rgba(30,122,140,0.15);">🌍</div>
+            <div>
+              <strong style="color:#4dd0e1; font-size:15px; display:block; margin-bottom:4px;">Supersistema</strong>
+              <p>Entorno externo que rodea y condiciona al sistema. Ej: mercado, sociedad, regulaciones, cultura.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle" style="border-color:rgba(100,160,220,0.8); background:rgba(100,160,220,0.1);">🏢</div>
+            <div>
+              <strong style="color:#6db3e0; font-size:15px; display:block; margin-bottom:4px;">Sistema</strong>
+              <p>La unidad principal de análisis. Ej: la empresa, la familia, una institución.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">👤</div>
+            <div>
+              <strong style="color:var(--accent); font-size:15px; display:block; margin-bottom:4px;">Subsistemas</strong>
+              <p>Componentes internos del sistema. Ej: departamentos, equipos, procesos específicos.</p>
+            </div>
+          </div>
+        </div>
+        <div class="hierarchy-wrap">
+          <div class="concentric">
+            <div class="ring ring-1">
+              <span class="ring-text" style="top:14px; font-size:10px;">🌍 SUPERSISTEMA</span>
+            </div>
+            <div class="ring ring-2">
+              <span class="ring-text" style="top:10px; font-size:10px;">🏢 SISTEMA</span>
+            </div>
+            <div class="ring ring-3">
+              <span style="font-size:10px; font-weight:700; text-align:center; color:var(--accent);">👤<br>SUB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 7 — ANÁLISIS DE NEGOCIO
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-7">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 5 · Aplicación Empresarial</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <h2>Análisis de<br><em>Procesos de Negocio</em></h2>
+          <div class="divider"></div>
+          <p style="color:var(--text-dim); margin-bottom:18px;">Objetivo: <strong style="color:var(--white);">desestructurar el "todo" organizacional</strong> para identificar y mejorar cada proceso.</p>
+          <div class="img-thumb">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+              alt="Análisis de procesos de negocio en pantalla" loading="lazy">
+          </div>
+        </div>
+        <div>
+          <h3>¿Qué identificar en cada proceso?</h3>
+          <table>
+            <thead>
+              <tr><th>Componente</th><th>Descripción</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="td-icon">📥</span><strong>Entradas</strong></td><td>Datos, recursos o materiales que inician el proceso</td></tr>
+              <tr><td><span class="td-icon">⚙️</span><strong>Procedimientos</strong></td><td>Pasos y actividades que transforman las entradas</td></tr>
+              <tr><td><span class="td-icon">📤</span><strong>Salidas</strong></td><td>Productos, servicios o información generada</td></tr>
+              <tr><td><span class="td-icon">🎛️</span><strong>Controles</strong></td><td>Normas, políticas y regulaciones del proceso</td></tr>
+              <tr><td><span class="td-icon">💻</span><strong>Aplicaciones</strong></td><td>Software o sistemas tecnológicos utilizados</td></tr>
+              <tr><td><span class="td-icon">🗄️</span><strong>Datos</strong></td><td>Información generada o consumida en el proceso</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 8 — FASE ANTES
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-8">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 6 · Metodología</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div style="display:inline-flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:var(--navy);">1</div>
+            <span class="tag" style="margin-bottom:0;">Fase · Antes</span>
+          </div>
+          <h2>Investigación<br>de <em>Contexto</em></h2>
+          <div class="divider"></div>
+          <p style="color:var(--text-dim); margin-bottom:20px;">Antes del primer contacto con la organización, el analista debe llegar con información sólida.</p>
+
+          <div class="step-item">
+            <div class="step-circle">🏭</div>
+            <div><strong style="color:var(--white);">¿Qué hace la empresa?</strong><p>Sector económico, productos o servicios que ofrece</p></div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">📍</div>
+            <div><strong style="color:var(--white);">¿Dónde opera?</strong><p>Sedes, cobertura geográfica, mercados que atiende</p></div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">📊</div>
+            <div><strong style="color:var(--white);">¿Qué tipo de empresa es?</strong><p>Tamaño, estructura legal, sector y madurez organizacional</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="img-panel" style="aspect-ratio:4/3; margin-bottom:16px;">
+            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80"
+              alt="Investigación y análisis documental" loading="lazy">
+          </div>
+          <div class="quote" style="font-size:13px;">
+            💡 Meta de esta fase: llegar con contexto sólido, no con manos vacías. El analista preparado formula preguntas más inteligentes.
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <p style="font-size:13px;"><strong style="color:var(--accent);">Fuentes sugeridas:</strong> Sitio web, redes sociales, reportes anuales, cámara de comercio, noticias del sector.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 9 — FASE CERCANÍA
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-9">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 6 · Metodología</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div style="display:inline-flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:var(--white);">2</div>
+            <span class="tag" style="margin-bottom:0; border-color:rgba(30,122,140,0.4); color:#4dd0e1;">Fase · Cercanía</span>
+          </div>
+          <h2>Recolección<br>de <em>Datos</em></h2>
+          <div class="divider"></div>
+          <div class="img-panel" style="aspect-ratio:16/9; margin-bottom:16px;">
+            <img src="https://images.unsplash.com/photo-1529119368496-2dfda6ec2804?w=800&q=80"
+              alt="Reunión de equipo y recolección de información" loading="lazy">
+          </div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:16px;">Técnicas de Recolección</h3>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:22px;">👁️</span>
+              <div><strong style="color:var(--white); font-size:14px;">Observación Directa</strong><p style="font-size:12px;">Ver los procesos en tiempo real sin intervenir</p></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:22px;">📝</span>
+              <div><strong style="color:var(--white); font-size:14px;">Encuestas</strong><p style="font-size:12px;">Percepciones de múltiples actores a escala</p></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:22px;">💬</span>
+              <div><strong style="color:var(--white); font-size:14px;">Focus Group</strong><p style="font-size:12px;">Discusión grupal para capturar dinámicas colectivas</p></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:16px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:22px;">🎙️</span>
+              <div><strong style="color:var(--white); font-size:14px;">Entrevistas</strong><p style="font-size:12px;">Conversaciones con responsables clave del proceso</p></div>
+            </div>
+          </div>
+          <h3 style="margin-bottom:10px; font-size:14px;">Resultados Esperados</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span class="badge">✔ Misión y Visión</span>
+            <span class="badge">✔ Organigrama</span>
+            <span class="badge">✔ Responsables</span>
+            <span class="badge">✔ Sinergia laboral</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 10 — EQUIPO DE TRABAJO
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-10">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Sección 7 · Equipo de Trabajo</div>
+      <h2>¿Quiénes Integran el<br><em>Equipo de Análisis</em>?</h2>
+      <div class="divider"></div>
+      <div class="img-thumb" style="margin-bottom:24px; height:120px;">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80"
+          alt="Equipo de trabajo colaborando" loading="lazy">
+      </div>
+      <div class="four-col">
+        <div class="team-card tc-gold">
+          <div class="tc-icon">🏆</div>
+          <div class="tc-role">Líder de Proyecto</div>
+          <div class="tc-desc">Coordina, toma decisiones y garantiza el avance de todo el análisis</div>
+        </div>
+        <div class="team-card tc-blue">
+          <div class="tc-icon">🎯</div>
+          <div class="tc-role">Alto Miembro</div>
+          <div class="tc-desc">Aporta los objetivos estratégicos y visión de la alta gerencia</div>
+        </div>
+        <div class="team-card tc-teal">
+          <div class="tc-icon">🔧</div>
+          <div class="tc-role">Empleados del Proceso</div>
+          <div class="tc-desc">Conocen el proceso desde adentro — son la fuente primaria de información</div>
+        </div>
+        <div class="team-card tc-green">
+          <div class="tc-icon">🌍</div>
+          <div class="tc-role">Colaboradores Externos</div>
+          <div class="tc-desc">Perspectiva objetiva y experiencia de otros contextos organizacionales</div>
+        </div>
+      </div>
+      <div class="quote" style="margin-top:20px; font-size:13px;">
+        💡 La sinergia entre estos cuatro roles garantiza un análisis completo, validado y estratégicamente alineado.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 11 — MAPA INTEGRADOR
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-11">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Síntesis · Mapa Integrador</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <h2>El Sistema<br><em>Organizacional Completo</em></h2>
+          <div class="divider"></div>
+          <div class="map-node top" style="margin-bottom:4px;">🌍 SUPERSISTEMA — Mercado · Sociedad · Regulaciones</div>
+          <div class="map-arrow-v">↕</div>
+          <div class="map-node center" style="margin-bottom:4px; padding:16px;">
+            <div style="font-weight:700; color:var(--accent); margin-bottom:8px;">🏢 SISTEMA — La Organización</div>
+            <div class="flow-diagram" style="margin:0; gap:6px;">
+              <div class="flow-box" style="min-width:80px; padding:10px 12px;">
+                <div style="font-size:10px; font-weight:700; color:var(--accent);">ENTRADAS</div>
+              </div>
+              <span style="color:var(--accent);">→</span>
+              <div class="flow-box dark" style="min-width:80px; padding:10px 12px;">
+                <div style="font-size:10px; font-weight:700; color:var(--accent);">PROCESOS</div>
+              </div>
+              <span style="color:var(--accent);">→</span>
+              <div class="flow-box" style="min-width:80px; padding:10px 12px;">
+                <div style="font-size:10px; font-weight:700; color:var(--accent);">SALIDAS</div>
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:6px;">🔄 Retroalimentación</div>
+          </div>
+          <div class="map-arrow-v">↕</div>
+          <div class="map-node bottom">👤 SUBSISTEMAS — Departamentos · Equipos · Personas</div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:14px;">Metodología de Análisis</h3>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:20px;">1️⃣</span><div><strong style="color:var(--accent);">Fase Antes</strong><p style="font-size:12px;">Investigar contexto, sector y tipo de organización</p></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:20px;">2️⃣</span><div><strong style="color:var(--accent);">Fase Cercanía</strong><p style="font-size:12px;">Observar, encuestar, entrevistar y hacer focus group</p></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:20px;">3️⃣</span><div><strong style="color:var(--accent);">Resultados</strong><p style="font-size:12px;">Misión, visión, organigrama y sinergia laboral</p></div>
+            </div>
+          </div>
+          <div class="card gold">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:20px;">4️⃣</span><div><strong style="color:var(--accent);">Mejora Continua</strong><p style="font-size:12px;">Proponer e implementar optimizaciones al sistema</p></div>
+            </div>
+          </div>
+          <div class="img-thumb" style="margin-top:14px; height:100px;">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"
+              alt="Dashboard análisis de datos empresarial" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 12 — CONCLUSIONES
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-12">
+    <div class="bg-particles"></div>
+    <div class="slide-content">
+      <div class="tag">Cierre · Conclusiones</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <h2>Ideas Clave<br>para <em>Llevarte</em></h2>
+          <div class="divider"></div>
+          <div class="img-panel" style="aspect-ratio:4/3;">
+            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
+              alt="Equipo celebrando éxito y logros" loading="lazy">
+          </div>
+        </div>
+        <div>
+          <div class="concl-item">
+            <div class="concl-num">01</div>
+            <div class="concl-text">
+              <strong>TGS — Enfoque Integral</strong>
+              <p>Todo es un sistema interconectado, no solo una suma de partes independientes</p>
+            </div>
+          </div>
+          <div class="concl-item">
+            <div class="concl-num">02</div>
+            <div class="concl-text">
+              <strong>Holismo Organizacional</strong>
+              <p>El comportamiento de la empresa emerge de las relaciones entre sus componentes</p>
+            </div>
+          </div>
+          <div class="concl-item">
+            <div class="concl-num">03</div>
+            <div class="concl-text">
+              <strong>Componentes Medibles</strong>
+              <p>Entradas, procesos y salidas pueden identificarse, medirse y optimizarse</p>
+            </div>
+          </div>
+          <div class="concl-item">
+            <div class="concl-num">04</div>
+            <div class="concl-text">
+              <strong>Jerarquía como Guía</strong>
+              <p>Subsistema → Sistema → Supersistema orienta el nivel y alcance del análisis</p>
+            </div>
+          </div>
+          <div class="concl-item">
+            <div class="concl-num">05</div>
+            <div class="concl-text">
+              <strong>Metodología + Equipo</strong>
+              <p>La combinación de fases estructuradas y roles adecuados garantiza resultados confiables</p>
+            </div>
+          </div>
+          <div class="quote" style="margin-top:16px; font-size:13px;">
+            🚀 Aplicar TGS es la diferencia entre mejorar superficialmente o transformar realmente una organización.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SLIDE 13 — REFERENCIAS
+  ══════════════════════════════════════════════════════ -->
+  <div class="slide" id="slide-13">
+    <div class="bg-particles"></div>
+    <div class="slide-content" style="max-width:900px;">
+      <div class="tag">Cierre · Referencias y Créditos</div>
+      <div class="two-col" style="align-items:start; gap:30px;">
+        <div>
+          <h2>📚 Referencias<br><em>Bibliográficas</em></h2>
+          <div class="divider"></div>
+          <div class="ref-card" style="margin-bottom:12px;">
+            <div class="ref-icon">📗</div>
+            <div>
+              <div class="ref-title">General System Theory</div>
+              <div class="ref-author">Von Bertalanffy, Ludwig</div>
+              <div class="ref-year">George Braziller, New York · 1968</div>
+            </div>
+          </div>
+          <div class="ref-card" style="margin-bottom:12px;">
+            <div class="ref-icon">📘</div>
+            <div>
+              <div class="ref-title">Systems Thinking, Systems Practice</div>
+              <div class="ref-author">Checkland, Peter</div>
+              <div class="ref-year">John Wiley & Sons · 1981</div>
+            </div>
+          </div>
+          <div class="ref-card">
+            <div class="ref-icon">📙</div>
+            <div>
+              <div class="ref-title">Mejoramiento de los Procesos de la Empresa</div>
+              <div class="ref-author">Harrington, H. James</div>
+              <div class="ref-year">McGraw-Hill Interamericana · 1993</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="img-panel" style="aspect-ratio:4/3; margin-bottom:18px;">
+            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80"
+              alt="Libros y referencias académicas" loading="lazy">
+          </div>
+          <div class="card" style="text-align:center; padding:20px;">
+            <div style="font-size:28px; margin-bottom:10px;">🎓</div>
+            <div style="font-weight:700; color:var(--accent); margin-bottom:6px; font-size:15px;">OVA Desarrollado por</div>
+            <p style="font-size:14px; color:var(--white);">[Nombre del equipo / Institución]</p>
+            <p style="font-size:12px; color:var(--text-dim); margin-top:6px;">Análisis de Procesos de Negocio · 2025</p>
+            <div style="margin-top:12px;">
+              <span class="badge" style="font-size:10px;">Material con fines educativos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end slides-wrapper -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  let isAnimating = false;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    if (isAnimating || n === current || n < 0 || n >= total) return;
+    isAnimating = true;
+
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+
+    setTimeout(() => {
+      slides[current].classList.remove('exit');
+      current = n;
+      slides[current].classList.add('active');
+
+      // Update UI
+      document.getElementById('cur').textContent = current + 1;
+      document.getElementById('progress-bar').style.width = ((current + 1) / total * 100) + '%';
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+
+      setTimeout(() => { isAnimating = false; }, 400);
+    }, 350);
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  // Touch / swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  });
+
+  // Init progress
+  document.getElementById('progress-bar').style.width = (1 / total * 100) + '%';
+  document.getElementById('tot').textContent = total;
+</script>
+</body>
+</html>

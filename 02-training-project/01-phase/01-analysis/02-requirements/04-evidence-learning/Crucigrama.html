@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crucigrama - Teoría General de Sistemas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1828;
+    --border: #2e2b45;
+    --accent: #e8c547;
+    --accent2: #7c6af0;
+    --text: #ede8f5;
+    --muted: #7b7694;
+    --correct: #4caf6e;
+    --wrong: #e05a5a;
+    --cell-size: 42px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 20px;
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(124,106,240,0.08) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(232,197,71,0.06) 0%, transparent 60%);
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* GRID */
+  .grid-wrap {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  #crossword-grid {
+    display: grid;
+    gap: 2px;
+    width: max-content;
+  }
+
+  .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    position: relative;
+    background: transparent;
+  }
+
+  .cell.active {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .cell.active:hover { border-color: var(--accent2); }
+
+  .cell.selected { border-color: var(--accent) !important; background: rgba(232,197,71,0.08) !important; }
+  .cell.highlight { background: rgba(124,106,240,0.12) !important; border-color: var(--accent2) !important; }
+  .cell.correct { background: rgba(76,175,110,0.15) !important; border-color: var(--correct) !important; }
+  .cell.wrong { background: rgba(224,90,90,0.15) !important; border-color: var(--wrong) !important; }
+
+  .cell-num {
+    position: absolute;
+    top: 2px; left: 3px;
+    font-size: 9px;
+    color: var(--accent);
+    font-weight: 500;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .cell input {
+    width: 100%; height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: center;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    caret-color: var(--accent);
+    cursor: pointer;
+    padding-top: 10px;
+  }
+
+  .cell.correct input { color: var(--correct); }
+  .cell.wrong input { color: var(--wrong); }
+
+  /* CLUES */
+  .clues-wrap {
+    flex: 0 0 320px;
+    width: 320px;
+    min-width: 260px;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: calc(100vh - 140px);
+    max-height: 800px;
+    overflow-y: auto;
+    position: sticky;
+    top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+
+  .clue-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .clue-section h3 span.dir-icon { font-size: 1.2rem; }
+
+  .clue-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-left: 3px solid transparent;
+    margin-bottom: 4px;
+  }
+
+  .clue-item:hover { background: rgba(124,106,240,0.1); border-left-color: var(--accent2); }
+  .clue-item.active-clue { background: rgba(232,197,71,0.08); border-left-color: var(--accent); }
+  .clue-item.correct-clue { border-left-color: var(--correct); }
+  .clue-item.wrong-clue { border-left-color: var(--wrong); }
+
+  .clue-num {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .clue-text {
+    font-size: 0.78rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .clue-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+
+  .hint-btn {
+    background: transparent;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .hint-btn:hover { background: rgba(124,106,240,0.15); border-color: var(--accent); color: var(--accent); }
+  .hint-btn:disabled { opacity: 0.4; cursor: default; border-color: var(--muted); color: var(--muted); }
+
+  .hint-text {
+    font-size: 0.72rem;
+    color: var(--accent2);
+    margin-top: 4px;
+    font-style: italic;
+    display: none;
+  }
+
+  /* BUTTONS */
+  .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { border-color: var(--accent); color: var(--bg); background: var(--accent); font-weight: 500; }
+  button.primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+  /* SCORE */
+  #score-bar {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: none;
+  }
+  #score-bar span { color: var(--accent); font-weight: 500; }
+
+  /* WIN */
+  #win-msg {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(76,175,110,0.1);
+    border: 1px solid var(--correct);
+    border-radius: 12px;
+    color: var(--correct);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 700px) {
+    :root { --cell-size: 34px; }
+    .layout { gap: 16px; flex-wrap: wrap; }
+    .clues-wrap { flex: 1 1 100%; width: 100%; max-width: 100%; height: auto; max-height: 60vh; position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Crucigrama</h1>
+  <p>Teoría General de Sistemas</p>
+</header>
+
+<div class="layout">
+  <div class="grid-wrap">
+    <div id="crossword-grid"></div>
+    <div class="actions">
+      <button onclick="checkAll()">Verificar todo</button>
+      <button class="primary" onclick="resetAll()">Reiniciar</button>
+    </div>
+    <div id="score-bar"></div>
+    <div id="win-msg">🎉 ¡Felicidades! Completaste el crucigrama.</div>
+  </div>
+  <div class="clues-wrap">
+    <div class="clue-section">
+      <h3><span class="dir-icon">→</span> Horizontal</h3>
+      <div id="clues-h"></div>
+    </div>
+    <div class="clue-section">
+      <h3><span class="dir-icon">↓</span> Vertical</h3>
+      <div id="clues-v"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+// WORDS & CLUES
+// ──────────────────────────────────────────────
+const WORDS_DATA = [
+  { word: "BERTALANFFY",    clue: "Apellido del biólogo que propuso la Teoría General de Sistemas desde una perspectiva histórica y biológica." },
+  { word: "HOLISMO",        clue: "Perspectiva integradora que se interesa más por el todo que por la simple suma de las partes." },
+  { word: "SISTEMA",        clue: "Conjunto organizado de elementos que interactúan entre sí con estructura lógica, formando un todo complejo, identificable y distinto." },
+  { word: "ENTRADAS",       clue: "Elementos, energía, información o recursos físicos que un sistema recibe para someterlos a actividades de transformación." },
+  { word: "SALIDAS",        clue: "Resultados generados como consecuencia de las acciones de transformación dentro de un sistema." },
+  { word: "RETROALIMENTACION", clue: "Situación que ocurre cuando una salida, o parte de ella, se convierte nuevamente en entrada, ayudando a elevar el control y perfeccionamiento del sistema." },
+  { word: "CAJANEGRA",      clue: "Término utilizado cuando de un subsistema solo se conocen sus entradas y salidas, pero no sus actividades internas." },
+  { word: "ABIERTOS",       clue: "Según la estructura, los sistemas pueden clasificarse en cerrados y..." },
+  { word: "SUPERSISTEMA",   clue: "Es el contexto externo que rodea al sistema y en el que éste se encuentra inmerso; en grupos humanos se identifica con la sociedad." },
+  { word: "SUBSISTEMA",     clue: "Conjunto de elementos dentro de un sistema que mantienen una relación entre sí, formando una parte identificable." },
+  { word: "ABSTRACTOS",     clue: "Categoría de sistemas que, junto con los reales, conforma una de las divisiones de los sistemas según su estructura." },
+  { word: "FUNCIONALIDAD",  clue: "Criterio principal que, junto con la estructura, es utilizado por Bertalanffy para definir distintas formas de clasificar a los sistemas." },
+];
+
+// ──────────────────────────────────────────────
+// PLACEMENT ALGORITHM
+// ──────────────────────────────────────────────
+function tryPlace(grid, word, row, col, dir) {
+  const len = word.length;
+  for (let i = 0; i < len; i++) {
+    const r = dir === 'H' ? row : row + i;
+    const c = dir === 'H' ? col + i : col;
+    if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length) return false;
+    const existing = grid[r][c];
+    if (existing !== null && existing !== word[i]) return false;
+    if (existing === null) {
+      // Check adjacency (no side-by-side parallel letters)
+      if (dir === 'H') {
+        if (grid[r-1] && grid[r-1][c] !== null) return false;
+        if (grid[r+1] && grid[r+1][c] !== null) return false;
+      } else {
+        if (grid[r][c-1] !== null) return false;
+        if (grid[r][c+1] !== null) return false;
+      }
+    }
+  }
+  // check ends
+  if (dir === 'H') {
+    if (col > 0 && grid[row][col-1] !== null) return false;
+    if (col+len < grid[0].length && grid[row][col+len] !== null) return false;
+  } else {
+    if (row > 0 && grid[row-1][col] !== null) return false;
+    if (row+len < grid.length && grid[row+len] && grid[row+len][col] !== null) return false;
+  }
+  return true;
+}
+
+function doPlace(grid, word, row, col, dir) {
+  for (let i = 0; i < word.length; i++) {
+    const r = dir === 'H' ? row : row + i;
+    const c = dir === 'H' ? col + i : col;
+    grid[r][c] = word[i];
+  }
+}
+
+function buildLayout(words) {
+  const SIZE = 28;
+  const grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+  const placements = [];
+
+  // Shuffle words
+  const shuffled = [...words].sort(() => Math.random() - 0.5);
+  
+  // Place first word in center horizontally
+  const first = shuffled[0];
+  const startC = Math.floor((SIZE - first.word.length) / 2);
+  const startR = Math.floor(SIZE / 2);
+  doPlace(grid, first.word, startR, startC, 'H');
+  placements.push({ ...first, row: startR, col: startC, dir: 'H' });
+
+  for (let wi = 1; wi < shuffled.length; wi++) {
+    const wdata = shuffled[wi];
+    const word = wdata.word;
+    let placed = false;
+    
+    // Try to intersect with already placed words
+    const candidates = [];
+    for (const p of placements) {
+      const pdir = p.dir === 'H' ? 'V' : 'H';
+      for (let pi = 0; pi < p.word.length; pi++) {
+        const pChar = p.word[pi];
+        for (let wi2 = 0; wi2 < word.length; wi2++) {
+          if (word[wi2] === pChar) {
+            let row, col;
+            if (p.dir === 'H') {
+              row = p.row - wi2;
+              col = p.col + pi;
+            } else {
+              row = p.row + pi;
+              col = p.col - wi2;
+            }
+            if (tryPlace(grid, word, row, col, pdir)) {
+              candidates.push({ row, col, dir: pdir, score: Math.random() });
+            }
+          }
+        }
+      }
+    }
+    
+    if (candidates.length > 0) {
+      candidates.sort((a,b) => a.score - b.score);
+      const best = candidates[0];
+      doPlace(grid, word, best.row, best.col, best.dir);
+      placements.push({ ...wdata, row: best.row, col: best.col, dir: best.dir });
+      placed = true;
+    }
+    
+    if (!placed) {
+      // Random placement attempt
+      for (let attempt = 0; attempt < 200; attempt++) {
+        const dir = Math.random() > 0.5 ? 'H' : 'V';
+        const maxR = dir === 'H' ? SIZE - 1 : SIZE - word.length;
+        const maxC = dir === 'H' ? SIZE - word.length : SIZE - 1;
+        const row = Math.floor(Math.random() * (maxR + 1));
+        const col = Math.floor(Math.random() * (maxC + 1));
+        if (tryPlace(grid, word, row, col, dir)) {
+          doPlace(grid, word, row, col, dir);
+          placements.push({ ...wdata, row, col, dir });
+          break;
+        }
+      }
+    }
+  }
+
+  // Trim grid
+  let minR = SIZE, maxR = 0, minC = SIZE, maxC = 0;
+  for (let r = 0; r < SIZE; r++)
+    for (let c = 0; c < SIZE; c++)
+      if (grid[r][c] !== null) {
+        minR = Math.min(minR, r); maxR = Math.max(maxR, r);
+        minC = Math.min(minC, c); maxC = Math.max(maxC, c);
+      }
+
+  const trimmed = [];
+  for (let r = minR; r <= maxR; r++) {
+    trimmed.push(grid[r].slice(minC, maxC + 1));
+  }
+  
+  for (const p of placements) {
+    p.row -= minR;
+    p.col -= minC;
+  }
+
+  return { grid: trimmed, placements, rows: maxR - minR + 1, cols: maxC - minC + 1 };
+}
+
+// ──────────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────────
+let layout, ROWS, COLS;
+let selectedCell = null;
+let selectedDir = 'H';
+let cellInputs = {}; // "r,c" -> input element
+let cellDivs = {};
+let wordNumbers = []; // { num, placements }
+let activeWord = null;
+
+function init() {
+  const result = buildLayout(WORDS_DATA);
+  layout = result;
+  ROWS = result.rows;
+  COLS = result.cols;
+
+  // Number words
+  const numbered = [];
+  // Sort by row then col
+  const sorted = [...result.placements].sort((a,b) => a.row !== b.row ? a.row - b.row : a.col - b.col);
+  
+  const numMap = {}; // "r,c" -> number
+  let num = 1;
+  for (const p of sorted) {
+    const key = `${p.row},${p.col}`;
+    if (!numMap[key]) { numMap[key] = num++; }
+    p.number = numMap[key];
+  }
+
+  renderGrid(result.grid, numMap);
+  renderClues(result.placements);
+}
+
+function renderGrid(grid, numMap) {
+  const container = document.getElementById('crossword-grid');
+  container.innerHTML = '';
+  container.style.gridTemplateColumns = `repeat(${COLS}, var(--cell-size))`;
+  container.style.gridTemplateRows = `repeat(${ROWS}, var(--cell-size))`;
+  cellInputs = {};
+  cellDivs = {};
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const div = document.createElement('div');
+      div.className = 'cell';
+      const key = `${r},${c}`;
+
+      if (grid[r][c] !== null) {
+        div.classList.add('active');
+        div.dataset.r = r;
+        div.dataset.c = c;
+
+        if (numMap[key]) {
+          const numEl = document.createElement('span');
+          numEl.className = 'cell-num';
+          numEl.textContent = numMap[key];
+          div.appendChild(numEl);
+        }
+
+        const inp = document.createElement('input');
+        inp.maxLength = 1;
+        inp.dataset.r = r;
+        inp.dataset.c = c;
+        inp.dataset.answer = grid[r][c];
+        div.appendChild(inp);
+
+        inp.addEventListener('focus', () => onFocus(r, c, div, inp));
+        inp.addEventListener('keydown', (e) => onKeyDown(e, r, c));
+        inp.addEventListener('input', (e) => onInput(e, r, c));
+
+        cellInputs[key] = inp;
+        cellDivs[key] = div;
+      }
+
+      container.appendChild(div);
+    }
+  }
+}
+
+function renderClues(placements) {
+  const hContainer = document.getElementById('clues-h');
+  const vContainer = document.getElementById('clues-v');
+  hContainer.innerHTML = '';
+  vContainer.innerHTML = '';
+
+  const sorted = [...placements].sort((a,b) => a.number - b.number);
+
+  for (const p of sorted) {
+    const div = document.createElement('div');
+    div.className = 'clue-item';
+    div.dataset.num = p.number;
+    div.dataset.dir = p.dir;
+    div.id = `clue-${p.dir}-${p.number}`;
+
+    const numEl = document.createElement('div');
+    numEl.className = 'clue-num';
+    numEl.textContent = `${p.number}. ${p.dir === 'H' ? 'Horizontal' : 'Vertical'} (${p.word.length})`;
+
+    const textEl = document.createElement('div');
+    textEl.className = 'clue-text';
+    textEl.textContent = p.clue;
+
+    const hintText = document.createElement('div');
+    hintText.className = 'hint-text';
+    hintText.id = `hint-text-${p.dir}-${p.number}`;
+
+    const footer = document.createElement('div');
+    footer.className = 'clue-footer';
+
+    const hintBtn = document.createElement('button');
+    hintBtn.className = 'hint-btn';
+    hintBtn.textContent = '💡 Pista';
+    hintBtn.dataset.num = p.number;
+    hintBtn.dataset.dir = p.dir;
+    hintBtn.dataset.word = p.word;
+    hintBtn.dataset.used = '0';
+    hintBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showHint(p, hintBtn, hintText);
+    });
+
+    footer.appendChild(hintText);
+    footer.appendChild(hintBtn);
+
+    div.appendChild(numEl);
+    div.appendChild(textEl);
+    div.appendChild(footer);
+    div.addEventListener('click', () => activateWord(p));
+
+    if (p.dir === 'H') hContainer.appendChild(div);
+    else vContainer.appendChild(div);
+  }
+}
+
+function onFocus(r, c, div, inp) {
+  // find word for this cell and direction
+  const wordH = findWordAt(r, c, 'H');
+  const wordV = findWordAt(r, c, 'V');
+  
+  let target;
+  if (wordH && wordV) {
+    if (activeWord && ((activeWord.row === wordH?.row && activeWord.col === wordH?.col && activeWord.dir === 'H') ||
+                       (activeWord.row === wordV?.row && activeWord.col === wordV?.col && activeWord.dir === 'V'))) {
+      target = activeWord;
+    } else {
+      target = wordH || wordV;
+    }
+  } else {
+    target = wordH || wordV;
+  }
+
+  if (target) activateWord(target, false);
+  selectCell(r, c);
+  // Prevent page from jumping to focused input
+  window.scrollTo({ top: window.scrollY, behavior: 'instant' });
+}
+
+function findWordAt(r, c, dir) {
+  return layout.placements.find(p => {
+    if (p.dir !== dir) return false;
+    if (dir === 'H') return p.row === r && c >= p.col && c < p.col + p.word.length;
+    return p.col === c && r >= p.row && r < p.row + p.word.length;
+  });
+}
+
+function activateWord(placement, focusFirst = true) {
+  // clear highlights
+  document.querySelectorAll('.cell.highlight').forEach(el => el.classList.remove('highlight'));
+  document.querySelectorAll('.clue-item.active-clue').forEach(el => el.classList.remove('active-clue'));
+
+  activeWord = placement;
+  selectedDir = placement.dir;
+
+  // highlight cells
+  for (let i = 0; i < placement.word.length; i++) {
+    const r = placement.dir === 'H' ? placement.row : placement.row + i;
+    const c = placement.dir === 'H' ? placement.col + i : placement.col;
+    const key = `${r},${c}`;
+    if (cellDivs[key]) cellDivs[key].classList.add('highlight');
+  }
+
+  // highlight clue
+  const clueEl = document.getElementById(`clue-${placement.dir}-${placement.number}`);
+  if (clueEl) {
+    clueEl.classList.add('active-clue');
+    // Scroll only inside the clues container, not the whole page
+    const container = clueEl.closest('.clues-wrap');
+    if (container) {
+      const elTop = clueEl.offsetTop - container.offsetTop;
+      const elBottom = elTop + clueEl.offsetHeight;
+      const visTop = container.scrollTop;
+      const visBottom = visTop + container.clientHeight;
+      if (elTop < visTop) container.scrollTop = elTop - 8;
+      else if (elBottom > visBottom) container.scrollTop = elBottom - container.clientHeight + 8;
+    }
+  }
+
+  if (focusFirst) {
+    const r = placement.row, c = placement.col;
+    const inp = cellInputs[`${r},${c}`];
+    if (inp) inp.focus({ preventScroll: true });
+  }
+}
+
+function selectCell(r, c) {
+  document.querySelectorAll('.cell.selected').forEach(el => el.classList.remove('selected'));
+  selectedCell = { r, c };
+  const key = `${r},${c}`;
+  if (cellDivs[key]) cellDivs[key].classList.add('selected');
+}
+
+function onInput(e, r, c) {
+  const inp = cellInputs[`${r},${c}`];
+  let val = inp.value.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]/g, '').toUpperCase();
+  // Normalize accents
+  val = val.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  inp.value = val ? val[val.length - 1] : '';
+
+  if (inp.value) moveNext(r, c);
+  checkWordLive(r, c);
+}
+
+function onKeyDown(e, r, c) {
+  if (e.key === 'Backspace') {
+    const inp = cellInputs[`${r},${c}`];
+    if (!inp.value) {
+      movePrev(r, c);
+    } else {
+      inp.value = '';
+      checkWordLive(r, c);
+    }
+    e.preventDefault();
+    return;
+  }
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    nextWord(e.shiftKey);
+    return;
+  }
+  if (['ArrowRight','ArrowLeft','ArrowUp','ArrowDown'].includes(e.key)) {
+    e.preventDefault();
+    const dr = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+    const dc = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    const nr = r + dr, nc = c + dc;
+    const key = `${nr},${nc}`;
+    if (cellInputs[key]) cellInputs[key].focus({ preventScroll: true });
+  }
+}
+
+function moveNext(r, c) {
+  if (!activeWord) return;
+  const { dir } = activeWord;
+  const nr = dir === 'V' ? r + 1 : r;
+  const nc = dir === 'H' ? c + 1 : c;
+  const key = `${nr},${nc}`;
+  if (cellInputs[key]) {
+    cellInputs[key].focus({ preventScroll: true });
+  }
+}
+
+function movePrev(r, c) {
+  if (!activeWord) return;
+  const { dir } = activeWord;
+  const nr = dir === 'V' ? r - 1 : r;
+  const nc = dir === 'H' ? c - 1 : c;
+  const key = `${nr},${nc}`;
+  if (cellInputs[key]) cellInputs[key].focus({ preventScroll: true });
+}
+
+function nextWord(reverse = false) {
+  const words = [...layout.placements].sort((a,b) => a.number !== b.number ? a.number - b.number : a.dir.localeCompare(b.dir));
+  if (!activeWord) { activateWord(words[0]); return; }
+  const idx = words.findIndex(w => w.number === activeWord.number && w.dir === activeWord.dir);
+  const next = reverse ? (idx - 1 + words.length) % words.length : (idx + 1) % words.length;
+  activateWord(words[next]);
+}
+
+function checkWordLive(r, c) {
+  // Check all words containing this cell
+  const words = layout.placements.filter(p => {
+    if (p.dir === 'H') return p.row === r && c >= p.col && c < p.col + p.word.length;
+    return p.col === c && r >= p.row && r < p.row + p.word.length;
+  });
+  for (const w of words) checkWordState(w);
+}
+
+function checkWordState(p) {
+  let complete = true, correct = true;
+  for (let i = 0; i < p.word.length; i++) {
+    const r = p.dir === 'H' ? p.row : p.row + i;
+    const c = p.dir === 'H' ? p.col + i : p.col;
+    const inp = cellInputs[`${r},${c}`];
+    if (!inp) continue;
+    const val = inp.value;
+    if (!val) { complete = false; correct = false; }
+    else if (val !== p.word[i]) correct = false;
+  }
+
+  if (complete) {
+    for (let i = 0; i < p.word.length; i++) {
+      const r = p.dir === 'H' ? p.row : p.row + i;
+      const c = p.dir === 'H' ? p.col + i : p.col;
+      const div = cellDivs[`${r},${c}`];
+      if (div) {
+        div.classList.remove('correct', 'wrong');
+        div.classList.add(correct ? 'correct' : 'wrong');
+      }
+    }
+    const clue = document.getElementById(`clue-${p.dir}-${p.number}`);
+    if (clue) {
+      clue.classList.remove('correct-clue', 'wrong-clue');
+      clue.classList.add(correct ? 'correct-clue' : 'wrong-clue');
+    }
+  }
+}
+
+function checkAll() {
+  for (const p of layout.placements) checkWordState(p);
+  const total = layout.placements.length;
+  const correct = layout.placements.filter(p => isWordCorrect(p)).length;
+  const bar = document.getElementById('score-bar');
+  bar.style.display = 'block';
+  bar.innerHTML = `Palabras correctas: <span>${correct} / ${total}</span>`;
+  if (correct === total) {
+    document.getElementById('win-msg').style.display = 'block';
+  }
+}
+
+function isWordCorrect(p) {
+  for (let i = 0; i < p.word.length; i++) {
+    const r = p.dir === 'H' ? p.row : p.row + i;
+    const c = p.dir === 'H' ? p.col + i : p.col;
+    const inp = cellInputs[`${r},${c}`];
+    if (!inp || inp.value !== p.word[i]) return false;
+  }
+  return true;
+}
+
+function revealAll() {
+  for (const [key, inp] of Object.entries(cellInputs)) {
+    inp.value = inp.dataset.answer;
+    const div = cellDivs[key];
+    if (div) { div.classList.remove('wrong'); div.classList.add('correct'); }
+  }
+  document.getElementById('win-msg').style.display = 'block';
+  for (const p of layout.placements) {
+    const clue = document.getElementById(`clue-${p.dir}-${p.number}`);
+    if (clue) { clue.classList.remove('wrong-clue'); clue.classList.add('correct-clue'); }
+  }
+}
+
+function resetAll() {
+  document.getElementById('win-msg').style.display = 'none';
+  document.getElementById('score-bar').style.display = 'none';
+  init();
+}
+
+function showHint(p, btn, hintEl) {
+  const used = parseInt(btn.dataset.used);
+  const word = p.word;
+  const hints = [
+    `Empieza con la letra: "${word[0]}"`,
+    `Termina con la letra: "${word[word.length - 1]}"`,
+    `Tiene ${word.length} letras`,
+    `Segunda letra: "${word[1] || '?'}"`,
+  ];
+
+  if (used >= hints.length) {
+    btn.disabled = true;
+    btn.textContent = '✓ Sin más pistas';
+    return;
+  }
+
+  hintEl.textContent = `💡 ${hints[used]}`;
+  hintEl.style.display = 'block';
+  btn.dataset.used = String(used + 1);
+
+  if (used + 1 >= hints.length) {
+    btn.textContent = '💡 Última pista';
+  }
+
+  // Also reveal the first letter in the grid if it's the first hint
+  if (used === 0) {
+    const inp = cellInputs[`${p.row},${p.col}`];
+    if (inp && !inp.value) {
+      inp.value = word[0];
+      checkWordLive(p.row, p.col);
+    }
+  }
+}
+
+// GO
+init();
+</script>
+</body>
+</html>

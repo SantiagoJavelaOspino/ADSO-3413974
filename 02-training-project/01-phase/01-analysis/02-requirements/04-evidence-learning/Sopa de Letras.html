@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sopa de Letras — Caracterización de Procesos</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050d1a;
+    --surface: #0a1628;
+    --panel: #0d1f3c;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #39ff14;
+    --gold: #ffd700;
+    --text: #e0f4ff;
+    --muted: #4a7a9b;
+    --found: #39ff14;
+    --glow: 0 0 20px rgba(0,212,255,0.5);
+    --glow2: 0 0 20px rgba(57,255,20,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(0,100,200,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.05) 0%, transparent 40%),
+      radial-gradient(ellipse at 60% 80%, rgba(255,107,53,0.04) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.4rem, 4vw, 2.8rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--text) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .header-line {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 16px auto;
+  }
+
+  .desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 12px 24px;
+    background: var(--panel);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Main layout */
+  .game-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .game-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Grid */
+  .grid-wrapper {
+    background: var(--panel);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,50,100,0.1);
+    animation: fadeUp 0.8s 0.3s ease both;
+    position: relative;
+  }
+
+  .grid-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(0,212,255,0.3), transparent 50%, rgba(255,107,53,0.3)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  #grid {
+    display: grid;
+    gap: 3px;
+    user-select: none;
+    cursor: default;
+  }
+
+  .cell {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 4px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.08);
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+    color: rgba(224,244,255,0.7);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .cell:hover {
+    background: rgba(0,212,255,0.12);
+    border-color: rgba(0,212,255,0.3);
+    color: var(--accent);
+  }
+
+  .cell.selecting {
+    background: rgba(0,212,255,0.25);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--glow);
+    transform: scale(1.05);
+  }
+
+  .cell.found {
+    background: rgba(57,255,20,0.15);
+    border-color: var(--found);
+    color: var(--found);
+    box-shadow: var(--glow2);
+    animation: foundPulse 0.4s ease;
+  }
+
+  .cell.found-highlight {
+    background: rgba(57,255,20,0.3);
+    border-color: var(--found);
+    color: var(--found);
+  }
+
+  @keyframes foundPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* Word list */
+  .word-panel {
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,212,255,0.2);
+  }
+
+  .word-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .word-item {
+    padding: 8px 14px;
+    background: var(--panel);
+    border: 1px solid rgba(0,212,255,0.1);
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--text);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .word-item.found {
+    border-color: var(--found);
+    color: var(--found);
+    background: rgba(57,255,20,0.08);
+    box-shadow: var(--glow2);
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  .word-item.found::before {
+    content: '✓ ';
+    color: var(--found);
+  }
+
+  /* Hint */
+  .word-hint {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 2px;
+    font-weight: 300;
+    text-transform: none;
+  }
+
+  /* Instructions */
+  .instructions {
+    margin-top: 16px;
+    padding: 14px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.1);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+  }
+
+  /* Win screen */
+  .win-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5,13,26,0.95);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .win-overlay.show {
+    display: flex;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .win-box {
+    padding: 50px 60px;
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    box-shadow: 0 0 80px rgba(0,212,255,0.3);
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .win-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(255,215,0,0.6);
+    margin-bottom: 16px;
+  }
+
+  .win-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+
+  .win-btn {
+    padding: 14px 40px;
+    background: transparent;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    color: var(--accent);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+
+  .win-btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: var(--glow);
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    border-radius: 2px;
+    animation: confettiFall linear both;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Scan line animation on grid */
+  .scan-line {
+    position: absolute;
+    left: 20px; right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    pointer-events: none;
+    animation: scan 4s linear infinite;
+    border-radius: 1px;
+  }
+
+  @keyframes scan {
+    0% { top: 20px; opacity: 0; }
+    5% { opacity: 0.4; }
+    95% { opacity: 0.4; }
+    100% { top: calc(100% - 20px); opacity: 0; }
+  }
+
+  /* Theme label */
+  .theme-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255,107,53,0.15);
+    border: 1px solid rgba(255,107,53,0.4);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(0,212,255,0.1);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    box-shadow: var(--glow);
+    width: 0%;
+  }
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<div class="container">
+  <header>
+    <div class="subtitle">Módulo de Aprendizaje</div>
+    <h1>SOPA DE LETRAS</h1>
+    <div class="header-line"></div>
+    <div class="theme-badge">Caracterización de Procesos</div>
+    <p class="desc">Encuentra las palabras clave de los 4 temas del curso</p>
+  </header>
+
+  <div class="score-bar">
+    <div class="stat">
+      <div class="stat-num" id="found-count">0</div>
+      <div class="stat-label">Encontradas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="total-count">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="timer">00:00</div>
+      <div class="stat-label">Tiempo</div>
+    </div>
+  </div>
+
+  <div class="game-layout">
+    <div class="grid-wrapper">
+      <div class="scan-line"></div>
+      <div id="grid"></div>
+    </div>
+
+    <div class="word-panel">
+      <div class="panel-title">⬡ Palabras Clave</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="word-list" id="word-list"></div>
+      <div class="instructions">
+        <strong style="color:var(--accent)">Cómo jugar:</strong><br>
+        Haz clic en la primera letra y arrastra hasta la última letra de la palabra. Las palabras pueden estar en cualquier dirección.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="win-overlay" id="win-overlay">
+  <div class="win-box">
+    <div class="win-title">¡FELICIDADES!</div>
+    <div class="win-sub">Completaste la sopa de letras</div>
+    <div style="font-family:'Orbitron',monospace; font-size:1.2rem; color:var(--accent); margin-bottom:24px;" id="win-time"></div>
+    <button class="win-btn" onclick="restartGame()">JUGAR DE NUEVO</button>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+  { word: "SISTEMA",       hint: "Conjunto organizado de elementos" },
+  { word: "PROCESO",       hint: "Secuencia de actividades" },
+  { word: "SUBSISTEMA",    hint: "Parte de un sistema mayor" },
+  { word: "RETROALIMENTACION", hint: "Salida que regresa como entrada" },
+  { word: "DIAGRAMA",      hint: "Representación gráfica" },
+  { word: "HOLISMO",       hint: "Visión del todo integrado" },
+  { word: "ALGORITMO",     hint: "Pasos lógicos para resolver un problema" },
+  { word: "ENTRADA",       hint: "Insumo que ingresa al sistema" },
+  { word: "SALIDA",        hint: "Resultado del sistema" },
+  { word: "INFORMACION",   hint: "Datos procesados con sentido" },
+  { word: "DATO",          hint: "Representación simbólica sin semántica" },
+  { word: "FLUJO",         hint: "Curso de las actividades" },
+  { word: "EFICIENCIA",    hint: "Lograr objetivos optimizando recursos" },
+  { word: "SINERGIA",      hint: "Colaboración laboral conjunta" },
+  { word: "GESTION",       hint: "Administración de recursos" },
+];
+
+const GRID_SIZE = 20;
+const DIRS = [
+  [0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]
+];
+
+let grid = [];
+let wordPositions = {};
+let selecting = false;
+let startCell = null;
+let currentSelection = [];
+let foundWords = new Set();
+let timerInterval;
+let seconds = 0;
+let gameStarted = false;
+
+function initGrid() {
+  grid = Array.from({length: GRID_SIZE}, () => Array(GRID_SIZE).fill(''));
+  wordPositions = {};
+
+  // Sort by length descending
+  const sorted = [...WORDS].sort((a,b) => b.word.length - a.word.length);
+
+  for (const {word} of sorted) {
+    placeWord(word);
+  }
+
+  // Fill empty cells
+  const letters = 'ABCDEFGHIJKLMNOPRSTUVWYZ';
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (!grid[r][c]) {
+        grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+      }
+    }
+  }
+}
+
+function placeWord(word) {
+  const attempts = 200;
+  for (let i = 0; i < attempts; i++) {
+    const dir = DIRS[Math.floor(Math.random() * DIRS.length)];
+    const [dr, dc] = dir;
+    const r = Math.floor(Math.random() * GRID_SIZE);
+    const c = Math.floor(Math.random() * GRID_SIZE);
+
+    const cells = [];
+    let valid = true;
+
+    for (let j = 0; j < word.length; j++) {
+      const nr = r + dr * j;
+      const nc = c + dc * j;
+      if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) { valid = false; break; }
+      if (grid[nr][nc] && grid[nr][nc] !== word[j]) { valid = false; break; }
+      cells.push([nr, nc]);
+    }
+
+    if (valid) {
+      cells.forEach(([nr, nc], j) => { grid[nr][nc] = word[j]; });
+      wordPositions[word] = cells;
+      return true;
+    }
+  }
+  return false;
+}
+
+function renderGrid() {
+  const container = document.getElementById('grid');
+  container.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 38px)`;
+  container.innerHTML = '';
+
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = grid[r][c];
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+
+      cell.addEventListener('mousedown', onStart);
+      cell.addEventListener('mouseover', onMove);
+      cell.addEventListener('touchstart', onTouchStart, {passive: true});
+      cell.addEventListener('touchmove', onTouchMove, {passive: true});
+
+      container.appendChild(cell);
+    }
+  }
+
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+}
+
+function renderWordList() {
+  const list = document.getElementById('word-list');
+  list.innerHTML = '';
+  document.getElementById('total-count').textContent = WORDS.length;
+
+  WORDS.forEach(({word, hint}) => {
+    const item = document.createElement('div');
+    item.className = 'word-item';
+    item.id = `word-${word}`;
+    item.innerHTML = `${word}<span class="word-hint">${hint}</span>`;
+    list.appendChild(item);
+  });
+}
+
+function getCell(r, c) {
+  return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+}
+
+function onStart(e) {
+  if (!gameStarted) { gameStarted = true; startTimer(); }
+  selecting = true;
+  startCell = { r: +e.target.dataset.r, c: +e.target.dataset.c };
+  currentSelection = [startCell];
+  highlightSelection(currentSelection);
+}
+
+function onMove(e) {
+  if (!selecting) return;
+  const r = +e.target.dataset.r;
+  const c = +e.target.dataset.c;
+  const sel = getLineCells(startCell.r, startCell.c, r, c);
+  currentSelection = sel;
+  highlightSelection(sel);
+}
+
+function onTouchStart(e) {
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el && el.classList.contains('cell')) onStart({target: el});
+}
+
+function onTouchMove(e) {
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el && el.classList.contains('cell')) onMove({target: el});
+}
+
+function onEnd() {
+  if (!selecting) return;
+  selecting = false;
+  checkSelection(currentSelection);
+  clearSelecting();
+}
+
+function getLineCells(r1, c1, r2, c2) {
+  const dr = r2 - r1;
+  const dc = c2 - c1;
+  const steps = Math.max(Math.abs(dr), Math.abs(dc));
+  if (steps === 0) return [{r:r1, c:c1}];
+  
+  // Find closest direction
+  const normDr = dr === 0 ? 0 : dr / Math.abs(dr);
+  const normDc = dc === 0 ? 0 : dc / Math.abs(dc);
+  
+  // Check if diagonal or straight
+  const cells = [];
+  for (let i = 0; i <= steps; i++) {
+    cells.push({r: r1 + normDr * i, c: c1 + normDc * i});
+  }
+  return cells;
+}
+
+function highlightSelection(cells) {
+  document.querySelectorAll('.cell.selecting').forEach(c => c.classList.remove('selecting'));
+  cells.forEach(({r, c}) => {
+    const el = getCell(r, c);
+    if (el && !el.classList.contains('found')) el.classList.add('selecting');
+  });
+}
+
+function clearSelecting() {
+  document.querySelectorAll('.cell.selecting').forEach(c => c.classList.remove('selecting'));
+}
+
+function checkSelection(cells) {
+  const selected = cells.map(({r, c}) => grid[r][c]).join('');
+  const reversed = selected.split('').reverse().join('');
+
+  for (const {word} of WORDS) {
+    if (foundWords.has(word)) continue;
+    if (selected === word || reversed === word) {
+      foundWord(word, cells, reversed === word);
+      return;
+    }
+  }
+}
+
+function foundWord(word, cells, wasReversed) {
+  foundWords.add(word);
+  const actualCells = wasReversed ? [...cells].reverse() : cells;
+  
+  actualCells.forEach(({r, c}, i) => {
+    const el = getCell(r, c);
+    if (el) {
+      setTimeout(() => {
+        el.classList.remove('selecting');
+        el.classList.add('found');
+      }, i * 40);
+    }
+  });
+
+  const wordEl = document.getElementById(`word-${word}`);
+  if (wordEl) {
+    setTimeout(() => wordEl.classList.add('found'), 200);
+  }
+
+  document.getElementById('found-count').textContent = foundWords.size;
+  updateProgress();
+
+  if (foundWords.size === WORDS.length) {
+    setTimeout(showWin, 600);
+  }
+}
+
+function updateProgress() {
+  const pct = (foundWords.size / WORDS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function showWin() {
+  clearInterval(timerInterval);
+  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const s = String(seconds % 60).padStart(2, '0');
+  document.getElementById('win-time').textContent = `Tiempo: ${m}:${s}`;
+  document.getElementById('win-overlay').classList.add('show');
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const colors = ['#00d4ff','#ffd700','#ff6b35','#39ff14','#ff3399','#a855f7'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        width: ${4 + Math.random() * 8}px;
+        height: ${4 + Math.random() * 8}px;
+        animation-duration: ${2 + Math.random() * 2}s;
+        animation-delay: ${Math.random() * 0.5}s;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      `;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+function restartGame() {
+  foundWords.clear();
+  seconds = 0;
+  gameStarted = false;
+  clearInterval(timerInterval);
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('found-count').textContent = '0';
+  document.getElementById('win-overlay').classList.remove('show');
+  updateProgress();
+  initGrid();
+  renderGrid();
+  renderWordList();
+}
+
+// Init
+initGrid();
+renderGrid();
+renderWordList();
+</script>
+</body>
+</html>
