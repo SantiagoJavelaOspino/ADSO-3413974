@@ -1,0 +1,43 @@
+1. Requisitos Generales
+El sistema debe reducir el tiempo requerido para registrar la asistencia de los aprendices.
+El sistema debe permitir registrar la asistencia de forma rápida y sencilla.
+El sistema debe almacenar de manera segura la información de asistencia.
+El sistema debe evitar registros duplicados de una misma sesión.
+El sistema debe registrar la fecha y hora de cada asistencia.
+El sistema debe permitir consultar el historial de asistencias.
+El sistema debe generar reportes básicos de asistencia.
+El sistema debe contar con una interfaz intuitiva y fácil de usar.
+El sistema debe permitir la administración de aprendices, instructores y grupos.
+El sistema debe garantizar la integridad de la información almacenada.
+2. Requisitos Funcionales
+
+RF-01: El sistema debe permitir al Instructor crear una sesión de asistencia para registrar la asistencia de un grupo de aprendices.
+
+RF-02: El sistema debe permitir al Instructor registrar la asistencia de los aprendices para reducir el tiempo de toma de asistencia.
+
+RF-03: El sistema debe permitir al Instructor modificar un registro de asistencia para corregir errores antes de finalizar la sesión.
+
+RF-04: El sistema debe permitir al Instructor finalizar una sesión de asistencia para guardar los registros realizados.
+
+RF-05: El sistema debe permitir al Instructor consultar el historial de asistencia de un grupo para realizar seguimiento.
+
+RF-06: El sistema debe permitir al Aprendiz consultar su historial de asistencia para verificar su estado de asistencia.
+
+RF-07: El sistema debe permitir al Administrador gestionar la información de instructores, aprendices y grupos para mantener actualizados los datos del sistema.
+
+RF-08: El sistema debe permitir al Administrador generar reportes de asistencia para apoyar el seguimiento de la formación.
+
+3. Diagrama de Casos de Uso
+Actores identificados
+Administrador
+Instructor
+Aprendiz
+4. Diagrama de Clases
+Entidades principales
+Administrador: Gestiona la información de instructores, aprendices y grupos.
+Instructor: Registra y administra la asistencia de sus grupos.
+Aprendiz: Consulta su historial de asistencia.
+Grupo: Representa la ficha o grupo de formación.
+SesionAsistencia: Corresponde a cada jornada en la que se registra la asistencia.
+RegistroAsistencia: Almacena el estado de asistencia de cada aprendiz.
+Reporte: Genera informes de asistencia.
