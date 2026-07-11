@@ -1,0 +1,64 @@
+DOCUMENTO DE ESPECIFICACIÓN: SISTEMA DE CONTROL DE ASISTENCIA
+
+1. REQUISITOS NO FUNCIONALES (RNF) Y RESTRICCIONES
+Se definen las características técnicas, de rendimiento y de entorno del sistema.
+
+* RNF-01 Arquitectura: El sistema operará bajo una arquitectura local (escritorio) o web sencilla, optimizada para entornos académicos.
+* RNF-02 Usabilidad: La interfaz gráfica (UI) debe ser intuitiva, permitiendo la operación del sistema sin necesidad de capacitación técnica previa.
+* RNF-03 Persistencia de Datos: La información se almacenará en un motor de base de datos relacional ligero (MySQL o SQLite).
+* RNF-04 Compatibilidad: El software debe ser compatible y ejecutable en computadores con sistema operativo Windows 10 o superior.
+* RNF-05 Control de Acceso: El sistema debe ser multiusuario, soportando control de acceso basado en roles (RBAC) con dos perfiles definidos: Instructor y Estudiante.
+* RNF-06 Salida de Datos: El sistema debe integrar soporte nativo para la generación de documentos en formato PDF y ejecución de rutinas de impresión directa.
+
+--------------------------------------------------------------------------------
+
+2. REQUISITOS FUNCIONALES (RF)
+Se detallan las operaciones y procesos que el sistema debe ejecutar, agrupados por módulos.
+
+Módulo: Gestión de Estudiantes
+* RF-01 Registro: El sistema debe permitir al rol Instructor registrar nuevos estudiantes capturando: nombre completo, número de documento y número de ficha.
+* RF-02 Edición: El sistema debe permitir al Instructor modificar los datos de los estudiantes registrados para garantizar la integridad de la información.
+* RF-03 Inactivación: El sistema debe permitir al Instructor eliminar (o inactivar lógicamente) el registro de un estudiante que ya no pertenezca a la ficha.
+* RF-04 Búsqueda: El sistema debe incluir una función de búsqueda de estudiantes, parametrizable por nombre o número de documento.
+
+Módulo: Gestión de Clases
+* RF-05 Creación de Sesiones: El sistema debe permitir al Instructor registrar nuevas clases, especificando: fecha de la sesión, tema a tratar y ficha asignada.
+* RF-06 Consulta de Sesiones: El sistema debe desplegar un listado del histórico de clases creadas, incorporando filtros por fecha y por número de ficha.
+
+Módulo: Registro de Asistencia
+* RF-07 Toma de Asistencia: El sistema debe permitir al Instructor asignar un estado de asistencia (Presente, Ausente o Retraso) a cada estudiante vinculado a una sesión específica.
+* RF-08 Corrección de Registros: El sistema debe permitir al Instructor auditar y modificar el estado de asistencia de una sesión previamente guardada.
+* RF-09 Consulta de Estudiante: El sistema debe permitir al rol Estudiante visualizar en tiempo real su historial individual de asistencia y el consolidado de fallas acumuladas.
+
+Módulo: Reportes
+* RF-10 Consolidado por Ficha: El sistema debe generar reportes de asistencia grupales (por ficha), acotados por un rango de fechas definido por el usuario.
+* RF-11 Reporte Individual: El sistema debe generar reportes de asistencia específicos por estudiante para identificar patrones de inasistencia o riesgo de deserción.
+* RF-12 Exportación: El sistema debe permitir la exportación de cualquier reporte generado a formato PDF para su almacenamiento físico o digital.
+
+--------------------------------------------------------------------------------
+
+3. INSTRUMENTO DE RECOLECCIÓN DE INFORMACIÓN
+
+Tipo de Instrumento: Encuesta cerrada.
+Población Objetivo: Estudiantes pertenecientes a la ficha.
+Propósito: Evaluar la percepción del estudiante frente al proceso actual de control de asistencia y determinar la viabilidad del módulo de consulta de usuario.
+
+[ Pregunta 1 ]
+¿Sabe con exactitud cuántas fallas lleva acumuladas en el período actual?
+Opciones: Sí / No
+
+[ Pregunta 2 ]
+¿Le resultaría útil poder consultar su propio registro de asistencia desde un sistema?
+Opciones: Sí / No
+
+[ Pregunta 3 ]
+¿Con qué frecuencia detecta errores o inconsistencias en su registro de asistencia?
+Opciones: Nunca / Pocas veces / Con frecuencia
+
+[ Pregunta 4 ]
+¿Considera que el método actual utilizado para la toma de asistencia consume demasiado tiempo?
+Opciones: Sí / No
+
+[ Pregunta 5 ]
+¿Ha experimentado problemas académicos o administrativos por asistencias registradas incorrectamente?
+Opciones: Sí / No
