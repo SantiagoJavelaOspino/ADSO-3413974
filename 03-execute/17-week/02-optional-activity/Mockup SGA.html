@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Académica - Asistencia y Excusas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-sidebar: #1e293b;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --discord: #5865F2;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --text-light: #f8fafc;
+            --border: #e2e8f0;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+        
+        .hidden { display: none !important; }
+        
+        /* Typography & Utilities */
+        h1, h2, h3 { color: #0f172a; margin-bottom: 1rem; }
+        p { margin-bottom: 1rem; line-height: 1.5; }
+        .text-center { text-align: center; }
+        .flex { display: flex; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-1 { gap: 0.5rem; } .gap-2 { gap: 1rem; }
+        .mt-2 { margin-top: 1rem; }
+
+        /* Buttons */
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s, transform 0.1s; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-discord { background: var(--discord); color: white; text-decoration: none; }
+        .btn-discord:hover { background: #4752C4; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f8fafc; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main); }
+        input, select, textarea { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: var(--radius); outline: none; font-family: inherit; transition: border-color 0.2s; background: var(--bg-card); }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        input[type="file"] { padding: 0.4rem; background: #f8fafc; cursor: pointer; }
+
+        /* Login Screen */
+        #login-view { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background: #0f172a; position: absolute; z-index: 100; top: 0; left: 0; }
+        .login-card { background: var(--bg-card); padding: 2.5rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .login-header { text-align: center; margin-bottom: 2rem; }
+        .login-header i { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .login-error { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 1rem; display: none; background: #fee2e2; padding: 0.5rem; border-radius: var(--radius); }
+        .credentials-hint { margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: var(--radius); font-size: 0.8rem; color: var(--text-muted); border: 1px dashed var(--border); }
+        .credentials-hint strong { color: var(--text-main); }
+
+        /* App Layout */
+        #app-layout { width: 100%; height: 100%; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--bg-sidebar); color: var(--text-light); display: flex; flex-direction: column; flex-shrink: 0; transition: all 0.3s; }
+        .sidebar-brand { padding: 1.5rem; display: flex; align-items: center; gap: 1rem; font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .user-info { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .user-info .name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .user-info .role { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-menu { flex: 1; padding: 1rem 0; overflow-y: auto; }
+        .nav-item { padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 1rem; color: #cbd5e1; text-decoration: none; cursor: pointer; transition: 0.2s; font-size: 0.95rem; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 500; }
+        .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Main Content */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 60px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 2rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .topbar h2 { margin: 0; font-size: 1.2rem; font-weight: 600; color: #0f172a; }
+        .content-area { flex: 1; overflow-y: auto; padding: 2rem; }
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Components: Cards & Grids */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--bg-card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .stat-card { display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
+        .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+        .stat-icon.green { background: #dcfce7; color: #16a34a; }
+        .stat-icon.red { background: #fee2e2; color: #dc2626; }
+        .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+        .stat-details h4 { font-size: 0.85rem; color: var(--text-muted); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-details .value { font-size: 1.5rem; font-weight: 700; color: var(--text-main); line-height: 1.2; margin-top: 0.2rem; }
+
+        /* Tables */
+        .table-container { background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f8fafc; padding: 1rem 1.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 1rem 1.5rem; font-size: 0.95rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f1f5f9; }
+
+        /* Badges */
+        .badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+        .badge-present { background: #dcfce7; color: #166534; }
+        .badge-absent { background: #fee2e2; color: #991b1b; }
+        .badge-late { background: #fef3c7; color: #92400e; }
+        .badge-pending { background: #e0f2fe; color: #075985; }
+
+        /* Custom UI Elements */
+        .radio-group { display: flex; gap: 1rem; }
+        .radio-label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem; }
+        .radio-label input[type="radio"] { width: auto; margin: 0; cursor: pointer; }
+        .excuse-file { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--primary); cursor: pointer; background: #eff6ff; padding: 0.4rem 0.8rem; border-radius: var(--radius); border: 1px dashed var(--primary); }
+        .excuse-file:hover { background: #dbeafe; }
+    </style>
+</head>
+<body>
+
+    <div id="login-view">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h2>Portal Académico</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Sistema de Asistencia y Excusas</p>
+            </div>
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="login-email">Correo Electrónico</label>
+                    <input type="email" id="login-email" required placeholder="ejemplo@prueba.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-pass">Contraseña</label>
+                    <input type="password" id="login-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+                <div id="login-error" class="login-error"><i class="fa-solid fa-circle-exclamation"></i> Credenciales incorrectas</div>
+            </form>
+            <div class="credentials-hint">
+                <strong>Instructor:</strong> instructor@prueba.com / 1234<br>
+                <strong>Aprendiz:</strong> juan@prueba.com / 1234
+            </div>
+        </div>
+    </div>
+
+    <div id="app-layout" class="hidden">
+        
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-building-columns"></i> SGA Web
+            </div>
+            <div class="user-info">
+                <div class="name" id="user-name">Cargando...</div>
+                <div class="role" id="user-role">Rol</div>
+            </div>
+            
+            <nav class="nav-menu" id="nav-instructor" style="display: none;">
+                <a class="nav-item active" data-target="ins-dashboard"><i class="fa-solid fa-chart-pie"></i> Panel de Control</a>
+                <a class="nav-item" data-target="ins-students"><i class="fa-solid fa-users-gear"></i> Gestión Estudiantes</a>
+                <a class="nav-item" data-target="ins-attendance"><i class="fa-solid fa-clipboard-user"></i> Toma de Asistencia</a>
+                <a class="nav-item" data-target="ins-reports"><i class="fa-solid fa-file-contract"></i> Reportes Generales</a>
+                <a class="nav-item" data-target="ins-excuses"><i class="fa-solid fa-envelope-open-text"></i> Bandeja Excusas <span id="badge-ins-excuses" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: auto; display: none;">0</span></a>
+            </nav>
+
+            <nav class="nav-menu" id="nav-learner" style="display: none;">
+                <a class="nav-item active" data-target="lrn-dashboard"><i class="fa-solid fa-house-user"></i> Mi Resumen</a>
+                <a class="nav-item" data-target="lrn-submit-excuse"><i class="fa-solid fa-file-circle-plus"></i> Radicar Excusa</a>
+                <a class="nav-item" data-target="lrn-history"><i class="fa-solid fa-clock-rotate-left"></i> Historial & Trámites</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-outline" style="width: 100%; color: #f8fafc; border-color: rgba(255,255,255,0.2);" onclick="app.logout()">
+                    <i class="fa-solid fa-power-off"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-wrapper">
+            <header class="topbar">
+                <h2 id="topbar-title">Panel de Control</h2>
+            </header>
+            
+            <div class="content-area">
+                
+                <div id="ins-dashboard" class="view-section">
+                    <div class="grid-4">
+                        <div class="card stat-card">
+                            <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-details"><h4>Total Aprendices</h4><div class="value" id="stat-total-students">0</div></div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon yellow"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="stat-details"><h4>Excusas Pendientes</h4><div class="value" id="stat-pending-excuses">0</div></div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+                            <div class="stat-details"><h4>Asistencia Global</h4><div class="value" id="stat-global-att">0%</div></div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="stat-details"><h4>Fallas Registradas</h4><div class="value" id="stat-global-abs">0</div></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fa-solid fa-circle-info text-muted"></i> Información del Sistema</h3>
+                        <p>Bienvenido al módulo de administración. Desde aquí puede gestionar el registro de aprendices, controlar la asistencia diaria por ficha, y procesar las justificaciones subidas por los estudiantes.</p>
+                    </div>
+                </div>
+
+                <div id="ins-students" class="view-section">
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <h3>Registrar Nuevo Aprendiz</h3>
+                        <form id="form-add-student" class="flex gap-2" style="align-items: flex-end;">
+                            <div class="form-group" style="flex: 1; margin: 0;">
+                                <label>Nombre Completo</label>
+                                <input type="text" id="stu-name" required placeholder="Ej. Juan Pérez">
+                            </div>
+                            <div class="form-group" style="flex: 1; margin: 0;">
+                                <label>Documento (ID)</label>
+                                <input type="number" id="stu-id" required placeholder="Ej. 101234567">
+                            </div>
+                            <div class="form-group" style="flex: 1; margin: 0;">
+                                <label>Nº Ficha</label>
+                                <input type="number" id="stu-ficha" required placeholder="Ej. 3413974">
+                            </div>
+                            <div class="form-group" style="flex: 1; margin: 0;">
+                                <label>Email (Acceso)</label>
+                                <input type="email" id="stu-email" required placeholder="correo@prueba.com">
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Guardar</button>
+                        </form>
+                    </div>
+                    <div class="table-container">
+                        <table id="table-students">
+                            <thead><tr><th>ID Documento</th><th>Nombre Completo</th><th>Ficha</th><th>Correo Electrónico</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="ins-attendance" class="view-section">
+                    <div class="card flex-between gap-2" style="margin-bottom: 2rem;">
+                        <div class="flex gap-2" style="flex: 1;">
+                            <div class="form-group" style="margin: 0; width: 250px;">
+                                <label>Seleccionar Ficha</label>
+                                <select id="att-ficha-select"></select>
+                            </div>
+                            <div class="form-group" style="margin: 0; width: 200px;">
+                                <label>Fecha</label>
+                                <input type="date" id="att-date" required>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="app.loadAttendanceList()"><i class="fa-solid fa-magnifying-glass"></i> Cargar Lista</button>
+                    </div>
+                    
+                    <div id="att-list-container" class="hidden">
+                        <div class="table-container mb-2">
+                            <table id="table-attendance">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Estudiante</th>
+                                        <th style="width: 350px;">
+                                            Estado de Asistencia
+                                            <button class="btn btn-sm btn-outline" style="margin-left: 10px;" onclick="app.markAllAttendance('Presente')">Todos Presentes</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="flex" style="justify-content: flex-end; margin-top: 1rem;">
+                            <button class="btn btn-success" onclick="app.saveAttendance()"><i class="fa-solid fa-floppy-disk"></i> Guardar Registro de Asistencia</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ins-reports" class="view-section">
+                    <div class="table-container">
+                        <table id="table-reports">
+                            <thead><tr><th>Ficha</th><th>ID</th><th>Estudiante</th><th>Presentes</th><th>Retrasos</th><th>Fallas</th><th>% Asistencia</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="ins-excuses" class="view-section">
+                    <div class="table-container">
+                        <table id="table-ins-excuses">
+                            <thead><tr><th>Fecha Incidencia</th><th>Aprendiz</th><th>Tipo</th><th>Motivo</th><th>Soporte Adjunto</th><th>Estado</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="lrn-dashboard" class="view-section">
+                    <div class="grid-3">
+                        <div class="card stat-card">
+                            <div class="stat-icon green"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div class="stat-details"><h4>Clases Asistidas</h4><div class="value" id="lrn-stat-present">0</div></div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon yellow"><i class="fa-solid fa-clock"></i></div>
+                            <div class="stat-details"><h4>Retrasos Acumulados</h4><div class="value" id="lrn-stat-late">0</div></div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+                            <div class="stat-details"><h4>Fallas Totales</h4><div class="value" id="lrn-stat-absent">0</div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Detalle Histórico</h3>
+                        <div class="table-container mt-2">
+                            <table id="table-lrn-attendance">
+                                <thead><tr><th>Fecha</th><th>Estado Registrado</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="lrn-submit-excuse" class="view-section">
+                    <div class="card" style="max-width: 600px; margin: 0 auto;">
+                        <h3>Formulario de Justificación</h3>
+                        <p class="text-muted" style="font-size: 0.9rem;">Radique su excusa médica o calamidad. Al ser aprobada, se habilitará un canal de Discord para validación final con coordinación.</p>
+                        
+                        <form id="form-submit-excuse" class="mt-2">
+                            <div class="flex gap-2">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Tipo de Incidencia</label>
+                                    <select id="exc-type" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="Inasistencia">Inasistencia (Falta Completa)</option>
+                                        <option value="Retraso">Llegada Tarde (Retraso)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Fecha de la Incidencia</label>
+                                    <input type="date" id="exc-date" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción Detallada</label>
+                                <textarea id="exc-desc" rows="4" required placeholder="Explique el motivo de la falla o retraso..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Adjuntar Soporte (Obligatorio)</label>
+                                <input type="file" id="exc-file" accept=".pdf,.jpg,.png" required>
+                                <small class="text-muted">Formatos permitidos: PDF, JPG, PNG.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fa-solid fa-paper-plane"></i> Enviar a Revisión</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="lrn-history" class="view-section">
+                    <div class="table-container">
+                        <table id="table-lrn-excuses">
+                            <thead><tr><th>Fecha Radicado</th><th>Tipo</th><th>Descripción</th><th>Soporte</th><th>Estado</th><th>Trámite Final</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * SISTEMA DE GESTIÓN ACADÉMICA - SPA VANILLA JS
+         * Arquitectura basada en LocalStorage para persistencia simulada.
+         */
+
+        const DB_KEY = 'SGA_DATABASE_V1';
+
+        // Estructura de Datos Inicial con inyección de contexto simulado
+        const initDB = () => {
+            if (!localStorage.getItem(DB_KEY)) {
+                const initialData = {
+                    users: {
+                        'instructor@prueba.com': { role: 'instructor', pass: '1234', name: 'Instructor ADSO' },
+                        'juan@prueba.com': { role: 'aprendiz', pass: '1234', name: 'Juan Pablo Doria Caviedes' },
+                        'martin@prueba.com': { role: 'aprendiz', pass: '1234', name: 'Martin Sandoval Solorsano' },
+                        'sharith@prueba.com': { role: 'aprendiz', pass: '1234', name: 'Sharith' }
+                    },
+                    students: [
+                        { id: '101234567', name: 'Juan Pablo Doria Caviedes', ficha: '3413974', email: 'juan@prueba.com' },
+                        { id: '100234567', name: 'Martin Sandoval Solorsano', ficha: '3413974', email: 'martin@prueba.com' },
+                        { id: '103456789', name: 'Sharith', ficha: '3413974', email: 'sharith@prueba.com' }
+                    ],
+                    attendance: [], // { date, ficha, records: { studentId: status } }
+                    excuses: [] // { id, studentId, type, date, description, fileName, status }
+                };
+                localStorage.setItem(DB_KEY, JSON.stringify(initialData));
+            }
+        };
+
+        const db = {
+            get: () => JSON.parse(localStorage.getItem(DB_KEY)),
+            set: (data) => localStorage.setItem(DB_KEY, JSON.stringify(data)),
+            getCurrentUser: () => JSON.parse(sessionStorage.getItem('SGA_USER')),
+            setCurrentUser: (user) => sessionStorage.setItem('SGA_USER', JSON.stringify(user)),
+            clearSession: () => sessionStorage.removeItem('SGA_USER')
+        };
+
+        const ui = {
+            loginView: document.getElementById('login-view'),
+            appLayout: document.getElementById('app-layout'),
+            sections: document.querySelectorAll('.view-section'),
+            navItems: document.querySelectorAll('.nav-item'),
+            topbarTitle: document.getElementById('topbar-title'),
+            
+            showView(targetId) {
+                this.sections.forEach(s => s.classList.remove('active'));
+                const target = document.getElementById(targetId);
+                if(target) target.classList.add('active');
+            },
+            
+            updateNav(targetId) {
+                this.navItems.forEach(n => {
+                    n.classList.remove('active');
+                    if(n.dataset.target === targetId) {
+                        n.classList.add('active');
+                        this.topbarTitle.textContent = n.textContent.trim();
+                    }
+                });
+            }
+        };
+
+        const app = {
+            init() {
+                initDB();
+                this.bindEvents();
+                
+                const user = db.getCurrentUser();
+                if (user) {
+                    this.loadDashboard(user);
+                } else {
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-pass').value = '';
+                }
+            },
+
+            bindEvents() {
+                // Login Submit
+                document.getElementById('form-login').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value.trim().toLowerCase();
+                    const pass = document.getElementById('login-pass').value;
+                    const database = db.get();
+                    
+                    if (database.users[email] && database.users[email].pass === pass) {
+                        const user = { email, ...database.users[email] };
+                        
+                        // Link learner to student ID
+                        if(user.role === 'aprendiz') {
+                            const student = database.students.find(s => s.email === email);
+                            if(student) user.studentId = student.id;
+                        }
+                        
+                        db.setCurrentUser(user);
+                        document.getElementById('login-error').style.display = 'none';
+                        this.loadDashboard(user);
+                    } else {
+                        document.getElementById('login-error').style.display = 'block';
+                    }
+                });
+
+                // SPA Routing
+                ui.navItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const target = e.currentTarget.dataset.target;
+                        ui.updateNav(target);
+                        ui.showView(target);
+                        this.refreshData(target);
+                    });
+                });
+
+                // Form Add Student
+                document.getElementById('form-add-student').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addStudent();
+                });
+
+                // Form Submit Excuse
+                document.getElementById('form-submit-excuse').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitExcuse();
+                });
+
+                // Set today's date in attendance
+                const dateInput = document.getElementById('att-date');
+                if(dateInput) dateInput.valueAsDate = new Date();
+            },
+
+            loadDashboard(user) {
+                ui.loginView.classList.add('hidden');
+                ui.appLayout.classList.remove('hidden');
+                
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-role').textContent = user.role.toUpperCase();
+                
+                document.getElementById('nav-instructor').style.display = 'none';
+                document.getElementById('nav-learner').style.display = 'none';
+
+                if (user.role === 'instructor') {
+                    document.getElementById('nav-instructor').style.display = 'block';
+                    const initView = 'ins-dashboard';
+                    ui.updateNav(initView);
+                    ui.showView(initView);
+                    this.refreshData(initView);
+                } else {
+                    document.getElementById('nav-learner').style.display = 'block';
+                    const initView = 'lrn-dashboard';
+                    ui.updateNav(initView);
+                    ui.showView(initView);
+                    this.refreshData(initView);
+                }
+            },
+
+            logout() {
+                db.clearSession();
+                ui.appLayout.classList.add('hidden');
+                ui.loginView.classList.remove('hidden');
+                document.getElementById('form-login').reset();
+            },
+
+            refreshData(viewId) {
+                const user = db.getCurrentUser();
+                if(user.role === 'instructor') {
+                    this.updateInstructorBadges();
+                    if(viewId === 'ins-dashboard') this.renderInstructorDash();
+                    if(viewId === 'ins-students') this.renderStudents();
+                    if(viewId === 'ins-attendance') this.populateFichas();
+                    if(viewId === 'ins-reports') this.renderReports();
+                    if(viewId === 'ins-excuses') this.renderInstructorExcuses();
+                } else {
+                    if(viewId === 'lrn-dashboard') this.renderLearnerDash();
+                    if(viewId === 'lrn-history') this.renderLearnerExcuses();
+                }
+            },
+
+            /* ================= INSTRUCTOR FUNCTIONS ================= */
+            
+            updateInstructorBadges() {
+                const database = db.get();
+                const pending = database.excuses.filter(e => e.status === 'Pendiente').length;
+                const badge = document.getElementById('badge-ins-excuses');
+                if(pending > 0) {
+                    badge.textContent = pending;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            },
+
+            renderInstructorDash() {
+                const database = db.get();
+                document.getElementById('stat-total-students').textContent = database.students.length;
+                document.getElementById('stat-pending-excuses').textContent = database.excuses.filter(e => e.status === 'Pendiente').length;
+                
+                let totalRecords = 0; let totalPresent = 0; let totalAbsent = 0;
+                database.attendance.forEach(att => {
+                    Object.values(att.records).forEach(val => {
+                        totalRecords++;
+                        if(val === 'Presente' || val === 'Retraso') totalPresent++;
+                        if(val === 'Inasistencia') totalAbsent++;
+                    });
+                });
+                
+                document.getElementById('stat-global-abs').textContent = totalAbsent;
+                const pct = totalRecords === 0 ? 0 : Math.round((totalPresent / totalRecords) * 100);
+                document.getElementById('stat-global-att').textContent = pct + '%';
+            },
+
+            addStudent() {
+                const database = db.get();
+                const newStudent = {
+                    id: document.getElementById('stu-id').value,
+                    name: document.getElementById('stu-name').value,
+                    ficha: document.getElementById('stu-ficha').value,
+                    email: document.getElementById('stu-email').value.toLowerCase()
+                };
+
+                // Create user logic for simulation
+                if(!database.users[newStudent.email]) {
+                    database.users[newStudent.email] = { role: 'aprendiz', pass: '1234', name: newStudent.name };
+                }
+
+                if(database.students.find(s => s.id === newStudent.id)) {
+                    alert('El estudiante con ese ID ya existe.'); return;
+                }
+
+                database.students.push(newStudent);
+                db.set(database);
+                document.getElementById('form-add-student').reset();
+                this.renderStudents();
+                alert('Aprendiz registrado con éxito.');
+            },
+
+            deleteStudent(id) {
+                if(confirm('¿Está seguro de eliminar este aprendiz? Se mantendrá en el historial pero no en la lista activa.')) {
+                    const database = db.get();
+                    database.students = database.students.filter(s => s.id !== id);
+                    db.set(database);
+                    this.renderStudents();
+                }
+            },
+
+            renderStudents() {
+                const tbody = document.querySelector('#table-students tbody');
+                const students = db.get().students;
+                tbody.innerHTML = students.map(s => `
+                    <tr>
+                        <td>${s.id}</td>
+                        <td><strong>${s.name}</strong></td>
+                        <td><span class="badge badge-pending"><i class="fa-solid fa-hashtag"></i> ${s.ficha}</span></td>
+                        <td>${s.email}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="app.deleteStudent('${s.id}')"><i class="fa-solid fa-trash"></i> Eliminar</button></td>
+                    </tr>
+                `).join('');
+                if(students.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay estudiantes registrados.</td></tr>';
+            },
+
+            populateFichas() {
+                const database = db.get();
+                const fichas = [...new Set(database.students.map(s => s.ficha))];
+                const select = document.getElementById('att-ficha-select');
+                select.innerHTML = '<option value="">Seleccione Ficha</option>' + fichas.map(f => `<option value="${f}">${f}</option>`).join('');
+                document.getElementById('att-list-container').classList.add('hidden');
+            },
+
+            loadAttendanceList() {
+                const ficha = document.getElementById('att-ficha-select').value;
+                const date = document.getElementById('att-date').value;
+                if(!ficha || !date) { alert('Seleccione ficha y fecha.'); return; }
+
+                const database = db.get();
+                const students = database.students.filter(s => s.ficha === ficha);
+                
+                // Check if already taken
+                const existing = database.attendance.find(a => a.date === date && a.ficha === ficha);
+                const records = existing ? existing.records : {};
+
+                const tbody = document.querySelector('#table-attendance tbody');
+                tbody.innerHTML = students.map(s => {
+                    const status = records[s.id] || 'Presente'; // Default
+                    return `
+                    <tr data-id="${s.id}">
+                        <td>${s.id}</td>
+                        <td>${s.name}</td>
+                        <td>
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="att_${s.id}" value="Presente" ${status==='Presente'?'checked':''}> <span class="badge badge-present">Presente</span></label>
+                                <label class="radio-label"><input type="radio" name="att_${s.id}" value="Retraso" ${status==='Retraso'?'checked':''}> <span class="badge badge-late">Retraso</span></label>
+                                <label class="radio-label"><input type="radio" name="att_${s.id}" value="Inasistencia" ${status==='Inasistencia'?'checked':''}> <span class="badge badge-absent">Falla</span></label>
+                            </div>
+                        </td>
+                    </tr>
+                `}).join('');
+                
+                if(students.length === 0) tbody.innerHTML = '<tr><td colspan="3">No hay estudiantes en esta ficha.</td></tr>';
+                document.getElementById('att-list-container').classList.remove('hidden');
+            },
+
+            markAllAttendance(value) {
+                document.querySelectorAll('#table-attendance tbody tr').forEach(tr => {
+                    const radio = tr.querySelector(`input[value="${value}"]`);
+                    if(radio) radio.checked = true;
+                });
+            },
+
+            saveAttendance() {
+                const ficha = document.getElementById('att-ficha-select').value;
+                const date = document.getElementById('att-date').value;
+                const database = db.get();
+                
+                const records = {};
+                document.querySelectorAll('#table-attendance tbody tr').forEach(tr => {
+                    const id = tr.dataset.id;
+                    const checked = tr.querySelector('input[type="radio"]:checked');
+                    if(checked) records[id] = checked.value;
+                });
+
+                // Replace or Push
+                const existingIndex = database.attendance.findIndex(a => a.date === date && a.ficha === ficha);
+                if(existingIndex > -1) {
+                    database.attendance[existingIndex].records = records;
+                } else {
+                    database.attendance.push({ date, ficha, records });
+                }
+
+                db.set(database);
+                alert('Asistencia guardada correctamente.');
+            },
+
+            renderReports() {
+                const database = db.get();
+                const stats = {};
+                
+                // Init stats
+                database.students.forEach(s => {
+                    stats[s.id] = { ...s, present: 0, late: 0, absent: 0, total: 0 };
+                });
+
+                // Calculate
+                database.attendance.forEach(att => {
+                    Object.entries(att.records).forEach(([id, status]) => {
+                        if(stats[id]) {
+                            stats[id].total++;
+                            if(status === 'Presente') stats[id].present++;
+                            if(status === 'Retraso') stats[id].late++;
+                            if(status === 'Inasistencia') stats[id].absent++;
+                        }
+                    });
+                });
+
+                const tbody = document.querySelector('#table-reports tbody');
+                tbody.innerHTML = Object.values(stats).map(s => {
+                    const attended = s.present + s.late;
+                    const pct = s.total === 0 ? 100 : Math.round((attended / s.total) * 100);
+                    let pctColor = pct < 75 ? 'color: var(--danger); font-weight: bold;' : '';
+                    
+                    return `
+                    <tr>
+                        <td><span class="badge badge-pending">${s.ficha}</span></td>
+                        <td>${s.id}</td>
+                        <td>${s.name}</td>
+                        <td>${s.present}</td>
+                        <td>${s.late}</td>
+                        <td style="${s.absent > 0 ? 'color: var(--danger); font-weight: 600;' : ''}">${s.absent}</td>
+                        <td style="${pctColor}">${pct}%</td>
+                    </tr>
+                `}).join('');
+            },
+
+            renderInstructorExcuses() {
+                const database = db.get();
+                const tbody = document.querySelector('#table-ins-excuses tbody');
+                
+                // Sort pending first, then by date desc
+                const sorted = [...database.excuses].sort((a, b) => {
+                    if(a.status === 'Pendiente' && b.status !== 'Pendiente') return -1;
+                    if(a.status !== 'Pendiente' && b.status === 'Pendiente') return 1;
+                    return new Date(b.id) - new Date(a.id); // id is timestamp
+                });
+
+                tbody.innerHTML = sorted.map(exc => {
+                    const student = database.students.find(s => s.id === exc.studentId);
+                    const stName = student ? student.name : 'Desconocido';
+                    
+                    let badge = '';
+                    let actions = '';
+                    
+                    if(exc.status === 'Pendiente') {
+                        badge = `<span class="badge badge-pending"><i class="fa-solid fa-clock"></i> Pendiente</span>`;
+                        actions = `
+                            <div class="flex gap-1">
+                                <button class="btn btn-sm btn-success" onclick="app.processExcuse(${exc.id}, 'Aceptada')"><i class="fa-solid fa-check"></i> Aceptar</button>
+                                <button class="btn btn-sm btn-danger" onclick="app.processExcuse(${exc.id}, 'Rechazada')"><i class="fa-solid fa-xmark"></i> Rechazar</button>
+                            </div>
+                        `;
+                    } else if (exc.status === 'Aceptada') {
+                        badge = `<span class="badge badge-present"><i class="fa-solid fa-check-double"></i> Aceptada</span>`;
+                        actions = `<span class="text-muted" style="font-size:0.8rem;"><i class="fa-brands fa-discord" style="color:var(--discord)"></i> Enlace Generado</span>`;
+                    } else {
+                        badge = `<span class="badge badge-absent"><i class="fa-solid fa-ban"></i> Rechazada</span>`;
+                        actions = `<span class="text-muted" style="font-size:0.8rem;">Cerrada</span>`;
+                    }
+
+                    return `
+                    <tr>
+                        <td>${exc.date}</td>
+                        <td><strong>${stName}</strong><br><small class="text-muted">ID: ${exc.studentId}</small></td>
+                        <td>${exc.type}</td>
+                        <td><div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${exc.description}">${exc.description}</div></td>
+                        <td><button class="excuse-file" onclick="alert('Descargando documento simulado: ${exc.fileName}')"><i class="fa-solid fa-file-pdf"></i> ${exc.fileName.substring(0,15)}...</button></td>
+                        <td>${badge}</td>
+                        <td>${actions}</td>
+                    </tr>
+                `}).join('');
+                
+                if(sorted.length === 0) tbody.innerHTML = '<tr><td colspan="7" class="text-center">Bandeja vacía.</td></tr>';
+            },
+
+            processExcuse(excuseId, newStatus) {
+                const database = db.get();
+                const excuse = database.excuses.find(e => e.id === excuseId);
+                if(excuse) {
+                    excuse.status = newStatus;
+                    db.set(database);
+                    this.refreshData('ins-excuses');
+                    this.updateInstructorBadges();
+                }
+            },
+
+            /* ================= LEARNER FUNCTIONS ================= */
+
+            renderLearnerDash() {
+                const user = db.getCurrentUser();
+                if(!user.studentId) return;
+
+                const database = db.get();
+                let present = 0; let late = 0; let absent = 0;
+                let historyHtml = '';
+
+                database.attendance.forEach(att => {
+                    const status = att.records[user.studentId];
+                    if(status) {
+                        if(status === 'Presente') present++;
+                        if(status === 'Retraso') late++;
+                        if(status === 'Inasistencia') absent++;
+                        
+                        let badge = '';
+                        if(status === 'Presente') badge = `<span class="badge badge-present">Presente</span>`;
+                        if(status === 'Retraso') badge = `<span class="badge badge-late">Retraso</span>`;
+                        if(status === 'Inasistencia') badge = `<span class="badge badge-absent">Falla</span>`;
+                        
+                        historyHtml += `<tr><td>${att.date}</td><td>${badge}</td></tr>`;
+                    }
+                });
+
+                document.getElementById('lrn-stat-present').textContent = present;
+                document.getElementById('lrn-stat-late').textContent = late;
+                document.getElementById('lrn-stat-absent').textContent = absent;
+                
+                const tbody = document.querySelector('#table-lrn-attendance tbody');
+                tbody.innerHTML = historyHtml || '<tr><td colspan="2" class="text-center">Aún no hay registros de asistencia.</td></tr>';
+            },
+
+            submitExcuse() {
+                const user = db.getCurrentUser();
+                if(!user.studentId) { alert('Error: Cuenta no vinculada a un ID de estudiante.'); return; }
+
+                const fileInput = document.getElementById('exc-file');
+                const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'soporte.pdf';
+
+                const newExcuse = {
+                    id: Date.now(),
+                    studentId: user.studentId,
+                    type: document.getElementById('exc-type').value,
+                    date: document.getElementById('exc-date').value,
+                    description: document.getElementById('exc-desc').value,
+                    fileName: fileName,
+                    status: 'Pendiente'
+                };
+
+                const database = db.get();
+                database.excuses.push(newExcuse);
+                db.set(database);
+
+                document.getElementById('form-submit-excuse').reset();
+                alert('La justificación ha sido enviada a coordinación con éxito.');
+                
+                // Go to history
+                ui.navItems.forEach(n => {
+                    if(n.dataset.target === 'lrn-history') n.click();
+                });
+            },
+
+            renderLearnerExcuses() {
+                const user = db.getCurrentUser();
+                if(!user.studentId) return;
+
+                const database = db.get();
+                const myExcuses = database.excuses.filter(e => e.studentId === user.studentId).sort((a,b) => b.id - a.id);
+                
+                const tbody = document.querySelector('#table-lrn-excuses tbody');
+                tbody.innerHTML = myExcuses.map(exc => {
+                    let badge = '';
+                    let action = '';
+                    // Generate Date from timestamp ID for "Fecha Radicado"
+                    const radicado = new Date(exc.id).toLocaleDateString();
+
+                    if(exc.status === 'Pendiente') {
+                        badge = `<span class="badge badge-pending"><i class="fa-solid fa-clock"></i> Pendiente</span>`;
+                        action = `<span class="text-muted" style="font-size:0.8rem;">En revisión...</span>`;
+                    } else if (exc.status === 'Aceptada') {
+                        badge = `<span class="badge badge-present"><i class="fa-solid fa-check-double"></i> Aprobada</span>`;
+                        // REGLA CRÍTICA: RENDERIZAR LINK DISCORD
+                        const token = btoa(`${exc.id}`).substring(0, 8);
+                        action = `<a href="https://discord.gg/tramites-sena?token=${token}" target="_blank" class="btn btn-discord btn-sm"><i class="fa-brands fa-discord"></i> Entrar al Chat</a>`;
+                    } else {
+                        badge = `<span class="badge badge-absent"><i class="fa-solid fa-ban"></i> Rechazada</span>`;
+                        action = `<span class="text-muted" style="font-size:0.8rem;">Finalizado</span>`;
+                    }
+
+                    return `
+                    <tr>
+                        <td>${radicado}</td>
+                        <td><strong>${exc.type}</strong><br><small class="text-muted">Falla: ${exc.date}</small></td>
+                        <td><div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${exc.description}">${exc.description}</div></td>
+                        <td><i class="fa-solid fa-paperclip"></i> ${exc.fileName.substring(0,15)}</td>
+                        <td>${badge}</td>
+                        <td>${action}</td>
+                    </tr>
+                `}).join('');
+
+                if(myExcuses.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center">No has radicado ninguna excusa.</td></tr>';
+            }
+        };
+
+        // Run application
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
