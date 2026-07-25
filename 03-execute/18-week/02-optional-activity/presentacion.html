@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentación Integrada & Prototipo MoSCoW - Asistencia QR SENA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            sena: {
+              green: '#39A900',
+              darkGreen: '#2e8700',
+              navy: '#003049',
+              darkBg: '#0b0f17',
+              cardBg: 'rgba(30, 41, 59, 0.55)',
+              accent: '#38bdf8'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #0b0f17;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(57, 169, 0, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 48, 73, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    .glass {
+      background: rgba(30, 41, 59, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #39A900 0%, #2e8700 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(57, 169, 0, 0.35);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .comic-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(57, 169, 0, 0.5);
+    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col antialiased selection:bg-sena-green selection:text-white">
+
+  <!-- HEADER NAVEGACIÓN PRINCIPAL -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-11 w-11 bg-sena-green rounded-2xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-sena-green/30 ring-2 ring-white/10">
+          S
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold tracking-tight text-xl text-white">Asistencia QR SENA</h1>
+            <span class="bg-sena-green/20 text-sena-green border border-sena-green/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Entrega 3</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Prototipo, Evaluación, Presentación Integrada & MoSCoW Visual</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-3">
+        <button onclick="openGalleryModal()" class="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-slate-700 transition-all">
+          <i class="fa-solid fa-images text-sena-green"></i>
+          <span class="hidden sm:inline">Ver Tira Cómica Completa</span>
+        </button>
+        <a href="./index.html" class="flex items-center gap-2 bg-sena-green/10 hover:bg-sena-green/20 text-sena-green text-xs font-bold px-3.5 py-2 rounded-xl border border-sena-green/30 transition-all">
+          <i class="fa-solid fa-mobile-screen"></i>
+          <span>App de Control</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- BANNER TIRA CÓMICA INTERACTIVA (5 PESTAÑAS VÁLIDAS - OMITIDAS LAS TACHADAS) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-2 w-full">
+    <div class="glass rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden border border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <span class="text-xs font-bold text-sena-green uppercase tracking-widest block mb-0.5">Navegación Visual por Paneles del Cómic</span>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-sena-green"></i>
+            Selecciona una Pestaña del Proyecto
+          </h2>
+        </div>
+        <span class="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
+          <i class="fa-solid fa-check text-sena-green mr-1"></i> 5 Paneles Válidos (Sin tachones)
+        </span>
+        <!-- GRID DE PESTAÑAS CÓMIC (5 CARDS AMPLIADAS - SOLO IMAGEN) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+
+        <!-- PANEL 1 -->
+        <div onclick="switchTab(1)" id="comic-card-1" class="comic-card cursor-pointer rounded-2xl border border-slate-700/80 transition-all duration-300 relative group overflow-hidden bg-slate-950 h-64 sm:h-72 flex items-center justify-center p-2">
+          <span class="absolute top-3 left-3 z-10 text-[10px] font-black text-white bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-slate-700/80 shadow">Pestaña 1</span>
+          <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img src="./images/panel1.png" alt="Pestaña 1" class="w-full h-full object-contain rounded-xl" onerror="onImgError(this, 1)">
+          </div>
+        </div>
+
+        <!-- PANEL 2 -->
+        <div onclick="switchTab(2)" id="comic-card-2" class="comic-card cursor-pointer rounded-2xl border border-slate-700/80 transition-all duration-300 relative group overflow-hidden bg-slate-950 h-64 sm:h-72 flex items-center justify-center p-2">
+          <span class="absolute top-3 left-3 z-10 text-[10px] font-black text-white bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-slate-700/80 shadow">Pestaña 2</span>
+          <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img src="./images/panel2.png" alt="Pestaña 2" class="w-full h-full object-contain rounded-xl" onerror="onImgError(this, 2)">
+          </div>
+        </div>
+
+        <!-- PANEL 3 -->
+        <div onclick="switchTab(3)" id="comic-card-3" class="comic-card cursor-pointer rounded-2xl border border-slate-700/80 transition-all duration-300 relative group overflow-hidden bg-slate-950 h-64 sm:h-72 flex items-center justify-center p-2">
+          <span class="absolute top-3 left-3 z-10 text-[10px] font-black text-white bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-slate-700/80 shadow">Pestaña 3</span>
+          <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img src="./images/panel3.png" alt="Pestaña 3" class="w-full h-full object-contain rounded-xl" onerror="onImgError(this, 3)">
+          </div>
+        </div>
+
+        <!-- PANEL 4 -->
+        <div onclick="switchTab(4)" id="comic-card-4" class="comic-card cursor-pointer rounded-2xl border border-slate-700/80 transition-all duration-300 relative group overflow-hidden bg-slate-950 h-64 sm:h-72 flex items-center justify-center p-2">
+          <span class="absolute top-3 left-3 z-10 text-[10px] font-black text-white bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-slate-700/80 shadow">Pestaña 4</span>
+          <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img src="./images/panel4.png" alt="Pestaña 4" class="w-full h-full object-contain rounded-xl" onerror="onImgError(this, 4)">
+          </div>
+        </div>
+
+        <!-- PANEL 5 -->
+        <div onclick="switchTab(5)" id="comic-card-5" class="comic-card cursor-pointer rounded-2xl border border-slate-700/80 transition-all duration-300 relative group overflow-hidden bg-slate-950 h-64 sm:h-72 flex items-center justify-center p-2">
+          <span class="absolute top-3 left-3 z-10 text-[10px] font-black text-white bg-sena-green px-2.5 py-1 rounded-md shadow">Pestaña 5</span>
+          <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img src="./images/panel5.png" alt="Pestaña 5" class="w-full h-full object-contain rounded-xl" onerror="onImgError(this, 5)">
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTAINER CON LAS 5 PESTAÑAS DE CONTENIDO -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1">
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 1: COMO LO EXPLICÓ EL USUARIO      -->
+    <!-- ========================================== -->
+    <section id="tab-content-1" class="tab-pane space-y-6">
+
+      <!-- Header Pestaña 1 -->
+      <div class="glass rounded-3xl p-6 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="flex items-center gap-2 text-sena-green font-bold text-xs uppercase tracking-wider">
+            <span class="bg-sena-green/20 px-2.5 py-1 rounded-lg border border-sena-green/30">Viñeta 1 del Cómic</span>
+            <span>• Introducción y Expectativas</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">1. Cómo lo Explicó el Usuario</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            El usuario solicitaba un columpio complejo de 3 tablas (múltiples funciones aisladas), pero sin estructuración técnica. En el proyecto de <strong>Asistencia Académica SENA</strong>, esto representa la solicitud verbal del instructor: querer capturar asistencia instantánea, validar aprendices y tener reportes sin procesos burocráticos.
+          </p>
+        </div>
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex items-center gap-4 shrink-0">
+          <div class="w-16 h-16 bg-sena-green/10 rounded-xl flex items-center justify-center border border-sena-green/20 text-sena-green text-2xl">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 font-medium block">Problema Raíz</span>
+            <span class="text-sm font-bold text-white">Llamado a lista manual en papel</span>
+            <span class="text-[11px] text-amber-400 block mt-0.5">Demora 15+ min por sesión</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards de Diagnóstico de Requerimientos -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center font-bold mb-4">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Expectativa del Instructor</h3>
+          <p class="text-slate-400 text-sm">
+            Iniciar la clase y tener registrada la asistencia de 30+ aprendices en menos de 10 segundos sin interrumpir la explicación técnica.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center font-bold mb-4">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Anti-Fraude Requerido</h3>
+          <p class="text-slate-400 text-sm">
+            Evitar que aprendices ausentes registren su asistencia compartiendo capturas de pantalla de códigos QR estáticos por WhatsApp.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center font-bold mb-4">
+            <i class="fa-solid fa-file-excel"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Exportación Automatizada</h3>
+          <p class="text-slate-400 text-sm">
+            Generar consolidados descargables en formato Excel con desglose por ficha, fecha y estado de aprendices (presente/ausente).
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 2: COMO LO ENTENDIÓ EL LÍDER      -->
+    <!-- ========================================== -->
+    <section id="tab-content-2" class="tab-pane hidden space-y-6">
+
+      <div class="glass rounded-3xl p-6 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="flex items-center gap-2 text-sena-green font-bold text-xs uppercase tracking-wider">
+            <span class="bg-sena-green/20 px-2.5 py-1 rounded-lg border border-sena-green/30">Viñeta 2 del Cómic</span>
+            <span>• Visión & Design Thinking</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">2. Cómo lo Entendió el Líder de Proyecto</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            El líder de proyecto interpretó el requerimiento buscando amarrarlo a la estructura (el columpio abrazando el árbol). Aplicamos la metodología <strong>Design Thinking</strong> para centrar la solución en las personas sin crear burocracia innecesaria.
+          </p>
+        </div>
+      </div>
+
+      <!-- FASES DE DESIGN THINKING -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-sena-green block mb-1">FASE 1</span>
+          <h4 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-heart mr-1.5 text-pink-400"></i> Empatizar</h4>
+          <p class="text-xs text-slate-400">Entrevistas con instructores SENA sobre la pérdida de tiempo lectivo al llamar a lista manualmente.</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-sena-green block mb-1">FASE 2</span>
+          <h4 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-bullseye mr-1.5 text-amber-400"></i> Definir</h4>
+          <p class="text-xs text-slate-400">Problema focal: Suplantación de identidad y falta de sincronización en tiempo real entre sedes.</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-sena-green block mb-1">FASE 3</span>
+          <h4 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-lightbulb mr-1.5 text-yellow-400"></i> Idear</h4>
+          <p class="text-xs text-slate-400">Diseñar un token dinámico de QR combinado con un Código de Sala Rotativo (CSR) de 20 segundos.</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-sena-green block mb-1">FASE 4</span>
+          <h4 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-cubes mr-1.5 text-blue-400"></i> Prototipar</h4>
+          <p class="text-xs text-slate-400">Construcción de Web App PWA desacoplada con backend en Express TS y base de datos MongoDB local.</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-sena-green block mb-1">FASE 5</span>
+          <h4 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-vial mr-1.5 text-emerald-400"></i> Evaluar</h4>
+          <p class="text-xs text-slate-400">Pruebas funcionales con Docker Compose y validación con seeds de usuarios de prueba.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 3: COMO LO DISEÑÓ EL ANALISTA      -->
+    <!-- ========================================== -->
+    <section id="tab-content-3" class="tab-pane hidden space-y-6">
+
+      <div class="glass rounded-3xl p-6 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="flex items-center gap-2 text-sena-green font-bold text-xs uppercase tracking-wider">
+            <span class="bg-sena-green/20 px-2.5 py-1 rounded-lg border border-sena-green/30">Viñeta 3 del Cómic</span>
+            <span>• Ingeniería Inversa & Diagramas</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">3. Cómo lo Diseñó el Analista</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            El analista ajustó la estructura cortando el árbol por la mitad para que la función principal operara sin fricción. Aquí se consolida la <strong>Ingeniería Inversa</strong> y la <strong>Reconstrucción del Sistema</strong> con diagramas de flujo claros.
+          </p>
+        </div>
+      </div>
+
+      <!-- DIAGRAMA DE FLUJO INTERACTIVO (RECONSTRUCCIÓN DE PROCESO) -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-6">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-diagram-project text-sena-green"></i>
+          Diagrama de Flujo del Nuevo Sistema (QR + CSR Rotativo)
+        </h3>
+
+        <!-- Flow Visualizer -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+
+          <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-700 text-center relative">
+            <span class="w-7 h-7 bg-sena-green text-white font-bold text-xs rounded-full flex items-center justify-center mx-auto mb-3">1</span>
+            <h4 class="text-sm font-bold text-white mb-1">Inicio de Sesión</h4>
+            <p class="text-xs text-slate-400">Instructor abre sesión de clase seleccionando Ficha SENA o Materia.</p>
+            <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-sena-green">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-700 text-center relative">
+            <span class="w-7 h-7 bg-sena-green text-white font-bold text-xs rounded-full flex items-center justify-center mx-auto mb-3">2</span>
+            <h4 class="text-sm font-bold text-white mb-1">Generación de Token</h4>
+            <p class="text-xs text-slate-400">API crea QR dinámico + Código CSR de 6 caracteres rotativo cada 20s.</p>
+            <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-sena-green">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-700 text-center relative">
+            <span class="w-7 h-7 bg-sena-green text-white font-bold text-xs rounded-full flex items-center justify-center mx-auto mb-3">3</span>
+            <h4 class="text-sm font-bold text-white mb-1">Registro Aprendiz</h4>
+            <p class="text-xs text-slate-400">Aprendiz escanea el QR o ingresa el CSR en su app móvil con su cuenta JWT.</p>
+            <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-sena-green">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-700 text-center">
+            <span class="w-7 h-7 bg-sena-green text-white font-bold text-xs rounded-full flex items-center justify-center mx-auto mb-3">4</span>
+            <h4 class="text-sm font-bold text-white mb-1">Validación & Reporte</h4>
+            <p class="text-xs text-slate-400">Verificación doble instantánea en MongoDB y actualización de reporte Excel.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 4: COMO SE DOCUMENTÓ              -->
+    <!-- ========================================== -->
+    <section id="tab-content-4" class="tab-pane hidden space-y-6">
+
+      <div class="glass rounded-3xl p-6 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="flex items-center gap-2 text-sena-green font-bold text-xs uppercase tracking-wider">
+            <span class="bg-sena-green/20 px-2.5 py-1 rounded-lg border border-sena-green/30">Viñeta 4 del Cómic</span>
+            <span>• Inventario & Estado Inicial</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">4. Cómo se Documentó el Proyecto</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Representado en el cómic como el árbol sin nada amarrado. Inicialmente el proyecto carecía de documentación técnica centralizada. Realizamos un <strong>Inventario Completo de Activos</strong> y diagnosticamos la brecha del estado inicial.
+          </p>
+        </div>
+      </div>
+
+      <!-- INVENTARIO DE ACTIVOS TABLE -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800 overflow-x-auto">
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-sena-green"></i>
+          Inventario de Activos del Proyecto
+        </h3>
+
+        <table class="w-full text-left text-xs text-slate-300 border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
+              <th class="py-3 px-4">Componente</th>
+              <th class="py-3 px-4">Ubicación de Archivo</th>
+              <th class="py-3 px-4">Tecnología</th>
+              <th class="py-3 px-4">Función Principal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60">
+            <tr>
+              <td class="py-3 px-4 font-bold text-white">Frontend Web</td>
+              <td class="py-3 px-4 font-mono text-sena-accent">app/index.html & app.js</td>
+              <td class="py-3 px-4">TailwindCSS, HTML5 QR Scanner</td>
+              <td class="py-3 px-4">Panel interactivo para Instructor y Aprendiz</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-white">Backend Server</td>
+              <td class="py-3 px-4 font-mono text-sena-accent">back/src/server.ts</td>
+              <td class="py-3 px-4">Node.js 20, Express 5, TypeScript</td>
+              <td class="py-3 px-4">API RESTful para auth, sesiones y asistencias</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-white">Servicio Asistencias</td>
+              <td class="py-3 px-4 font-mono text-sena-accent">back/src/services/attendance.service.ts</td>
+              <td class="py-3 px-4">TypeScript, CSR Generator</td>
+              <td class="py-3 px-4">Lógica de Código de Sala Rotativo de 20s</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-white">Base de Datos</td>
+              <td class="py-3 px-4 font-mono text-sena-accent">db/initial-data.mongodb.js</td>
+              <td class="py-3 px-4">MongoDB 7, Mongoose 9</td>
+              <td class="py-3 px-4">Contenedor local dockerizado con seeds idempotentes</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-white">Orquestación</td>
+              <td class="py-3 px-4 font-mono text-sena-accent">docker-compose.yml</td>
+              <td class="py-3 px-4">Docker Compose</td>
+              <td class="py-3 px-4">Despliegue conjunto de API, App y MongoDB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 5: LO QUE NECESITABA EL USUARIO    -->
+    <!-- ========================================== -->
+    <section id="tab-content-5" class="tab-pane hidden space-y-6">
+
+      <div class="glass rounded-3xl p-6 border border-sena-green/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-sena-green/10 rounded-full blur-3xl"></div>
+        <div class="space-y-2 max-w-2xl relative z-10">
+          <div class="flex items-center gap-2 text-sena-green font-bold text-xs uppercase tracking-wider">
+            <span class="bg-sena-green text-white px-2.5 py-1 rounded-lg font-extrabold shadow-sm">Viñeta 5 (Solución Real)</span>
+            <span>• Prototipo & MoSCoW Visual</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">5. Lo que Necesitaba el Usuario Realmente</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Representado por el columpio de llanta: una solución simple, efectiva y directa a la necesidad real sin sobrecostos ni complicaciones innecesarias.
+          </p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN A: PROTOTIPO DE WIREFRAMES INTERACTIVOS -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-sena-green"></i>
+            Prototipo Navegable de Wireframes (App Asistencia QR)
+          </h3>
+          <span class="text-xs text-slate-400">Interactivo - Haz clic en los botones del celular</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          
+          <!-- MOCKUP CELULAR INTERACTIVO -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="w-72 h-[520px] bg-slate-950 rounded-[40px] border-4 border-slate-700 shadow-2xl p-3 flex flex-col justify-between relative ring-1 ring-white/10">
+              <!-- Speaker Notch -->
+              <div class="w-24 h-4 bg-slate-800 rounded-full mx-auto mb-2"></div>
+              
+              <!-- Screen Display -->
+              <div id="wireframe-screen" class="flex-1 bg-slate-900 rounded-[28px] p-4 flex flex-col justify-between overflow-hidden border border-slate-800">
+                <!-- Screen content injected dynamically via JS -->
+              </div>
+
+              <!-- Home Bar -->
+              <div class="w-20 h-1 bg-slate-600 rounded-full mx-auto mt-2"></div>
+            </div>
+          </div>
+
+          <!-- WIREFRAME CONTROLS & EXPLANATION -->
+          <div class="lg:col-span-7 space-y-4">
+            <h4 class="text-base font-bold text-white">Estados del Prototipo de Baja/Media Fidelidad</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Selecciona una pantalla para explorar cómo el prototipo resuelve cada etapa del proceso de control de asistencias SENA:
+            </p>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="setWireframeScreen('login')" class="wf-btn text-left p-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-sena-green transition-all text-xs font-semibold text-white">
+                <i class="fa-solid fa-right-to-bracket text-sena-green mr-1.5"></i> 1. Portal de Login
+              </button>
+              <button onclick="setWireframeScreen('session')" class="wf-btn text-left p-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-sena-green transition-all text-xs font-semibold text-white">
+                <i class="fa-solid fa-qrcode text-sena-green mr-1.5"></i> 2. QR + CSR Rotativo
+              </button>
+              <button onclick="setWireframeScreen('student')" class="wf-btn text-left p-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-sena-green transition-all text-xs font-semibold text-white">
+                <i class="fa-solid fa-user-check text-sena-green mr-1.5"></i> 3. Registro Aprendiz
+              </button>
+              <button onclick="setWireframeScreen('report')" class="wf-btn text-left p-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-sena-green transition-all text-xs font-semibold text-white">
+                <i class="fa-solid fa-chart-pie text-sena-green mr-1.5"></i> 4. Métricas & Export
+              </button>
+            </div>
+
+            <div id="wf-desc" class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+              <!-- Dynamic description -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECCIÓN B: MOSCOW DE LA NUEVA VISIÓN EN FORMATO CÓMIC NARRATIVO VISUAL -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-6">
+        <div>
+          <span class="text-xs font-extrabold text-sena-green uppercase tracking-widest block mb-1">Priorización Estratégica</span>
+          <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-masks-theater text-sena-green"></i>
+            MoSCoW de la Nueva Visión (Formato Cómic Narrativo Visual)
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- MUST HAVE -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border-l-4 border-l-emerald-500 border border-slate-800 relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="bg-emerald-500/20 text-emerald-400 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-500/30">
+                🔴 MUST HAVE (Esencial)
+              </span>
+              <i class="fa-solid fa-star text-emerald-400"></i>
+            </div>
+            <p class="text-xs text-slate-300 font-semibold mb-3">"Sin esto el sistema no puede funcionar en clase"</p>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <span>Generación de Token QR con Código CSR rotativo cada 20s.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <span>Autenticación JWT segura con vencimiento de 24 horas.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <span>Soporte multi-rol (Instructor SENA y Docente CORHUILA).</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- SHOULD HAVE -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border-l-4 border-l-blue-500 border border-slate-800 relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="bg-blue-500/20 text-blue-400 text-xs font-extrabold px-3 py-1 rounded-full border border-blue-500/30">
+                🔵 SHOULD HAVE (Importante)
+              </span>
+              <i class="fa-solid fa-circle-exclamation text-blue-400"></i>
+            </div>
+            <p class="text-xs text-slate-300 font-semibold mb-3">"Aporta alto valor operacional al instructor"</p>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-blue-400 mt-0.5"></i>
+                <span>Exportación automatizada a hojas de cálculo Excel (.xlsx).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-blue-400 mt-0.5"></i>
+                <span>Contador visual en tiempo real de aprendices presentes.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-blue-400 mt-0.5"></i>
+                <span>Configuración dinámica de URL de API backend en runtime.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- COULD HAVE -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border-l-4 border-l-amber-500 border border-slate-800 relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="bg-amber-500/20 text-amber-400 text-xs font-extrabold px-3 py-1 rounded-full border border-amber-500/30">
+                🟡 COULD HAVE (Opcional)
+              </span>
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+            </div>
+            <p class="text-xs text-slate-300 font-semibold mb-3">"Deseable si existen recursos disponibles"</p>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-amber-400 mt-0.5"></i>
+                <span>Soporte offline con sincronización diferida (IndexedDB).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-amber-400 mt-0.5"></i>
+                <span>Personalización visual de colores según la institución.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- WON'T HAVE -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border-l-4 border-l-rose-500 border border-slate-800 relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="bg-rose-500/20 text-rose-400 text-xs font-extrabold px-3 py-1 rounded-full border border-rose-500/30">
+                ⚪ WON'T HAVE (Descartado)
+              </span>
+              <i class="fa-solid fa-ban text-rose-400"></i>
+            </div>
+            <p class="text-xs text-slate-300 font-semibold mb-3">"Fuera de alcance para esta versión"</p>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-xmark text-rose-400 mt-0.5"></i>
+                <span>Base de datos SQLite local embebida en la App móvil.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-xmark text-rose-400 mt-0.5"></i>
+                <span>Reconocimiento facial con IA en el dispositivo.</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECCIÓN C: MATRIZ INTERACTIVA DE EVALUACIÓN -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-6">
+        <div>
+          <span class="text-xs font-extrabold text-sena-green uppercase tracking-widest block mb-1">Verificación & Calidad</span>
+          <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-check text-sena-green"></i>
+            Matriz Interactiva de Evaluación (Test & Evaluate)
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="eval-checklist">
+          
+          <div onclick="toggleCheck(this)" class="cursor-pointer bg-slate-900/90 p-4 rounded-xl border border-slate-700 flex items-start gap-3 hover:border-sena-green transition-all">
+            <div class="w-5 h-5 rounded border border-sena-green bg-sena-green/20 text-sena-green flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 check-icon">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Revisión del Equipo</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Arquitectura Backend TypeScript y Frontend PWA alineada al 100%.</p>
+            </div>
+          </div>
+
+          <div onclick="toggleCheck(this)" class="cursor-pointer bg-slate-900/90 p-4 rounded-xl border border-slate-700 flex items-start gap-3 hover:border-sena-green transition-all">
+            <div class="w-5 h-5 rounded border border-sena-green bg-sena-green/20 text-sena-green flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 check-icon">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Pruebas Funcionales</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Endpoints `/api/auth/login` y `/api/attendance/checkin` validados con Vitest.</p>
+            </div>
+          </div>
+
+          <div onclick="toggleCheck(this)" class="cursor-pointer bg-slate-900/90 p-4 rounded-xl border border-slate-700 flex items-start gap-3 hover:border-sena-green transition-all">
+            <div class="w-5 h-5 rounded border border-sena-green bg-sena-green/20 text-sena-green flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 check-icon">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Validación del Flujo de Usuario</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Registro de asistencia completado en menos de 5 segundos por aprendiz.</p>
+            </div>
+          </div>
+
+          <div onclick="toggleCheck(this)" class="cursor-pointer bg-slate-900/90 p-4 rounded-xl border border-slate-700 flex items-start gap-3 hover:border-sena-green transition-all">
+            <div class="w-5 h-5 rounded border border-sena-green bg-sena-green/20 text-sena-green flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 check-icon">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Cumplimiento de Requisitos</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">Sin bases de datos embebidas en frontend y con soporte para Docker Compose.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECCIÓN D: CONCLUSIONES Y CIERRE FINAL -->
+      <div class="glass rounded-3xl p-6 border border-slate-800 text-center space-y-4">
+        <h3 class="text-xl font-extrabold text-white">Conclusiones de la Presentación Final</h3>
+        <p class="text-slate-300 text-sm max-w-3xl mx-auto leading-relaxed">
+          La reconstrucción del sistema de asistencias mediante la metodología Design Thinking e Ingeniería Inversa logró transformar un proceso tradicional propenso a fraudes y demoras en una herramienta digital rápida, segura y basada en estándares modernos.
+        </p>
+        <div class="pt-2 flex items-center justify-center gap-4">
+          <a href="./index.html" class="bg-sena-green hover:bg-sena-darkGreen text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg shadow-sena-green/30 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-rocket"></i> Probar Aplicación en Vivo
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- LIGHTBOX MODAL PARA AMPLIAR LA TIRA CÓMICA -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-xl w-full rounded-3xl p-6 border border-slate-700 relative space-y-4">
+      <button onclick="closeLightbox()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <span id="lb-badge" class="text-xs font-bold text-sena-green bg-sena-green/20 px-3 py-1 rounded-full border border-sena-green/30">Viñeta</span>
+      <h3 id="lb-title" class="text-xl font-extrabold text-white">Título de la Viñeta</h3>
+      
+      <div id="lb-svg-container" class="h-64 bg-slate-950 rounded-2xl p-4 flex items-center justify-center border border-slate-800">
+        <!-- Enlarged SVG injected dynamically -->
+      </div>
+
+      <p id="lb-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button onclick="closeLightbox()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-semibold rounded-xl hover:bg-slate-700">Cerrar</button>
+        <button id="lb-goto-btn" onclick="" class="px-4 py-2 bg-sena-green text-white text-xs font-bold rounded-xl hover:bg-sena-darkGreen shadow-md">Ir a la Pestaña</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY MODAL (ALL 5 PANELS GRID) -->
+  <div id="gallery-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-4xl w-full rounded-3xl p-6 border border-slate-700 relative space-y-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-extrabold text-white">Tira Cómica Filtrada (5 Paneles Válidos)</h3>
+          <p class="text-xs text-slate-400 mt-1">Imágenes tachadas en rojo omitidas de acuerdo a las especificaciones.</p>
+        </div>
+        <button onclick="closeGalleryModal()" class="text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="gallery-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LÓGICA DE INTERACCIÓN NAVEGACIÓN DUAL & WIREFRAMES -->
+  <script>
+    const comicData = {
+      1: {
+        title: "1. Como lo explicó el usuario",
+        badge: "Pestaña 1: Expectativa",
+        imgName: "panel1",
+        desc: "El columpio de 3 tablas. El instructor solicita múltiples funciones acumuladas (asistencia en papel, validación manual) pero expresadas sin estructuración técnica.",
+        svg: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+          <path d="M50 10 L50 40 M20 40 L80 40 L80 90 L20 90 Z" stroke="#39A900" stroke-width="2"/>
+          <rect x="35" y="45" width="30" height="6" fill="#38bdf8" rx="2"/>
+          <rect x="35" y="60" width="30" height="6" fill="#38bdf8" rx="2"/>
+          <rect x="35" y="75" width="30" height="6" fill="#38bdf8" rx="2"/>
+          <line x1="40" y1="40" x2="40" y2="85" stroke="#cbd5e1" stroke-width="2"/>
+          <line x1="60" y1="40" x2="60" y2="85" stroke="#cbd5e1" stroke-width="2"/>
+        </svg>`
+      },
+      2: {
+        title: "2. Como lo entendió el Líder de Proyecto",
+        badge: "Pestaña 2: Design Thinking",
+        imgName: "panel2",
+        desc: "El columpio amarrado alrededor del tronco. La interpretación inicial del equipo buscando amarrarlo a la estructura sin dejar espacio para la agilidad.",
+        svg: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+          <rect x42" y="10" width="16" height="80" fill="#854d0e" rx="4"/>
+          <ellipse cx="50" cy="25" rx="35" ry="20" fill="#22c55e" opacity="0.4"/>
+          <path d="M25 50 C25 65 75 65 75 50" stroke="#f59e0b" stroke-width="3" stroke-dasharray="4 2"/>
+          <rect x="35" y="62" width="30" height="6" fill="#38bdf8" rx="2"/>
+        </svg>`
+      },
+      3: {
+        title: "3. Como lo diseñó el Analista",
+        badge: "Pestaña 3: Ing. Inversa",
+        imgName: "panel3",
+        desc: "El tronco cortado al medio. Ajuste técnico para permitir el paso del columpio mediante diagramas de flujo y arquitectura desacoplada.",
+        svg: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+          <rect x="42" y="10" width="16" height="25" fill="#854d0e" rx="2"/>
+          <rect x="42" y="65" width="16" height="25" fill="#854d0e" rx="2"/>
+          <path d="M42 35 H20 V65 H42" stroke="#38bdf8" stroke-width="2"/>
+          <rect x="25" y="48" width="50" height="6" fill="#38bdf8" rx="2"/>
+        </svg>`
+      },
+      4: {
+        title: "4. Como se documentó el proyecto",
+        badge: "Pestaña 4: Inventario",
+        imgName: "panel4",
+        desc: "El campo vacío solo con el árbol. Diagnóstico de la ausencia de documentación técnica inicial e inventariado completo de activos.",
+        svg: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+          <rect x="15" y="20" width="70" height="60" rx="6" stroke="#475569" stroke-width="2" stroke-dasharray="4 4"/>
+          <text x="50" y="55" fill="#64748b" font-size="9" text-anchor="middle" font-weight="bold">SIN REGISTRO</text>
+        </svg>`
+      },
+      5: {
+        title: "5. Lo que necesitaba el usuario realmente",
+        badge: "Pestaña 5: Solución Real",
+        imgName: "panel5",
+        desc: "El columpio de llanta colgado sencillamente de una rama. La solución directa, ágil y práctica: App de Asistencia QR con Código CSR rotativo.",
+        svg: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="25" rx="35" ry="18" fill="#22c55e" opacity="0.5"/>
+          <line x1="50" y1="25" x2="50" y2="55" stroke="#cbd5e1" stroke-width="3"/>
+          <circle cx="50" cy="68" r="14" stroke="#e2e8f0" stroke-width="6" fill="#090d16"/>
+        </svg>`
+      }
+    };
+
+    function onImgError(img, tabId) {
+      const item = comicData[tabId];
+      if (!item) return;
+      if (!img.dataset.triedJpg) {
+        img.dataset.triedJpg = 'true';
+        img.src = `./images/${item.imgName}.jpg`;
+      } else if (!img.dataset.triedJpeg) {
+        img.dataset.triedJpeg = 'true';
+        img.src = `./images/${item.imgName}.jpeg`;
+      } else if (!img.dataset.triedWebp) {
+        img.dataset.triedWebp = 'true';
+        img.src = `./images/${item.imgName}.webp`;
+      } else {
+        img.parentNode.innerHTML = item.svg;
+      }
+    }
+
+    function getMediaHtml(tabId) {
+      const item = comicData[tabId];
+      if (!item) return '';
+      return `<img src="./images/${item.imgName}.png" alt="${item.title}" class="w-full h-full object-contain rounded-lg shadow-sm" onerror="onImgError(this, ${tabId})">`;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.comic-card').forEach(el => {
+        el.classList.remove('ring-2', 'ring-sena-green', 'border-sena-green');
+      });
+      const activeCard = document.getElementById(`comic-card-${tabId}`);
+      if (activeCard) {
+        activeCard.classList.add('ring-2', 'ring-sena-green', 'border-sena-green');
+      }
+
+      window.scrollTo({ top: 380, behavior: 'smooth' });
+    }
+
+    function openLightbox(tabId) {
+      const item = comicData[tabId];
+      if (!item) return;
+      document.getElementById('lb-badge').innerText = item.badge;
+      document.getElementById('lb-title').innerText = item.title;
+      document.getElementById('lb-desc').innerText = item.desc;
+      document.getElementById('lb-svg-container').innerHTML = getMediaHtml(tabId);
+      document.getElementById('lb-goto-btn').onclick = function() {
+        closeLightbox();
+        switchTab(tabId);
+      };
+      document.getElementById('lightbox-modal').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox-modal').classList.add('hidden');
+    }
+
+    function openGalleryModal() {
+      const grid = document.getElementById('gallery-grid');
+      grid.innerHTML = '';
+      Object.keys(comicData).forEach(id => {
+        const item = comicData[id];
+        grid.innerHTML += `
+          <div onclick="closeGalleryModal(); switchTab(${id})" class="cursor-pointer glass-card p-4 rounded-2xl border border-slate-700 hover:border-sena-green transition-all">
+            <div class="h-32 bg-slate-950 rounded-xl mb-3 flex items-center justify-center p-2 border border-slate-800">
+              ${getMediaHtml(id)}
+            </div>
+            <span class="text-[10px] font-bold text-sena-green bg-sena-green/10 px-2 py-0.5 rounded">${item.badge}</span>
+            <h4 class="text-xs font-bold text-white mt-1">${item.title}</h4>
+          </div>
+        `;
+      });
+      document.getElementById('gallery-modal').classList.remove('hidden');
+    }
+
+    function renderComicCardImages() {
+      Object.keys(comicData).forEach(id => {
+        const card = document.getElementById(`comic-card-${id}`);
+        if (card) {
+          const container = card.querySelector('.w-full.h-full');
+          if (container) {
+            container.innerHTML = getMediaHtml(id);
+          }
+        }
+      });
+    }
+
+    function closeGalleryModal() {
+      document.getElementById('gallery-modal').classList.add('hidden');
+    }
+
+    // INTERACTIVE WIREFRAME MOCKUP
+    const wfScreens = {
+      login: {
+        desc: "Pantalla de inicio de sesión con documento de identidad y contraseña, autenticada mediante JWT de 24 horas y bcryptjs.",
+        html: `
+          <div class="space-y-4 text-center my-auto">
+            <div class="w-12 h-12 bg-sena-green rounded-xl flex items-center justify-center font-bold text-white mx-auto shadow-md">S</div>
+            <h5 class="text-sm font-extrabold text-white">Ingreso SENA</h5>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-2 rounded-lg text-left text-[10px] text-slate-400 border border-slate-800">Documento: 1079606375</div>
+              <div class="bg-slate-950 p-2 rounded-lg text-left text-[10px] text-slate-400 border border-slate-800">Contraseña: ••••••••</div>
+            </div>
+            <button class="w-full py-2 bg-sena-green text-white text-xs font-bold rounded-lg shadow">Iniciar Sesión</button>
+          </div>
+        `
+      },
+      session: {
+        desc: "El instructor activa la clase y el sistema genera un Código QR dinámico más el Código CSR rotativo de 6 caracteres con cuenta regresiva de 90 segundos.",
+        html: `
+          <div class="space-y-3 text-center my-auto">
+            <span class="text-[10px] text-sena-green font-bold uppercase">Sesión Activa</span>
+            <div class="w-24 h-24 bg-white rounded-xl mx-auto p-2 flex items-center justify-center shadow">
+              <i class="fa-solid fa-qrcode text-5xl text-slate-900"></i>
+            </div>
+            <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <span class="text-[9px] text-slate-400 block">CÓDIGO DE SALA ROTATIVO (CSR)</span>
+              <span class="text-base font-mono font-bold text-sena-green tracking-widest">K7X9P2</span>
+              <span class="text-[9px] text-amber-400 block mt-0.5">Rota en 45s</span>
+            </div>
+          </div>
+        `
+      },
+      student: {
+        desc: "El aprendiz escanea el QR o ingresa el código CSR desde su celular para registrar su asistencia en tiempo real.",
+        html: `
+          <div class="space-y-4 text-center my-auto">
+            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <h5 class="text-xs font-bold text-white">¡Asistencia Registrada!</h5>
+            <p class="text-[10px] text-slate-400">Aprendiz: Jesús González<br>Ficha: 2558190<br>Hora: 08:02 AM</p>
+            <div class="bg-emerald-500/10 text-emerald-400 p-2 rounded-lg text-[10px] border border-emerald-500/20">
+              Verificado por doble token (CSR + JWT)
+            </div>
+          </div>
+        `
+      },
+      report: {
+        desc: "Consolidado en tiempo real para el instructor con exportación de reporte Excel de asistencias.",
+        html: `
+          <div class="space-y-3 text-center my-auto">
+            <h5 class="text-xs font-bold text-white">Resumen de Clase</h5>
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+              <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                <span class="text-slate-400 block">Presentes</span>
+                <span class="text-base font-bold text-sena-green">28</span>
+              </div>
+              <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                <span class="text-slate-400 block">Ausentes</span>
+                <span class="text-base font-bold text-rose-400">2</span>
+              </div>
+            </div>
+            <button class="w-full py-1.5 bg-slate-800 text-slate-200 text-[10px] font-bold rounded-lg border border-slate-700">
+              <i class="fa-solid fa-file-excel text-emerald-400 mr-1"></i> Descargar Excel
+            </button>
+          </div>
+        `
+      }
+    };
+
+    function setWireframeScreen(screenKey) {
+      const data = wfScreens[screenKey];
+      if (!data) return;
+      document.getElementById('wireframe-screen').innerHTML = data.html;
+      document.getElementById('wf-desc').innerText = data.desc;
+    }
+
+    function toggleCheck(el) {
+      const icon = el.querySelector('.check-icon');
+      if (icon.classList.contains('bg-sena-green/20')) {
+        icon.classList.remove('bg-sena-green/20', 'text-sena-green', 'border-sena-green');
+        icon.classList.add('bg-slate-800', 'text-slate-600', 'border-slate-700');
+      } else {
+        icon.classList.add('bg-sena-green/20', 'text-sena-green', 'border-sena-green');
+        icon.classList.remove('bg-slate-800', 'text-slate-600', 'border-slate-700');
+      }
+    }
+
+    // Init defaults
+    window.addEventListener('DOMContentLoaded', () => {
+      renderComicCardImages();
+      switchTab(1);
+      setWireframeScreen('session');
+    });
+  </script>
+</body>
+</html>
