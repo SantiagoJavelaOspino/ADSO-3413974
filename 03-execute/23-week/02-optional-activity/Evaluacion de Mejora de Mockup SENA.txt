@@ -1,0 +1,331 @@
+EVALUACIÓN — ACTIVIDAD "MEJORAS AL MOCKUP DE GESTIÓN DE HORARIOS SENA"
+Mockup de referencia: https://code-sena.github.io/design-software-mockup/
+(Sistema de Gestión de Horarios SENA — 53 pantallas/modales, 7 roles: Coordinador
+Académico, Instructor, Aprendiz, Director de Centro, Administrador de Soporte,
+Parametrización, Auth/Shell)
+
+Fecha de análisis: 15 de agosto de 2026
+Total de entregas analizadas: 25
+Aprobados: 21   |   Reprobados: 4
+
+Criterio de evaluación: se considera que un estudiante "cumplió" la actividad si su
+entrega analiza el mockup real (haciendo referencia a sus roles, pantallas o rutas) y
+propone mejoras concretas de UX/UI/flujo. El porcentaje refleja profundidad, cobertura
+de roles/pantallas y calidad de las propuestas. Se aprueba con 60% o más de cumplimiento.
+Nota especial: dos parejas de entregas presentan contenido casi idéntico entre sí
+(mismos títulos y párrafos), lo que sugiere una fuente compartida; se indica en la
+justificación de cada caso, sin que ello afecte el cumplimiento individual evaluado.
+
+Orden del listado: primero los aprobados (de mayor a menor porcentaje de
+cumplimiento), y al final los reprobados.
+
+================================================================================
+
+1. NOMBRE: Miguel Angel Estrada Torrentes
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 96%
+   ¿Aprobó?: Sí
+   Justificación: Revisión UX/UI exhaustiva: tabla maestra de hallazgos, problemas
+   visuales/de accesibilidad/responsive/funcionamiento, recorrido documentado en
+   primera persona, evidencias fotográficas propias y un top 10 de correcciones
+   prioritarias. El trabajo más riguroso y verificable de todo el grupo.
+
+--------------------------------------------------------------------------------
+
+2. NOMBRE: Andres Felipe Castro Bedoya
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 95%
+   ¿Aprobó?: Sí
+   Justificación: Análisis completo de los 6 roles con historias de usuario,
+   criterios de aceptación, tabla de simplificación de pantallas, priorización de
+   mejoras y un prototipo HTML navegable que demuestra las propuestas aplicadas.
+   Una de las entregas más completas y accionables del grupo.
+
+--------------------------------------------------------------------------------
+
+3. NOMBRE: JOSEPH FELIPE AGUIRRE CHURTA
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 92%
+   ¿Aprobó?: Sí
+   Justificación: Informe en 11 partes que cubre los 7 módulos del mockup
+   (Aprendiz, Coordinador, Instructor, Administrador/Director, Back-office,
+   Parametrización, capacidades transversales) con hallazgos, trazabilidad,
+   priorización y resultado esperado por pantalla.
+
+--------------------------------------------------------------------------------
+
+4. NOMBRE: Edwin Alejandro Esquivel Bahamon
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 92%
+   ¿Aprobó?: Sí
+   Justificación: Auditoría completa por pantalla (01-53) y por rol, con
+   funcionalidades incompletas, errores, campos faltantes y mejoras recomendadas
+   en cada módulo. Nota: el contenido es prácticamente idéntico al de Tomás
+   Barrera Ortiz (mismos títulos y párrafos casi literales), lo que indica una
+   fuente compartida entre ambas entregas.
+
+--------------------------------------------------------------------------------
+
+5. NOMBRE: Tomas Barrera Ortiz
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 92%
+   ¿Aprobó?: Sí
+   Justificación: Auditoría exhaustiva módulo por módulo (pantallas 01-53) con
+   tabla de discrepancias frente a SIGA/MIPG. Nota: contenido casi idéntico al de
+   Edwin Esquivel Bahamon (mismos títulos y párrafos), lo que sugiere fuente
+   compartida entre ambas entregas.
+
+--------------------------------------------------------------------------------
+
+6. NOMBRE: Jose Esneider Covaleda Hortua
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 90%
+   ¿Aprobó?: Sí
+   Justificación: Documento con más de 30 mejoras puntuales organizadas por
+   pantalla y rol (Aprendiz, Instructor, Coordinador, Fichas, Horarios,
+   Conflictos, Director, Administrador, Soporte), cada una con situación actual,
+   problema, mejora propuesta, beneficio y prioridad.
+
+--------------------------------------------------------------------------------
+
+7. NOMBRE: Julián Stiven Camargo Lopez
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 90%
+   ¿Aprobó?: Sí
+   Justificación: Revisión que referencia rutas reales específicas del mockup
+   (/horarios/sch-03, /instructor/mi-disponibilidad, /admin/parametrizacion,
+   /backoffice/auditoria, etc.), evidenciando un recorrido real del prototipo,
+   seguida de mejoras propuestas organizadas por módulo.
+
+--------------------------------------------------------------------------------
+
+8. NOMBRE: Brenda Carolina Galeano Ramiréz
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 88%
+   ¿Aprobó?: Sí
+   Justificación: Trabajo extenso de "ingeniería inversa" del mockup (53
+   pantallas, 5 roles) con marco metodológico riguroso (existente / deducción
+   técnica / sustento normativo / propuesta) y una sección final de 4 mejoras
+   concretas justificadas. El énfasis está más en modelar datos/requisitos que en
+   rediseño UX puro, pero cumple ampliamente con analizar y mejorar el mockup.
+
+--------------------------------------------------------------------------------
+
+9. NOMBRE: Jeison Fernando Joaqui Rodriguez
+   ¿Cumplió?: Sí
+   Porcentaje de cumplimiento: 88%
+   ¿Aprobó?: Sí
+   Justificación: Auditoría "pantalla por pantalla" muy concreta (ubicación,
+   elemento, problema, cambio específico, automatización, prioridad), con
+   ejemplos de interfaz antes/después centrados en el rol Coordinador. Buen nivel
+   de detalle y evidencia de recorrido real del mockup.
+
+--------------------------------------------------------------------------------
+
+10. NOMBRE: Juan David Gomez Martinez
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 85%
+    ¿Aprobó?: Sí
+    Justificación: Revisión de mockup con observaciones generales y desglose por
+    módulo (Auth/shell, Aprendiz, Coordinador, Instructor, Director,
+    Administrador de Soporte), cada uno con propuesta de solución concreta.
+
+--------------------------------------------------------------------------------
+
+11. NOMBRE: Juan Pablo Doria Caviedes
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 84%
+    ¿Aprobó?: Sí
+    Justificación: Análisis de brechas organizado por 8 dominios funcionales
+    (lógica de negocio, novedades, ambientes, experiencia del aprendiz,
+    seguridad, auditoría, rendimiento, reportes) con clasificación general de
+    brechas. Enfoque más técnico/sistémico que por pantalla, pero cubre el mockup
+    de forma integral.
+
+--------------------------------------------------------------------------------
+
+12. NOMBRE: JUAN PABLO CHACON BARRAGAN
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 82%
+    ¿Aprobó?: Sí
+    Justificación: Documento de 17 páginas ("Auditoría de Experiencia de Usuario
+    UX/UI") con hallazgos concretos, por ejemplo sobre notificaciones y estados
+    de error poco diferenciados visualmente. Contenido relevante y bien
+    enfocado; entregado como PDF de solo imagen (sin texto seleccionable), de
+    extensión algo más moderada que las entregas más completas del grupo.
+
+--------------------------------------------------------------------------------
+
+13. NOMBRE: Jhorman Jamir Pascuas Lara
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 82%
+    ¿Aprobó?: Sí
+    Justificación: 24 historias de usuario organizadas por los 6 roles del
+    sistema, con formato estándar "como/quiero/para". Buena cobertura, aunque con
+    menor evidencia visual/de recorrido que otras entregas.
+
+--------------------------------------------------------------------------------
+
+14. NOMBRE: Kevin Santiago Saavedra Chantris
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 83%
+    ¿Aprobó?: Sí
+    Justificación: Cubre Auth/Shell, Aprendiz, Instructor, Coordinador y más, con
+    alcance, flujograma, UX, comparación con SIGA y reingeniería por rol, además
+    de una sección de hallazgos generales y reingeniería del sistema completo
+    (incluida Parametrización). Comparte plantilla casi idéntica con JHON STIVEN
+    ALBA QUIROGA y Juan Mathias Palacios Botello.
+
+--------------------------------------------------------------------------------
+
+15. NOMBRE: Santiago Javela Ospino
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 83%
+    ¿Aprobó?: Sí
+    Justificación: Aplica Design Thinking (empatía por rol) y prioriza mejoras
+    con metodología MoSCoW, con propuestas claras (deshabilitar opciones
+    ocupadas, guardado automático, mejor contraste, vista móvil por pestañas).
+    Buen nivel, aunque más orientado a principios generales que a pantallas
+    específicas del mockup.
+
+--------------------------------------------------------------------------------
+
+16. NOMBRE: JHON STIVEN ALBA QUIROGA
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 80%
+    ¿Aprobó?: Sí
+    Justificación: Cubre Auth/Shell, Aprendiz, Instructor, Coordinador y
+    Administrador con alcance, flujograma, entendimiento UI/UX, comparación con
+    SIGA y reingeniería por rol. Buena estructura, aunque de contenido algo más
+    genérico; comparte plantilla casi idéntica con Kevin Saavedra Chantris y Juan
+    Mathias Palacios Botello.
+
+--------------------------------------------------------------------------------
+
+17. NOMBRE: juan sebastian medina cardozo
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 80%
+    ¿Aprobó?: Sí
+    Justificación: Aplica Design Thinking completo (empatizar, definir, idear,
+    prototipar, evaluar), con necesidades detalladas por rol y criterios de
+    aceptación generales del sistema. Buena estructura y cobertura media-alta.
+
+--------------------------------------------------------------------------------
+
+18. NOMBRE: paula sofia claros nañez
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 78%
+    ¿Aprobó?: Sí
+    Justificación: Presentación visual ("Auditoría UX y Diagnóstico de
+    Producto") con comparativas antes/después bien ilustradas por rol (ej.
+    Coordinador Académico) y métricas de eficiencia/satisfacción. Buen diseño,
+    pero formato de solo imagen con menor evidencia textual/documental que las
+    entregas escritas del grupo.
+
+--------------------------------------------------------------------------------
+
+19. NOMBRE: Juan Miguel Muñoz Castañeda
+    ¿Cumplió?: Sí
+    Porcentaje de cumplimiento: 75%
+    ¿Aprobó?: Sí
+    Justificación: Aplica Design Thinking y MoSCoW con historias de usuario para
+    los 5 roles principales, diagnóstico general y propuesta de rediseño de
+    flujo. Nivel más general/alto nivel, sin evidencia detallada de pantallas
+    específicas del mockup.
+
+--------------------------------------------------------------------------------
+
+20. NOMBRE: Martin Julian Torres Fierro
+    ¿Cumplió?: Sí (parcial)
+    Porcentaje de cumplimiento: 65%
+    ¿Aprobó?: Sí (mínimo)
+    Justificación: Buen análisis de arquitectura e ingeniería inversa (roles,
+    rutas, RBAC, sistema de diseño del mockup), pero la sección de mejoras es
+    breve y de carácter técnico general (accesibilidad, modo oscuro, PWA, i18n,
+    skeleton loaders) sin profundizar en pantallas, roles o flujos concretos del
+    sistema de horarios.
+
+--------------------------------------------------------------------------------
+
+21. NOMBRE: Juan Mathias Palacios Botello
+    ¿Cumplió?: Sí (parcial)
+    Porcentaje de cumplimiento: 60%
+    ¿Aprobó?: Sí (mínimo)
+    Justificación: Solo desarrolla en detalle 2 de los roles (Aprendiz,
+    Instructor) en el documento .md; el PDF complementa con una visión general
+    del sistema y oportunidades de mejora, pero no alcanza la profundidad ni la
+    cobertura de roles de la mayoría de sus compañeros.
+
+================================================================================
+REPROBADOS
+================================================================================
+
+22. NOMBRE: Adrian Estiben Garrido Pedroza
+    ¿Cumplió?: No
+    Porcentaje de cumplimiento: 0%
+    ¿Aprobó?: No
+    Justificación: La entrega ("Digital_Architecture_Blueprints.pptx") consiste
+    en diagramas de Modelo Entidad-Relación (MER) sobre un dominio de
+    proveedores/productos/categorías, sin ninguna relación con el mockup de
+    Gestión de Horarios SENA ni con la actividad de mejora solicitada.
+
+--------------------------------------------------------------------------------
+
+23. NOMBRE: Joan Sebastian Vargas Ramos
+    ¿Cumplió?: No
+    Porcentaje de cumplimiento: 0%
+    ¿Aprobó?: No
+    Justificación: La entrega corresponde a un "Taller 1 — Modelo
+    Entidad-Relación (MER)" sobre clientes, pedidos, artículos y fábricas; es un
+    ejercicio de bases de datos completamente distinto, sin relación con el
+    mockup de Gestión de Horarios SENA.
+
+--------------------------------------------------------------------------------
+
+24. NOMBRE: Simón Andrés Vega Serrato
+    ¿Cumplió?: No (entrega inválida por extemporánea)
+    Porcentaje de cumplimiento: 0%
+    ¿Aprobó?: No
+    Justificación: En contenido, la entrega es sólida (17 mejoras concretas
+    organizadas en 4 bloques: pantallas faltantes, cumplimiento/accesibilidad,
+    orientación/navegación y pulido de portada, con hallazgos bien argumentados
+    como choque de horarios, estados vacíos, confirmaciones antes de guardar y
+    notificaciones entre roles). Sin embargo, se presentó un día después de la
+    fecha límite, por lo que no es válida para esta actividad
+    independientemente de su calidad.
+
+--------------------------------------------------------------------------------
+
+25. NOMBRE: Nicolas Esteban Aldana Doria
+    ¿Cumplió?: No (entrega inválida por extemporánea)
+    Porcentaje de cumplimiento: 0%
+    ¿Aprobó?: No
+    Justificación: En contenido, la presentación de diapositivas ("Rediseño
+    Estructural del Sistema de Gestión de Horarios SENA") es pertinente,
+    centrada en propuestas visuales de UX como el despliegue responsivo y la
+    priorización de información en escritorio vs. móvil. Sin embargo, se
+    presentó un día después de la fecha límite, por lo que no es válida para
+    esta actividad independientemente de su calidad.
+
+================================================================================
+
+RESUMEN
+- Aprobaron la actividad: 21 de 25 estudiantes (84%).
+- No aprobaron: 4 de 25.
+  · Adrian Estiben Garrido Pedroza y Joan Sebastian Vargas Ramos: por entregar
+    un ejercicio de Modelo Entidad-Relación no relacionado con el mockup
+    evaluado.
+  · Simón Andrés Vega Serrato y Nicolas Esteban Aldana Doria: por entrega
+    extemporánea (un día después de la fecha límite), lo que invalida la
+    entrega independientemente de su calidad de contenido — ambas eran, en
+    contenido, entregas aprobables (87% y 78% respectivamente).
+- Entregas más destacadas (≥90%): Miguel Angel Estrada Torrentes, Andres Felipe
+  Castro Bedoya, Edwin Alejandro Esquivel Bahamon, Tomas Barrera Ortiz, JOSEPH
+  FELIPE AGUIRRE CHURTA, Jose Esneider Covaleda Hortua, Julián Stiven Camargo
+  Lopez.
+- Observación de integridad académica: se detectaron dos pares de entregas con
+  contenido casi idéntico entre sí — (1) Edwin Alejandro Esquivel Bahamon y
+  Tomas Barrera Ortiz, y (2) JHON STIVEN ALBA QUIROGA, Kevin Santiago Saavedra
+  Chantris y Juan Mathias Palacios Botello (misma plantilla/estructura) — lo que
+  sugiere una fuente compartida entre esos estudiantes. Se recomienda que el
+  docente lo verifique directamente.
