@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_05" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <bpmn:collaboration id="Collaboration_05">
+    <bpmn:participant id="Participant_05" name="SENA — Administración de Identidades y Asignación de Roles RBAC" processRef="Process_Usuarios_RBAC" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Usuarios_RBAC" name="Administración de Usuarios y Roles RBAC" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_5">
+      <bpmn:lane id="Lane_Director_IAM" name="Director de Centro / Administrador">
+        <bpmn:flowNodeRef>UT_RegistrarUsuario</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_AsignarRol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_05</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Sistema_IAM" name="Sistema IAM / Auditoría">
+        <bpmn:flowNodeRef>ST_ValidarCorreo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_CorreoDuplicado</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_PersistirAuditar</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_05</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="UT_RegistrarUsuario" name="Registrar datos de cuenta de usuario" camunda:candidateGroups="CENTER_DIRECTOR,SYSTEM_ADMIN">
+      <bpmn:incoming>Flow_U1</bpmn:incoming>
+      <bpmn:incoming>Flow_CorreoExiste</bpmn:incoming>
+      <bpmn:outgoing>Flow_U2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_ValidarCorreo" name="Validar unicidad de correo institucional" camunda:type="external" camunda:topic="validate-user-email">
+      <bpmn:incoming>Flow_U2</bpmn:incoming>
+      <bpmn:outgoing>Flow_U3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GW_CorreoDuplicado" name="¿Correo ya existe?">
+      <bpmn:incoming>Flow_U3</bpmn:incoming>
+      <bpmn:outgoing>Flow_CorreoExiste</bpmn:outgoing>
+      <bpmn:outgoing>Flow_CorreoUnico</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="UT_AsignarRol" name="Asignar rol, alcance y justificación" camunda:candidateGroups="CENTER_DIRECTOR,SYSTEM_ADMIN">
+      <bpmn:incoming>Flow_CorreoUnico</bpmn:incoming>
+      <bpmn:outgoing>Flow_U4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_PersistirAuditar" name="Persistir asignación y registrar auditoría" camunda:type="external" camunda:topic="persist-role-audit">
+      <bpmn:incoming>Flow_U4</bpmn:incoming>
+      <bpmn:outgoing>Flow_U5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_05" name="Usuario habilitado con rol auditado">
+      <bpmn:incoming>Flow_U5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_U1" sourceRef="Start_05" targetRef="UT_RegistrarUsuario" />
+    <bpmn:sequenceFlow id="Flow_U2" sourceRef="UT_RegistrarUsuario" targetRef="ST_ValidarCorreo" />
+    <bpmn:sequenceFlow id="Flow_U3" sourceRef="ST_ValidarCorreo" targetRef="GW_CorreoDuplicado" />
+    <bpmn:sequenceFlow id="Flow_CorreoExiste" name="Sí (Duplicado)" sourceRef="GW_CorreoDuplicado" targetRef="UT_RegistrarUsuario">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${emailExists == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_CorreoUnico" name="No (Único)" sourceRef="GW_CorreoDuplicado" targetRef="UT_AsignarRol">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${emailExists == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_U4" sourceRef="UT_AsignarRol" targetRef="ST_PersistirAuditar" />
+    <bpmn:sequenceFlow id="Flow_U5" sourceRef="ST_PersistirAuditar" targetRef="End_05" />
+    <bpmn:startEvent id="Start_05" name="Alta de usuario o rol">
+      <bpmn:outgoing>Flow_U1</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_5">
+    <bpmndi:BPMNPlane id="BPMNPlane_5" bpmnElement="Collaboration_05">
+      <bpmndi:BPMNShape id="Participant_05_di" bpmnElement="Participant_05" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="880" height="380" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Sistema_IAM_di" bpmnElement="Lane_Sistema_IAM" isHorizontal="true">
+        <dc:Bounds x="190" y="260" width="850" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Director_IAM_di" bpmnElement="Lane_Director_IAM" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="850" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_RegistrarUsuario_di" bpmnElement="UT_RegistrarUsuario">
+        <dc:Bounds x="320" y="120" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_ValidarCorreo_di" bpmnElement="ST_ValidarCorreo">
+        <dc:Bounds x="320" y="320" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_CorreoDuplicado_di" bpmnElement="GW_CorreoDuplicado" isMarkerVisible="true">
+        <dc:Bounds x="505" y="335" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_AsignarRol_di" bpmnElement="UT_AsignarRol">
+        <dc:Bounds x="610" y="120" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_PersistirAuditar_di" bpmnElement="ST_PersistirAuditar">
+        <dc:Bounds x="610" y="320" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_05_di" bpmnElement="End_05">
+        <dc:Bounds x="802" y="342" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_05_di" bpmnElement="Start_05">
+        <dc:Bounds x="242" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="219" y="178" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_U1_di" bpmnElement="Flow_U1">
+        <di:waypoint x="278" y="160" />
+        <di:waypoint x="320" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_U2_di" bpmnElement="Flow_U2">
+        <di:waypoint x="385" y="200" />
+        <di:waypoint x="385" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_U3_di" bpmnElement="Flow_U3">
+        <di:waypoint x="450" y="360" />
+        <di:waypoint x="505" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CorreoExiste_di" bpmnElement="Flow_CorreoExiste">
+        <di:waypoint x="530" y="335" />
+        <di:waypoint x="530" y="160" />
+        <di:waypoint x="450" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="455" y="238" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CorreoUnico_di" bpmnElement="Flow_CorreoUnico">
+        <di:waypoint x="555" y="360" />
+        <di:waypoint x="580" y="360" />
+        <di:waypoint x="580" y="160" />
+        <di:waypoint x="610" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="583" y="238" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_U4_di" bpmnElement="Flow_U4">
+        <di:waypoint x="675" y="200" />
+        <di:waypoint x="675" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_U5_di" bpmnElement="Flow_U5">
+        <di:waypoint x="740" y="360" />
+        <di:waypoint x="802" y="360" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

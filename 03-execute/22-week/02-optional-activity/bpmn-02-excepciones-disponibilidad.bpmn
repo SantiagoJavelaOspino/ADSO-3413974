@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_02" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <bpmn:collaboration id="Collaboration_02">
+    <bpmn:participant id="Participant_02" name="SENA — Gestión y Aprobación de Excepciones de Disponibilidad" processRef="Process_Excepciones" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Excepciones" name="Gestión de Excepciones de Disponibilidad" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_2">
+      <bpmn:lane id="Lane_Instructor_02" name="Instructor">
+        <bpmn:flowNodeRef>Start_02</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_RegistrarExcepcion</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Coord_02" name="Coordinador Académico">
+        <bpmn:flowNodeRef>UT_EvaluarExcepcion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_DecisionExcepcion</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Sistema_02" name="Sistema / Notificaciones">
+        <bpmn:flowNodeRef>ST_CrearSolicitudPendiente</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_AprobarExcepcion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_RechazarExcepcion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_NotificarInstructor</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_02</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_02" name="Nueva indisponibilidad">
+      <bpmn:outgoing>Flow_E1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UT_RegistrarExcepcion" name="Registrar excepción con soporte" camunda:candidateGroups="INSTRUCTOR">
+      <bpmn:incoming>Flow_E1</bpmn:incoming>
+      <bpmn:outgoing>Flow_E2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_CrearSolicitudPendiente" name="Crear solicitud pendiente" camunda:type="external" camunda:topic="create-pending-exception">
+      <bpmn:incoming>Flow_E2</bpmn:incoming>
+      <bpmn:outgoing>Flow_E3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UT_EvaluarExcepcion" name="Evaluar solicitud y soporte" camunda:candidateGroups="COORDINATOR">
+      <bpmn:incoming>Flow_E3</bpmn:incoming>
+      <bpmn:outgoing>Flow_E4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="GW_DecisionExcepcion" name="¿Aprobada?">
+      <bpmn:incoming>Flow_E4</bpmn:incoming>
+      <bpmn:outgoing>Flow_Aprobada</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Rechazada</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ST_AprobarExcepcion" name="Aprobar excepción y bloquear agenda" camunda:type="external" camunda:topic="approve-exception">
+      <bpmn:incoming>Flow_Aprobada</bpmn:incoming>
+      <bpmn:outgoing>Flow_E5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ST_RechazarExcepcion" name="Rechazar excepción con motivo" camunda:type="external" camunda:topic="reject-exception">
+      <bpmn:incoming>Flow_Rechazada</bpmn:incoming>
+      <bpmn:outgoing>Flow_E6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ST_NotificarInstructor" name="Notificar decisión al instructor" camunda:type="external" camunda:topic="notify-instructor">
+      <bpmn:incoming>Flow_E5</bpmn:incoming>
+      <bpmn:incoming>Flow_E6</bpmn:incoming>
+      <bpmn:outgoing>Flow_E7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_02" name="Solicitud resuelta">
+      <bpmn:incoming>Flow_E7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_E1" sourceRef="Start_02" targetRef="UT_RegistrarExcepcion" />
+    <bpmn:sequenceFlow id="Flow_E2" sourceRef="UT_RegistrarExcepcion" targetRef="ST_CrearSolicitudPendiente" />
+    <bpmn:sequenceFlow id="Flow_E3" sourceRef="ST_CrearSolicitudPendiente" targetRef="UT_EvaluarExcepcion" />
+    <bpmn:sequenceFlow id="Flow_E4" sourceRef="UT_EvaluarExcepcion" targetRef="GW_DecisionExcepcion" />
+    <bpmn:sequenceFlow id="Flow_Aprobada" name="Sí" sourceRef="GW_DecisionExcepcion" targetRef="ST_AprobarExcepcion">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalStatus == 'APPROVED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Rechazada" name="No" sourceRef="GW_DecisionExcepcion" targetRef="ST_RechazarExcepcion">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalStatus == 'REJECTED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_E5" sourceRef="ST_AprobarExcepcion" targetRef="ST_NotificarInstructor" />
+    <bpmn:sequenceFlow id="Flow_E6" sourceRef="ST_RechazarExcepcion" targetRef="ST_NotificarInstructor" />
+    <bpmn:sequenceFlow id="Flow_E7" sourceRef="ST_NotificarInstructor" targetRef="End_02" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_2">
+    <bpmndi:BPMNPlane id="BPMNPlane_2" bpmnElement="Collaboration_02">
+      <bpmndi:BPMNShape id="Participant_02_di" bpmnElement="Participant_02" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="980" height="460" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Sistema_02_di" bpmnElement="Lane_Sistema_02" isHorizontal="true">
+        <dc:Bounds x="190" y="360" width="950" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Coord_02_di" bpmnElement="Lane_Coord_02" isHorizontal="true">
+        <dc:Bounds x="190" y="220" width="950" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Instructor_02_di" bpmnElement="Lane_Instructor_02" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="950" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_02_di" bpmnElement="Start_02">
+        <dc:Bounds x="232" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_RegistrarExcepcion_di" bpmnElement="UT_RegistrarExcepcion">
+        <dc:Bounds x="320" y="110" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_CrearSolicitudPendiente_di" bpmnElement="ST_CrearSolicitudPendiente">
+        <dc:Bounds x="320" y="410" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_EvaluarExcepcion_di" bpmnElement="UT_EvaluarExcepcion">
+        <dc:Bounds x="490" y="250" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_DecisionExcepcion_di" bpmnElement="GW_DecisionExcepcion" isMarkerVisible="true">
+        <dc:Bounds x="665" y="265" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_AprobarExcepcion_di" bpmnElement="ST_AprobarExcepcion">
+        <dc:Bounds x="750" y="380" width="130" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_RechazarExcepcion_di" bpmnElement="ST_RechazarExcepcion">
+        <dc:Bounds x="750" y="460" width="130" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_NotificarInstructor_di" bpmnElement="ST_NotificarInstructor">
+        <dc:Bounds x="910" y="420" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_02_di" bpmnElement="End_02">
+        <dc:Bounds x="1062" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_E1_di" bpmnElement="Flow_E1">
+        <di:waypoint x="268" y="150" />
+        <di:waypoint x="320" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E2_di" bpmnElement="Flow_E2">
+        <di:waypoint x="385" y="190" />
+        <di:waypoint x="385" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E3_di" bpmnElement="Flow_E3">
+        <di:waypoint x="450" y="450" />
+        <di:waypoint x="470" y="450" />
+        <di:waypoint x="470" y="290" />
+        <di:waypoint x="490" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E4_di" bpmnElement="Flow_E4">
+        <di:waypoint x="620" y="290" />
+        <di:waypoint x="665" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Aprobada_di" bpmnElement="Flow_Aprobada">
+        <di:waypoint x="690" y="315" />
+        <di:waypoint x="690" y="415" />
+        <di:waypoint x="750" y="415" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="700" y="403" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Rechazada_di" bpmnElement="Flow_Rechazada">
+        <di:waypoint x="690" y="315" />
+        <di:waypoint x="690" y="495" />
+        <di:waypoint x="750" y="495" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="698" y="473" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E5_di" bpmnElement="Flow_E5">
+        <di:waypoint x="880" y="415" />
+        <di:waypoint x="910" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E6_di" bpmnElement="Flow_E6">
+        <di:waypoint x="880" y="495" />
+        <di:waypoint x="895" y="495" />
+        <di:waypoint x="895" y="460" />
+        <di:waypoint x="910" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_E7_di" bpmnElement="Flow_E7">
+        <di:waypoint x="1030" y="460" />
+        <di:waypoint x="1062" y="460" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

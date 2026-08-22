@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_01" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <bpmn:collaboration id="Collaboration_01">
+    <bpmn:participant id="Participant_01" name="SENA — Creación, Validación y Publicación de Horarios" processRef="Process_Gestion_Horarios" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Gestion_Horarios" name="Gestión y Publicación de Horarios" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Coordinador" name="Coordinador Académico">
+        <bpmn:flowNodeRef>Start_01</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_RegistrarDatos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_AgregarSesiones</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_ResolverConflictos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_ConfirmarPublicacion</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Sistema" name="Sistema / Motor de Horarios">
+        <bpmn:flowNodeRef>ST_ValidarReglas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_Conflictos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_PublicarHorario</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_01</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_01" name="Inicio de programación">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UT_RegistrarDatos" name="Registrar datos de horario" camunda:candidateGroups="COORDINATOR">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UT_AgregarSesiones" name="Agregar sesiones de clase" camunda:candidateGroups="COORDINATOR">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:incoming>Flow_ConflictosResueltos</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_ValidarReglas" name="Validar reglas y disponibilidad" camunda:type="external" camunda:topic="validate-schedule-rules">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GW_Conflictos" name="¿Conflictos bloqueantes?">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_SiConflictos</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NoConflictos</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="UT_ResolverConflictos" name="Resolver conflicto con justificación" camunda:candidateGroups="COORDINATOR">
+      <bpmn:incoming>Flow_SiConflictos</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConflictosResueltos</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UT_ConfirmarPublicacion" name="Confirmar publicación de horario" camunda:candidateGroups="COORDINATOR">
+      <bpmn:incoming>Flow_NoConflictos</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_PublicarHorario" name="Publicar horario y notificar actores" camunda:type="external" camunda:topic="publish-schedule">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_01" name="Horario publicado y notificado">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_01" targetRef="UT_RegistrarDatos" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="UT_RegistrarDatos" targetRef="UT_AgregarSesiones" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="UT_AgregarSesiones" targetRef="ST_ValidarReglas" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="ST_ValidarReglas" targetRef="GW_Conflictos" />
+    <bpmn:sequenceFlow id="Flow_SiConflictos" name="Sí" sourceRef="GW_Conflictos" targetRef="UT_ResolverConflictos">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasBlockingConflicts == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_NoConflictos" name="No" sourceRef="GW_Conflictos" targetRef="UT_ConfirmarPublicacion">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasBlockingConflicts == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ConflictosResueltos" sourceRef="UT_ResolverConflictos" targetRef="UT_AgregarSesiones" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="UT_ConfirmarPublicacion" targetRef="ST_PublicarHorario" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="ST_PublicarHorario" targetRef="End_01" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_01">
+      <bpmndi:BPMNShape id="Participant_01_di" bpmnElement="Participant_01" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1020" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Sistema_di" bpmnElement="Lane_Sistema" isHorizontal="true">
+        <dc:Bounds x="190" y="310" width="990" height="190" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Coordinador_di" bpmnElement="Lane_Coordinador" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="990" height="230" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_01_di" bpmnElement="Start_01">
+        <dc:Bounds x="232" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_RegistrarDatos_di" bpmnElement="UT_RegistrarDatos">
+        <dc:Bounds x="320" y="140" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_AgregarSesiones_di" bpmnElement="UT_AgregarSesiones">
+        <dc:Bounds x="480" y="140" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_ValidarReglas_di" bpmnElement="ST_ValidarReglas">
+        <dc:Bounds x="480" y="360" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Conflictos_di" bpmnElement="GW_Conflictos" isMarkerVisible="true">
+        <dc:Bounds x="655" y="375" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_ResolverConflictos_di" bpmnElement="UT_ResolverConflictos">
+        <dc:Bounds x="620" y="140" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_ConfirmarPublicacion_di" bpmnElement="UT_ConfirmarPublicacion">
+        <dc:Bounds x="780" y="140" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_PublicarHorario_di" bpmnElement="ST_PublicarHorario">
+        <dc:Bounds x="780" y="360" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_01_di" bpmnElement="End_01">
+        <dc:Bounds x="972" y="382" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="268" y="180" />
+        <di:waypoint x="320" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="440" y="180" />
+        <di:waypoint x="480" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="540" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="600" y="400" />
+        <di:waypoint x="655" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SiConflictos_di" bpmnElement="Flow_SiConflictos">
+        <di:waypoint x="680" y="375" />
+        <di:waypoint x="680" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="753" y="283" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NoConflictos_di" bpmnElement="Flow_NoConflictos">
+        <di:waypoint x="705" y="400" />
+        <di:waypoint x="750" y="400" />
+        <di:waypoint x="750" y="180" />
+        <di:waypoint x="780" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="682" y="283" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ConflictosResueltos_di" bpmnElement="Flow_ConflictosResueltos">
+        <di:waypoint x="620" y="180" />
+        <di:waypoint x="600" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="840" y="220" />
+        <di:waypoint x="840" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="900" y="400" />
+        <di:waypoint x="972" y="400" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

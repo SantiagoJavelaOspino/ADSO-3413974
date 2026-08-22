@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_03" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <bpmn:collaboration id="Collaboration_03">
+    <bpmn:participant id="Participant_03" name="SENA — Registro de Seguimiento Académico y Evaluación de Alertas" processRef="Process_Seguimiento_Alertas" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Seguimiento_Alertas" name="Registro de Seguimiento Académico y Alertas" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_3">
+      <bpmn:lane id="Lane_Instructor_Track" name="Instructor">
+        <bpmn:flowNodeRef>Start_03</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_RegistrarSeguimiento</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Sistema_Track" name="Sistema / Motor de KPIs">
+        <bpmn:flowNodeRef>ST_CalcularMetricas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_UmbralRiesgo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_RegistrarConforme</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Conforme</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_GenerarAlerta</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Director_Track" name="Director de Centro / Coordinador">
+        <bpmn:flowNodeRef>UT_AnalizarAlerta</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_AlertaGestionada</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_03" name="Corte periódico de seguimiento">
+      <bpmn:outgoing>Flow_T1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UT_RegistrarSeguimiento" name="Registrar medición de seguimiento" camunda:candidateGroups="INSTRUCTOR">
+      <bpmn:incoming>Flow_T1</bpmn:incoming>
+      <bpmn:outgoing>Flow_T2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_CalcularMetricas" name="Calcular métricas y comparar con umbrales" camunda:type="external" camunda:topic="evaluate-kpi-thresholds">
+      <bpmn:incoming>Flow_T2</bpmn:incoming>
+      <bpmn:outgoing>Flow_T3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GW_UmbralRiesgo" name="¿Incumple umbral de riesgo?">
+      <bpmn:incoming>Flow_T3</bpmn:incoming>
+      <bpmn:outgoing>Flow_Riesgo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Normal</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_T1" sourceRef="Start_03" targetRef="UT_RegistrarSeguimiento" />
+    <bpmn:sequenceFlow id="Flow_T2" sourceRef="UT_RegistrarSeguimiento" targetRef="ST_CalcularMetricas" />
+    <bpmn:sequenceFlow id="Flow_T3" sourceRef="ST_CalcularMetricas" targetRef="GW_UmbralRiesgo" />
+    <bpmn:sequenceFlow id="Flow_Riesgo" name="Sí" sourceRef="GW_UmbralRiesgo" targetRef="ST_GenerarAlerta">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isUnderThreshold == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Normal" name="No" sourceRef="GW_UmbralRiesgo" targetRef="ST_RegistrarConforme">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isUnderThreshold == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_T4" sourceRef="ST_GenerarAlerta" targetRef="UT_AnalizarAlerta" />
+    <bpmn:sequenceFlow id="Flow_T5" sourceRef="UT_AnalizarAlerta" targetRef="End_AlertaGestionada" />
+    <bpmn:sequenceFlow id="Flow_T6" sourceRef="ST_RegistrarConforme" targetRef="End_Conforme" />
+    <bpmn:endEvent id="End_Conforme" name="Seguimiento registrado conforme">
+      <bpmn:incoming>Flow_T6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ST_RegistrarConforme" name="Registrar medición normal" camunda:type="external" camunda:topic="save-normal-tracking">
+      <bpmn:incoming>Flow_Normal</bpmn:incoming>
+      <bpmn:outgoing>Flow_T6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ST_GenerarAlerta" name="Generar alerta de riesgo en ficha" camunda:type="external" camunda:topic="generate-ficha-alert">
+      <bpmn:incoming>Flow_Riesgo</bpmn:incoming>
+      <bpmn:outgoing>Flow_T4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UT_AnalizarAlerta" name="Analizar indicador y definir acción" camunda:candidateGroups="CENTER_DIRECTOR,COORDINATOR">
+      <bpmn:incoming>Flow_T4</bpmn:incoming>
+      <bpmn:outgoing>Flow_T5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_AlertaGestionada" name="Plan de mejora definido">
+      <bpmn:incoming>Flow_T5</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_3">
+    <bpmndi:BPMNPlane id="BPMNPlane_3" bpmnElement="Collaboration_03">
+      <bpmndi:BPMNShape id="Participant_03_di" bpmnElement="Participant_03" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="920" height="470" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Director_Track_di" bpmnElement="Lane_Director_Track" isHorizontal="true">
+        <dc:Bounds x="190" y="430" width="890" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Sistema_Track_di" bpmnElement="Lane_Sistema_Track" isHorizontal="true">
+        <dc:Bounds x="190" y="220" width="890" height="210" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Instructor_Track_di" bpmnElement="Lane_Instructor_Track" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="890" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_03_di" bpmnElement="Start_03">
+        <dc:Bounds x="232" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_RegistrarSeguimiento_di" bpmnElement="UT_RegistrarSeguimiento">
+        <dc:Bounds x="320" y="110" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_CalcularMetricas_di" bpmnElement="ST_CalcularMetricas">
+        <dc:Bounds x="320" y="270" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_UmbralRiesgo_di" bpmnElement="GW_UmbralRiesgo" isMarkerVisible="true">
+        <dc:Bounds x="505" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="485" y="247.5" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_RegistrarConforme_di" bpmnElement="ST_RegistrarConforme">
+        <dc:Bounds x="610" y="355" width="130" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Conforme_di" bpmnElement="End_Conforme">
+        <dc:Bounds x="792" y="357" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="779" y="393" width="62" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_GenerarAlerta_di" bpmnElement="ST_GenerarAlerta">
+        <dc:Bounds x="835" y="270" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_AnalizarAlerta_di" bpmnElement="UT_AnalizarAlerta">
+        <dc:Bounds x="845" y="450" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_AlertaGestionada_di" bpmnElement="End_AlertaGestionada">
+        <dc:Bounds x="1022" y="472" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1003" y="508" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_T1_di" bpmnElement="Flow_T1">
+        <di:waypoint x="268" y="150" />
+        <di:waypoint x="320" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T2_di" bpmnElement="Flow_T2">
+        <di:waypoint x="385" y="190" />
+        <di:waypoint x="385" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T3_di" bpmnElement="Flow_T3">
+        <di:waypoint x="450" y="310" />
+        <di:waypoint x="505" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Riesgo_di" bpmnElement="Flow_Riesgo">
+        <di:waypoint x="555" y="310" />
+        <di:waypoint x="835" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="285" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Normal_di" bpmnElement="Flow_Normal">
+        <di:waypoint x="530" y="335" />
+        <di:waypoint x="530" y="375" />
+        <di:waypoint x="610" y="375" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="538" y="345" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T4_di" bpmnElement="Flow_T4">
+        <di:waypoint x="910" y="350" />
+        <di:waypoint x="910" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T5_di" bpmnElement="Flow_T5">
+        <di:waypoint x="975" y="490" />
+        <di:waypoint x="1022" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T6_di" bpmnElement="Flow_T6">
+        <di:waypoint x="740" y="375" />
+        <di:waypoint x="792" y="375" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

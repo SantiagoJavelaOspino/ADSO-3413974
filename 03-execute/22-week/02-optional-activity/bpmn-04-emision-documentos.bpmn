@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_04" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <bpmn:collaboration id="Collaboration_04">
+    <bpmn:participant id="Participant_04" name="SENA — Generación y Emisión de Documentos Oficiales" processRef="Process_Documentos" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Documentos" name="Generación y Emisión de Documentos" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_4">
+      <bpmn:lane id="Lane_Soporte_Doc" name="Administrador de Soporte / Funcionario">
+        <bpmn:flowNodeRef>Start_04</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_SolicitarDocumento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_DescargarDocumento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UT_CorregirDatos</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Sistema_Doc" name="Sistema de Documentos (Motor PDF / Firmado)">
+        <bpmn:flowNodeRef>ST_CompilarRenderizar</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_GeneracionExitosa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_AlmacenarUrlFirmada</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_04</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ST_RegistrarError</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_04" name="Petición de documento">
+      <bpmn:outgoing>Flow_D1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UT_SolicitarDocumento" name="Solicitar generación de documento" camunda:candidateGroups="ADMIN_STAFF,SYSTEM_ADMIN">
+      <bpmn:incoming>Flow_D1</bpmn:incoming>
+      <bpmn:outgoing>Flow_D2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ST_CompilarRenderizar" name="Compilar plantilla y renderizar PDF" camunda:type="external" camunda:topic="render-document-pdf">
+      <bpmn:incoming>Flow_D2</bpmn:incoming>
+      <bpmn:incoming>Flow_Reintento</bpmn:incoming>
+      <bpmn:outgoing>Flow_D3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GW_GeneracionExitosa" name="¿Generación exitosa?">
+      <bpmn:incoming>Flow_D3</bpmn:incoming>
+      <bpmn:outgoing>Flow_DocExitoso</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DocFallido</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ST_AlmacenarUrlFirmada" name="Almacenar versión y generar URL firmada" camunda:type="external" camunda:topic="store-and-sign-document">
+      <bpmn:incoming>Flow_DocExitoso</bpmn:incoming>
+      <bpmn:outgoing>Flow_D4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UT_DescargarDocumento" name="Descargar documento emitido" camunda:candidateGroups="ADMIN_STAFF,SYSTEM_ADMIN">
+      <bpmn:incoming>Flow_D4</bpmn:incoming>
+      <bpmn:outgoing>Flow_D5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_04" name="Documento emitido y disponible">
+      <bpmn:incoming>Flow_D5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="UT_CorregirDatos" name="Corregir parámetros de generación" camunda:candidateGroups="ADMIN_STAFF,SYSTEM_ADMIN">
+      <bpmn:incoming>Flow_D6</bpmn:incoming>
+      <bpmn:outgoing>Flow_Reintento</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_D1" sourceRef="Start_04" targetRef="UT_SolicitarDocumento" />
+    <bpmn:sequenceFlow id="Flow_D2" sourceRef="UT_SolicitarDocumento" targetRef="ST_CompilarRenderizar" />
+    <bpmn:sequenceFlow id="Flow_D3" sourceRef="ST_CompilarRenderizar" targetRef="GW_GeneracionExitosa" />
+    <bpmn:sequenceFlow id="Flow_DocExitoso" name="Sí" sourceRef="GW_GeneracionExitosa" targetRef="ST_AlmacenarUrlFirmada">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isSuccess == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_DocFallido" name="No" sourceRef="GW_GeneracionExitosa" targetRef="ST_RegistrarError">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isSuccess == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_D4" sourceRef="ST_AlmacenarUrlFirmada" targetRef="UT_DescargarDocumento" />
+    <bpmn:sequenceFlow id="Flow_D5" sourceRef="UT_DescargarDocumento" targetRef="End_04" />
+    <bpmn:sequenceFlow id="Flow_D6" sourceRef="ST_RegistrarError" targetRef="UT_CorregirDatos" />
+    <bpmn:sequenceFlow id="Flow_Reintento" sourceRef="UT_CorregirDatos" targetRef="ST_CompilarRenderizar" />
+    <bpmn:serviceTask id="ST_RegistrarError" name="Registrar error de generación" camunda:type="external" camunda:topic="log-document-error">
+      <bpmn:incoming>Flow_DocFallido</bpmn:incoming>
+      <bpmn:outgoing>Flow_D6</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_4">
+    <bpmndi:BPMNPlane id="BPMNPlane_4" bpmnElement="Collaboration_04">
+      <bpmndi:BPMNShape id="Participant_04_di" bpmnElement="Participant_04" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1020" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Sistema_Doc_di" bpmnElement="Lane_Sistema_Doc" isHorizontal="true">
+        <dc:Bounds x="190" y="280" width="990" height="280" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Soporte_Doc_di" bpmnElement="Lane_Soporte_Doc" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="990" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_04_di" bpmnElement="Start_04">
+        <dc:Bounds x="232" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_SolicitarDocumento_di" bpmnElement="UT_SolicitarDocumento">
+        <dc:Bounds x="320" y="130" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_CompilarRenderizar_di" bpmnElement="ST_CompilarRenderizar">
+        <dc:Bounds x="320" y="340" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_GeneracionExitosa_di" bpmnElement="GW_GeneracionExitosa" isMarkerVisible="true">
+        <dc:Bounds x="515" y="355" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="508" y="317.5" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_AlmacenarUrlFirmada_di" bpmnElement="ST_AlmacenarUrlFirmada">
+        <dc:Bounds x="630" y="340" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_DescargarDocumento_di" bpmnElement="UT_DescargarDocumento">
+        <dc:Bounds x="790" y="130" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_04_di" bpmnElement="End_04">
+        <dc:Bounds x="972" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UT_CorregirDatos_di" bpmnElement="UT_CorregirDatos">
+        <dc:Bounds x="505" y="130" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_RegistrarError_di" bpmnElement="ST_RegistrarError">
+        <dc:Bounds x="510" y="440" width="120" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_D1_di" bpmnElement="Flow_D1">
+        <di:waypoint x="268" y="170" />
+        <di:waypoint x="320" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_D2_di" bpmnElement="Flow_D2">
+        <di:waypoint x="385" y="210" />
+        <di:waypoint x="385" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_D3_di" bpmnElement="Flow_D3">
+        <di:waypoint x="450" y="380" />
+        <di:waypoint x="515" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DocExitoso_di" bpmnElement="Flow_DocExitoso">
+        <di:waypoint x="565" y="380" />
+        <di:waypoint x="630" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="355" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DocFallido_di" bpmnElement="Flow_DocFallido">
+        <di:waypoint x="540" y="405" />
+        <di:waypoint x="540" y="440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="410" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_D4_di" bpmnElement="Flow_D4">
+        <di:waypoint x="760" y="380" />
+        <di:waypoint x="775" y="380" />
+        <di:waypoint x="775" y="170" />
+        <di:waypoint x="790" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_D5_di" bpmnElement="Flow_D5">
+        <di:waypoint x="920" y="170" />
+        <di:waypoint x="946" y="170" />
+        <di:waypoint x="946" y="380" />
+        <di:waypoint x="972" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_D6_di" bpmnElement="Flow_D6">
+        <di:waypoint x="580" y="440" />
+        <di:waypoint x="580" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Reintento_di" bpmnElement="Flow_Reintento">
+        <di:waypoint x="505" y="170" />
+        <di:waypoint x="470" y="170" />
+        <di:waypoint x="470" y="360" />
+        <di:waypoint x="450" y="360" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
