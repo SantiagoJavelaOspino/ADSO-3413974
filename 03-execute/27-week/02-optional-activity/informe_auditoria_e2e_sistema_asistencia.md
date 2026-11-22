@@ -12,10 +12,10 @@
 
 El presente documento expone los resultados de la auditoría técnica integral y la ejecución real de pruebas **End-to-End (E2E)**, pruebas de integración API/BD, pruebas negativas y análisis de seguridad/calidad sobre el proyecto **Sistema de Control de Asistencia Académica SENA**.
 
-A diferencia de una revisión estática superficial o de la simple ejecución de los tests preexistentes en el repositorio, esta auditoría levantó el sistema completo en un entorno controlado ([Sistema-de-asistencia](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia)), ejecutó la batería interna de 10 suites (`npm test`), diseñó y corrió **28 pruebas automatizadas de estrés, casos límite y ataques de lógica/seguridad** contra el servidor vivo, y ejecutó **7 flujos interactivos en navegador real** (cubriendo los 3 roles del sistema: Coordinador, Instructor y Aprendiz).
+A diferencia de una revisión estática superficial o de la simple ejecución de los tests preexistentes en el repositorio, esta auditoría levantó el sistema completo en un entorno controlado ([Sistema-de-asistencia](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia)), ejecutó la batería interna de 10 suites (`npm test`), diseñó y corrió **28 pruebas automatizadas de estrés, casos límite y ataques de lógica/seguridad** contra el servidor vivo, y ejecutó **7 flujos interactivos en navegador real** (cubriendo los 3 roles del sistema: Coordinador, Instructor y Aprendiz).
 
 > [!CAUTION]
-> **Hallazgo clave de la auditoría:** Aunque el repositorio incluye un informe previo ([re-audit-report.md](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/docs/validation/re-audit-report.md)) y una suite `audit-verification.test.js` que reporta *"19/19 controles verificados; 0 hallazgos reproducibles"*, las pruebas E2E reales en navegador y las pruebas negativas descubrieron **7 vulnerabilidades y fallos críticos** y **6 fallos de severidad alta** que rompen flujos esenciales en navegador, permiten secuestro de cuentas sin contraseña, omiten el código QR dinámico y destruyen datos de aprendices en cada reinicio del servidor.
+> **Hallazgo clave de la auditoría:** Aunque el repositorio incluye un informe previo ([re-audit-report.md](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/docs/validation/re-audit-report.md)) y una suite `audit-verification.test.js` que reporta *"19/19 controles verificados; 0 hallazgos reproducibles"*, las pruebas E2E reales en navegador y las pruebas negativas descubrieron **7 vulnerabilidades y fallos críticos** y **6 fallos de severidad alta** que rompen flujos esenciales en navegador, permiten secuestro de cuentas sin contraseña, omiten el código QR dinámico y destruyen datos de aprendices en cada reinicio del servidor.
 
 ---
 
@@ -48,12 +48,12 @@ El **Sistema de Asistencia SENA** es una aplicación web monolítica modular cuy
 | **Framework HTTP** | Express | `^5.0.0-beta.3` |
 | **Base de Datos** | SQLite3 (local / `/tmp` en Vercel) y PostgreSQL (`pg`) | `sqlite3@^5.1.7`, `pg@^8.22.0` |
 | **Autenticación y Cripto** | JSON Web Tokens (`jsonwebtoken`), `bcryptjs`, `crypto` nativo | `jsonwebtoken@^9.0.2`, `bcryptjs@^2.4.3`, HMAC-SHA256 |
-| **Seguridad HTTP** | `cors`, middleware propio de Rate Limiting y cabeceras CSP | `cors@^2.8.5`, [rateLimit.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/shared/infrastructure/rateLimit.js) |
-| **Frontend UI & Exportación** | HTML5 + TailwindCSS (CDN), `qrcodejs`, `html5-qrcode`, `SheetJS (xlsx)`, `jsPDF` + `autoTable` | Cargados vía CDN en [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L18-L28) |
+| **Seguridad HTTP** | `cors`, middleware propio de Rate Limiting y cabeceras CSP | `cors@^2.8.5`, [rateLimit.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/shared/infrastructure/rateLimit.js) |
+| **Frontend UI & Exportación** | HTML5 + TailwindCSS (CDN), `qrcodejs`, `html5-qrcode`, `SheetJS (xlsx)`, `jsPDF` + `autoTable` | Cargados vía CDN en [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L18-L28) |
 
 ### 4.2 Arquitectura del Sistema (Declarada vs. Real)
 
-La documentación ([n-layer-architecture.md](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/docs/architecture/n-layer-architecture.md)) define una **Arquitectura de 7 Capas ($N = 7$)** distribuida en 4 módulos (`identity`, `attendance`, `excuses`, `academic`):
+La documentación ([n-layer-architecture.md](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/docs/architecture/n-layer-architecture.md)) define una **Arquitectura de 7 Capas ($N = 7$)** distribuida en 4 módulos (`identity`, `attendance`, `excuses`, `academic`):
 
 ```mermaid
 flowchart TD
@@ -77,11 +77,11 @@ flowchart TD
 ```
 
 > [!WARNING]
-> **Desviación Arquitectónica Comprobada:** Aunque existen los directorios de las 7 capas y los archivos de dominio puro en la Capa 4 están bien aislados, **los routers de la Capa 2 están conectados directamente a un controlador monolítico legacy** ([controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js) con **2.670 líneas** y [auth.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/auth.js) con **427 líneas**) que ejecuta consultas SQL crudas directamente contra [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js). Los servicios de Capa 3 ([fichaControlService.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/modules/academic/application/fichaControlService.js), [excuseDeadlineService.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/modules/excuses/application/excuseDeadlineService.js)) y los repositorios de Capa 6 (`sqlAcademicRepository.js`, `sqlSessionRepository.js`, `sqlExcuseRepository.js`, `sqlPersonRepository.js`) **no son invocados por el servidor en tiempo de ejecución**, sino únicamente por los tests unitarios de arquitectura.
+> **Desviación Arquitectónica Comprobada:** Aunque existen los directorios de las 7 capas y los archivos de dominio puro en la Capa 4 están bien aislados, **los routers de la Capa 2 están conectados directamente a un controlador monolítico legacy** ([controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js) con **2.670 líneas** y [auth.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/auth.js) con **427 líneas**) que ejecuta consultas SQL crudas directamente contra [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js). Los servicios de Capa 3 ([fichaControlService.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/modules/academic/application/fichaControlService.js), [excuseDeadlineService.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/modules/excuses/application/excuseDeadlineService.js)) y los repositorios de Capa 6 (`sqlAcademicRepository.js`, `sqlSessionRepository.js`, `sqlExcuseRepository.js`, `sqlPersonRepository.js`) **no son invocados por el servidor en tiempo de ejecución**, sino únicamente por los tests unitarios de arquitectura.
 
 ### 4.3 Estructura de Base de Datos y Roles
 
-El esquema real inicializado en [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L155-L396) consta de **12 tablas**:
+El esquema real inicializado en [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L155-L396) consta de **12 tablas**:
 1. `institutions`: Configuración multi-institución (semilla `inst_sena_1`).
 2. `academic_units`: Fichas académicas (`id`, `institution_id`, `code`, `name`, `type`, `active`, `status`, `jornada`, `modalidad`).
 3. `people`: Usuarios del sistema (`id`, `institution_id`, `documento`, `email`, `nombre`, `matricula`, `active`, `password`, `roles` JSON, `photo_reference`, `terms_accepted`, `must_change_password`). Restricción `UNIQUE(institution_id, documento)`.
@@ -96,7 +96,7 @@ El esquema real inicializado en [db.js](file:///C:/Users/PC/.gemini/antigravity/
 12. `deletion_requests`: Solicitudes de baja de fichas sujetas a la regla de 4 ojos (`requested_by`, `approved_by`, `status`).
 13. `password_resets`: Tokens SHA-256 de recuperación de contraseña de un solo uso.
 
-*(Nota: El archivo documental [database/schema.sql](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/database/schema.sql) está desactualizado respecto a `db.js`, pues omite las tablas `holidays`, `audit_logs`, `deletion_requests` y `password_resets`, así como las columnas de la Fase v4).*
+*(Nota: El archivo documental [database/schema.sql](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/database/schema.sql) está desactualizado respecto a `db.js`, pues omite las tablas `holidays`, `audit_logs`, `deletion_requests` y `password_resets`, así como las columnas de la Fase v4).*
 
 ---
 
@@ -114,7 +114,7 @@ La evaluación cubrió la totalidad de los módulos implementados:
 ## 6. Metodología Utilizada
 
 1. **Fase de Reconocimiento Estático y Arquitectónico:** Inspección completa del árbol de código fuente, scripts SQL, configuración de entorno y suites de prueba existentes.
-2. **Ejecución de Suite Base (`npm test`):** Verificación de las 10 suites automatizadas incluidas en el repositorio ([run-all.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/tests/run-all.js)).
+2. **Ejecución de Suite Base (`npm test`):** Verificación de las 10 suites automatizadas incluidas en el repositorio ([run-all.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/tests/run-all.js)).
 3. **Pruebas E2E de API, Casos Límite y Negativos:** Creación y ejecución de 2 scripts de auditoría profunda (`deep-audit-e2e.mjs` y `deep-audit-e2e-batch2.mjs`) con **28 escenarios de prueba** contra el servidor en vivo (`http://localhost:4000`).
 4. **Pruebas E2E en Navegador Real (Chromium):** Automatización mediante subagente de navegador visitando `http://localhost:4000`, interactuando con formularios, botones, modales y tablas en los 3 roles, capturando errores de consola DevTools, tráfico de red HTTP y capturas de pantalla.
 5. **Preservación del Repositorio:** Toda la ejecución se realizó sobre una copia de trabajo aislada en `scratch`, garantizando **cero modificaciones** al repositorio original del usuario.
@@ -202,7 +202,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-01` — Bloqueo Total de Botones de Acción en Tablas y Grillas por Violación de Content-Security-Policy (CSP)
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [rateLimit.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/shared/infrastructure/rateLimit.js#L52-L64), [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L10-L17) y [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L1989) (23 atributos `onclick="..."` inline).
+- **Archivo o módulo relacionado:** [rateLimit.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/shared/infrastructure/rateLimit.js#L52-L64), [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L10-L17) y [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L1989) (23 atributos `onclick="..."` inline).
 - **Descripción detallada:** El middleware `securityHeadersMiddleware` envía la cabecera `Content-Security-Policy: script-src 'self' https://cdn.tailwindcss.com ...` **sin** `'unsafe-inline'`. En los navegadores modernos (Chromium/Edge/Firefox), `script-src` sin `'unsafe-inline'` bloquea tanto los bloques `<script>` inline como **todos los manejadores de eventos HTML inline (`onclick="..."`)**. En `frontend/app.js`, todas las acciones dentro de las tablas dinámicas fueron construidas concatenando `onclick="..."` en `innerHTML`:
   - Coordinador: `"Asignar Fichas"` (`onclick="window.openAssignFichasModal(...)"`), `"Editar"` (`onclick="editInstructor(...)"`), `"Desactivar"` (`onclick="toggleInstructorActive(...)"`), `"Editar Ficha"`, `"Desactivar Ficha"`, `"Solicitar Baja"`, `"Reporte Excel"`, `"Aprobar Baja (4 Ojos)"`, `"Rechazar"`.
   - Instructor: `"Quitar Falla"` (`onclick="triggerManualOverride(...)"`), `"Aprobar/Rechazar Excusa"` (`onclick="resolveExcuse(...)"`), `"Aprobar/Rechazar Solicitud Tardía"` (`onclick="resolveLateRequest(...)"`).
@@ -221,7 +221,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-02` — Secuestro de Cuenta sin Contraseña (*Account Takeover*) en Endpoint Público de Auto-Registro QR
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1262-L1418) (`selfRegisterCheckin` — `POST /public/attendance/:token/self-register`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1262-L1418) (`selfRegisterCheckin` — `POST /public/attendance/:token/self-register`).
 - **Descripción detallada:** Cuando existe una sesión activa y se invoca `POST /public/attendance/:token/self-register` enviando un `documento` que **ya existe** en la tabla `people`, el controlador:
   1. Encuentra al usuario existente (`let person = await get('SELECT * FROM people WHERE documento = ? AND active = 1', [cleanDoc])`, línea 1297).
   2. En la rama `else` (línea 1315), **no solicita ni verifica la contraseña del usuario**.
@@ -240,7 +240,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-03` — Bypass Completo del Código QR Dinámico al Enviar `sessionId` en el Body de `/attendance/checkin`
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L500-L533) (`checkin` — `POST /attendance/checkin` y `POST /public/attendance/:token/register`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L500-L533) (`checkin` — `POST /attendance/checkin` y `POST /public/attendance/:token/register`).
 - **Descripción detallada:** En las líneas 512-529 de `controllers.js`:
   ```javascript
   if (bodySessionId) {
@@ -264,7 +264,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-04` — Eliminación Destructiva de Todos los Aprendices Registrados en Cada Arranque del Servidor (`initDb`)
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L714-L734) (`initDb`).
+- **Archivo o módulo relacionado:** [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L714-L734) (`initDb`).
 - **Descripción detallada:** Al final de `initDb()`, fuera del condicional de base de datos vacía (`if (Number(instCount.count) === 0)`), existe un bloque marcado como `// Incondicional: Limpiar la BD para dejar únicamente a Tomas Berserk`:
   ```javascript
   await run(`
@@ -287,7 +287,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
   3. Intentar iniciar sesión con el aprendiz recién creado.
 - **Comportamiento esperado:** Los aprendices registrados deben persistir tras cualquier reinicio del servidor.
 - **Comportamiento actual:** El aprendiz es eliminado de `enrollments` y `people` al arrancar el servidor (`TC-DB-001`).
-- **Evidencia:** Log de consola al iniciar el servidor: `Database Init: Student list cleaned successfully (Tomas Berserk kept).` y código en [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L714-L734).
+- **Evidencia:** Log de consola al iniciar el servidor: `Database Init: Student list cleaned successfully (Tomas Berserk kept).` y código en [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L714-L734).
 - **Posible causa:** Código temporal de limpieza de demostración dejado de forma incondicional en la rutina de inicialización de base de datos.
 - **Recomendación de solución:** Eliminar por completo el bloque de las líneas 714 a 734 de `backend/src/db.js`.
 
@@ -295,7 +295,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-05` — Bloqueo Permanente de Asistencia (`HTTP 500 UNIQUE constraint failed`) si el Aprendiz Falla un Primer Intento por Contraseña o WiFi
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L310-L313) (`idx_attendance_session_person`) y [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L599-L629) (`checkin`).
+- **Archivo o módulo relacionado:** [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L310-L313) (`idx_attendance_session_person`) y [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L599-L629) (`checkin`).
 - **Descripción detallada:** La tabla `attendance_records` tiene un índice único estricto sobre `(session_id, person_id)`:
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_attendance_session_person ON attendance_records(session_id, person_id)`.
   Sin embargo, cuando un aprendiz intenta hacer check-in y se equivoca de contraseña (línea 600) o tiene los datos móviles encendidos en lugar del WiFi del aula (`OUT_OF_SUBNET`, línea 617), el controlador **inserta una fila en `attendance_records` con `status = 'rejected'` y el `person_id` del aprendiz**.
@@ -316,7 +316,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-06` — Pantalla Completamente en Blanco al Usar un Código de Clase o Escanear QR sin Sesión Iniciada
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L290-L292) y [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L325-L331) (también líneas 429, 461, 954, 1072, 1498).
+- **Archivo o módulo relacionado:** [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L290-L292) y [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L325-L331) (también líneas 429, 461, 954, 1072, 1498).
 - **Descripción detallada:** En `frontend/index.html` (línea 292), la sección `#studentLoginScreen` fue vaciada durante el rediseño del login unificado:
   `<section id="studentLoginScreen" class="hidden" aria-hidden="true"></section>`.
   Sin embargo, en `frontend/app.js` existen **5 flujos activos** que siguen llamando a `showStudentLogin()` cuando un aprendiz no ha iniciado sesión y:
@@ -339,10 +339,10 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-07` — Fallo Fatal (`HTTP 500 no such column: created_at`) en los Endpoints de Solicitudes Tardías y Registro Tardío
 - **Nivel de gravedad:** **CRÍTICO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1442) (`submitLateRequest`) y [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L2087) (`studentLateCheckin`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1442) (`submitLateRequest`) y [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L2087) (`studentLateCheckin`).
 - **Descripción detallada:** Ambos controladores intentan buscar la sesión ejecutando:
   `SELECT * FROM attendance_sessions WHERE status != 'draft' ORDER BY created_at DESC`.
-  En la tabla `attendance_sessions` ([db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L236-L256)), la columna de fecha de creación **no se llama `created_at`**, sino `room_created_at` (o `activated_at`). Como resultado, toda invocación a `POST /public/attendance/:token/late-request` o `POST /public/attendance/:token/late-checkin` falla incondicionalmente con error SQL. Además, el bucle de búsqueda de tokens en ambas funciones itera con `-i * 60000` (bloques de 60s) en lugar de bloques de 15s (`QR_WINDOW_MS = 15000`).
+  En la tabla `attendance_sessions` ([db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L236-L256)), la columna de fecha de creación **no se llama `created_at`**, sino `room_created_at` (o `activated_at`). Como resultado, toda invocación a `POST /public/attendance/:token/late-request` o `POST /public/attendance/:token/late-checkin` falla incondicionalmente con error SQL. Además, el bucle de búsqueda de tokens en ambas funciones itera con `-i * 60000` (bloques de 60s) en lugar de bloques de 15s (`QR_WINDOW_MS = 15000`).
 - **Pasos para reproducirlo:**
   1. Enviar `POST /public/attendance/<TOKEN>/late-request` con `{"documento": "1077228780", "nombre": "Tomas Berserk", "justification": "Transporte"}`.
 - **Comportamiento esperado:** `HTTP 201` creando la solicitud tardía en `late_requests`.
@@ -355,7 +355,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-08` — Vulnerabilidad IDOR y Falta de Aislamiento de Sesiones entre Instructores
 - **Nivel de gravedad:** **ALTO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L389-L448) (`getSession`, `getSessionQrToken`, `getSessionsHistory`), [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L783-L892) (`manualLateCheckin`, `getPresent`, `getAbsent`, `getRejections`) y [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L1572-L1591) (`checkForActiveSession`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L389-L448) (`getSession`, `getSessionQrToken`, `getSessionsHistory`), [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L783-L892) (`manualLateCheckin`, `getPresent`, `getAbsent`, `getRejections`) y [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L1572-L1591) (`checkForActiveSession`).
 - **Descripción detallada:** Mientras que `activateSession`, `closeSession`, `reopenRoom` y `manualOverride` verifican permisos sobre la ficha mediante `enforceSessionAccess(req, res, session)`, los siguientes 7 endpoints **no realizan ninguna validación de pertenencia ni asignación de ficha**:
   1. `GET /api/sessions` (`getSessionsHistory`): Devuelve todas las sesiones de todos los instructores del sistema (`SELECT * FROM attendance_sessions WHERE 1=1`). Peor aún, cuando cualquier instructor inicia sesión en el frontend, `checkForActiveSession()` (`app.js:1582`) toma `result.data[0]` (la sesión activa más reciente de cualquier docente) y **carga la sala de otro instructor en su pantalla**.
   2. `GET /api/sessions/:sessionId/qr-token` (`getSessionQrToken`): Devuelve el token QR HMAC en vivo para cualquier `:sessionId` sin verificar siquiera si la sesión existe o a quién pertenece.
@@ -374,7 +374,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-09` — Tokens JWT de Usuarios Desactivados o Anonimizados Siguen Siendo Válidos por 24 Horas
 - **Nivel de gravedad:** **ALTO**
-- **Archivo o módulo relacionado:** [auth.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/auth.js#L393-L411) (`authenticate`).
+- **Archivo o módulo relacionado:** [auth.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/auth.js#L393-L411) (`authenticate`).
 - **Descripción detallada:** El middleware `authenticate` únicamente verifica la firma criptográfica del JWT (`jwt.verify(token, JWT_SECRET)`) y asigna `req.user = decoded`, sin verificar en la base de datos si el registro `people` sigue teniendo `active = 1`. Si el Coordinador desactiva a un instructor (`active = 0`) o un aprendiz ejerce su derecho de supresión de cuenta (`DELETE /api/student/delete-account`), su token JWT continúa teniendo acceso total a las rutas protegidas durante 24 horas.
 - **Pasos para reproducirlo:**
   1. Iniciar sesión con un instructor y guardar su token JWT.
@@ -390,7 +390,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-10` — XSS Almacenado (*Stored XSS*) y Falta de Validación de Archivos en Excusas e Instructores
 - **Nivel de gravedad:** **ALTO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1084-L1142) (`submitExcuse`), [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1720-L1814) (`createInstructor`, `updateInstructor`) y [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L2766-L2773) (`renderStudentExcuses`, `renderCoordInstructors` línea 3185, `renderGrid` línea 1978, `renderReportGrid` línea 2205).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1084-L1142) (`submitExcuse`), [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1720-L1814) (`createInstructor`, `updateInstructor`) y [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L2766-L2773) (`renderStudentExcuses`, `renderCoordInstructors` línea 3185, `renderGrid` línea 1978, `renderReportGrid` línea 2205).
 - **Descripción detallada:**
   1. En `submitExcuse` (`POST /api/student/excuses`), a diferencia de `submitSessionEvidence`, **no se valida `fileData` con `validateEvidencePayload()`**: acepta cualquier cadena arbitraria (como `javascript:alert(1)` o archivos ejecutables sin límite de tamaño ni verificación de *magic bytes*). Luego, en `renderStudentExcuses` (`frontend/app.js:2768`), se inyecta `<a href="${e.file_data}" download="${e.file_name || 'soporte'}">` **sin `isSafeDataOrHttpUrl()` ni `escapeHtml()`**.
   2. En `createInstructor` y `updateInstructor`, no se aplica `sanitizeText()` al campo `nombre`, permitiendo guardar `<script>...</script>` o `<img src=x onerror=...>`, y en `renderCoordInstructors` (`app.js:3185`), `renderGrid` (`app.js:1978`), `renderRejections` (`app.js:2011`), `renderReportGrid` (`app.js:2205`) y `renderCoordEvidences` (`app.js:3642`) se interpolan los campos directamente en `innerHTML` sin `escapeHtml()`.
@@ -405,7 +405,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-11` — Descarga de "Evidencia Adjunta" en Panel del Coordinador Falla Siempre con `HTTP 401` y Recuperación de Contraseña carece de Canal de Entrega
 - **Nivel de gravedad:** **ALTO**
-- **Archivo o módulo relacionado:** [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L3614-L3624) (`renderCoordEvidences`) y [passwordResetNotifier.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/modules/identity/ports/passwordResetNotifier.js#L6-L8).
+- **Archivo o módulo relacionado:** [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L3614-L3624) (`renderCoordEvidences`) y [passwordResetNotifier.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/modules/identity/ports/passwordResetNotifier.js#L6-L8).
 - **Descripción detallada:**
   1. **Evidencia Adjunta (`HTTP 401`):** En `renderCoordEvidences` (`app.js:3615`), el botón para descargar la evidencia subida por el instructor es un enlace HTML `<a href="${state.apiUrl}/api/coord/evidences/${ev.id}/download" target="_blank">`. Como el token JWT reside en `localStorage` y el endpoint exige el middleware `authenticate` (header `Authorization: Bearer`), al hacer clic el navegador abre una pestaña nueva sin cabecera `Authorization` y recibe siempre `HTTP 401 {"error":{"code":"UNAUTHORIZED","message":"Token de autenticación no proporcionado."}}`.
   2. **Recuperación de Contraseña Inoperante en UI:** En `passwordResetNotifier.js`, `activeNotifier` es una función vacía `async () => {}`. Al solicitar recuperación de contraseña desde el modal `"¿Olvidaste tu contraseña?"`, la UI muestra los campos para pegar el token de recuperación, pero el token no se envía por email ni se imprime en los logs de desarrollo, haciendo imposible completar el flujo fuera de un test que inyecte un espía en `setPasswordResetNotifier`.
@@ -419,7 +419,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-12` — Falsificación de Subred IP de Aula mediante Cabecera `X-Forwarded-For` (*IP Spoofing*)
 - **Nivel de gravedad:** **ALTO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L54-L60) (`getClientIp`) y [rateLimit.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/shared/infrastructure/rateLimit.js#L13).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L54-L60) (`getClientIp`) y [rateLimit.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/shared/infrastructure/rateLimit.js#L13).
 - **Descripción detallada:** Tanto `getClientIp(req)` (usado para verificar que el aprendiz esté en la misma red WiFi `/24` que el instructor) como `createRateLimiter` leen directamente `req.headers['x-forwarded-for']` sin validar si la petición proviene de un proxy inverso confiable. Cualquier cliente remoto puede enviar la cabecera `X-Forwarded-For: 192.168.1.50` (o rotar IPs falsas en cada petición) para evadir tanto la restricción de subred WiFi del aula (`IP_AND_QR`) como el *Rate Limiter* de fuerza bruta.
 - **Pasos para reproducirlo:** Enviar `POST /attendance/checkin` desde una red externa añadiendo el header HTTP `X-Forwarded-For` en el mismo segmento `/24` del instructor (`TC-SEC-002`).
 - **Comportamiento esperado:** Ignorar `X-Forwarded-For` en conexiones directas o usar `req.ip` configurando `app.set('trust proxy', ...)` únicamente cuando exista un proxy confiable delante.
@@ -431,7 +431,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-13` — Auto-Matrícula Indebida de Usuarios en la Ficha Antes de Autenticar Contraseña y Rol en `checkin`
 - **Nivel de gravedad:** **MEDIO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L560-L568) (`checkin`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L560-L568) (`checkin`).
 - **Descripción detallada:** En `checkin()`, las líneas 560-568 verifican si la persona encontrada por `documento` está inscrita en `enrollments` para esa ficha; si no lo está, **la insertan inmediatamente en `enrollments`**. Este bloque se ejecuta **antes** de verificar la contraseña o el token JWT del usuario (líneas 570-608) y **sin verificar que la persona tenga el rol `APRENDIZ`**. Como consecuencia, si alguien envía el documento del Coordinador (`9999999999`), de un Instructor o de un aprendiz de otra ficha con una contraseña falsa, el check-in devuelve `401`, ¡pero el Coordinador o Instructor queda matriculado permanentemente como aprendiz de esa ficha y aparece en los reportes de asistencia como inasistente!
 - **Pasos para reproducirlo:** Ejecutar `TC-ATT-002` (enviar check-in con documento `9999999999` y contraseña errónea, y luego consultar `GET /api/units/unit_ficha_3413974/people`).
 - **Comportamiento esperado:** No matricular usuarios no autenticados ni usuarios cuyo rol no sea `APRENDIZ`.
@@ -443,7 +443,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-14` — Falta de Validación de Rango de Horas en `manualOverride` Permite Corromper Reportes (`1666650%` de Asistencia)
 - **Nivel de gravedad:** **MEDIO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L705-L780) (`manualOverride`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L705-L780) (`manualOverride`).
 - **Descripción detallada:** `manualOverride` (`POST /attendance/manual-override`) recibe `horas_validadas_asistencia` y `horas_inasistencia_acumulada` del body JSON y los guarda directamente en `attendance_records` sin validar que sean enteros dentro del rango `[0, 6]` ni que `horas_validadas_asistencia + horas_inasistencia_acumulada === 6`.
 - **Pasos para reproducirlo:** Enviar `POST /attendance/manual-override` con `horas_validadas_asistencia: 99999` y `horas_inasistencia_acumulada: -500`, y consultar `GET /reports/session/:sessionId` (`TC-ATT-005`).
 - **Comportamiento esperado:** `HTTP 400 VALIDATION_ERROR` rechazando horas negativas o superiores a la duración de la jornada (6h).
@@ -455,7 +455,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-15` — Desajuste de Propiedades JSON en Bandeja de Solicitudes Tardías Renderiza `-` en Estudiante, Documento y Ficha
 - **Nivel de gravedad:** **MEDIO**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1488-L1495) (`getInstructorLateRequests`) vs. [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L3016-L3026) (`renderLateRequests`).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1488-L1495) (`getInstructorLateRequests`) vs. [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L3016-L3026) (`renderLateRequests`).
 - **Descripción detallada:** La consulta SQL en `getInstructorLateRequests` retorna las columnas `nombre`, `documento`, `ficha_name` y `ficha_code`. Sin embargo, la función `renderLateRequests` del frontend intenta leer `r.student_name`, `r.student_doc` y `r.unit_code`. Como esas propiedades son `undefined`, la tabla del instructor renderiza siempre `-` en las columnas Estudiante, Documento y Ficha.
 - **Pasos para reproducirlo:** Inspeccionar `controllers.js:1489` y `frontend/app.js:3018-3020` (`TC-UI-001`).
 - **Comportamiento esperado:** Mostrar nombre, documento y código de ficha reales de la solicitud tardía.
@@ -467,19 +467,19 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-16` — La Grilla de Monitoreo en Tiempo Real del Instructor Ignora el Parámetro `absents` y Nunca Muestra a los Ausentes
 - **Nivel de gravedad:** **MEDIO**
-- **Archivo o módulo relacionado:** [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L1958-L1997) (`renderGrid`).
+- **Archivo o módulo relacionado:** [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L1958-L1997) (`renderGrid`).
 - **Descripción detallada:** `fetchRealTimeAttendance()` consulta cada 10 segundos `/api/sessions/:id/present` y `/api/sessions/:id/absent`, filtra ambas listas en `renderGridFiltered()` y las pasa a `renderGrid(filteredPresents, filteredAbsents)`. Sin embargo, `renderGrid(presents, absents)` **nunca utiliza el parámetro `absents`**: solo itera sobre `presents.forEach(...)`. Si aún no ha marcado nadie, muestra *"Ningún aprendiz ha registrado asistencia en esta sesión"* aunque haya aprendices en `absents`, y el instructor no puede ver en la grilla quiénes faltan ni usar la función `window.triggerManualLateCheckin()` (declarada en la línea 2052 pero nunca invocada en ningún lugar del código).
 - **Pasos para reproducirlo:** Abrir una sala de clase como Instructor y observar la tabla `"Monitoreo de Asistencia en Tiempo Real"` (`TC-UI-002`).
 - **Comportamiento esperado:** Listar tanto a los presentes como a los aprendices matriculados pendientes/ausentes con sus acciones de marcación rápida.
 - **Comportamiento actual:** Solo se renderizan las filas de `presents`; `absents` se descarta silenciosamente.
-- **Evidencia:** Código en [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L1958-L1997) y prueba `TC-UI-002`.
+- **Evidencia:** Código en [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L1958-L1997) y prueba `TC-UI-002`.
 - **Recomendación de solución:** Iterar también sobre `absents` al final de `renderGrid(presents, absents)` mostrando su estado como `AUSENTE / PENDIENTE` y habilitando el botón de marcación manual/retardada.
 
 ---
 
 #### `HALL-17` — Bloques de Modales e IDs Duplicados en `frontend/index.html` (`#assignFichasModal`, `#btnSubmitExcuse`)
 - **Nivel de gravedad:** **MEDIO**
-- **Archivo o módulo relacionado:** [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L1117-L1147) vs. [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L1397-L1427), y [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L506) vs. [index.html](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/index.html#L1278).
+- **Archivo o módulo relacionado:** [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L1117-L1147) vs. [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L1397-L1427), y [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L506) vs. [index.html](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/index.html#L1278).
 - **Descripción detallada:**
   1. El modal de asignación de fichas a instructores (`id="assignFichasModal"`) está **duplicado dos veces** en `frontend/index.html`: la primera vez en las líneas 1117-1147 (con botón de cierre `id="btnCloseAssignFichas"` e input `id="assignFichasInstructorId"`) y la segunda vez en las líneas 1397-1427 (con botón de cierre `id="btnCloseAssignFichasModal"`, título `id="assignFichasModalTitle"`, contador `id="assignFichasCount"` e input `id="assignInstructorId"`). Al llamar a `document.getElementById('assignFichasModal')`, el navegador abre el **primer** modal (L1117), pero `app.js` enlaza el evento de cierre y el input oculto del **segundo** modal (L1397), dejando el botón `X` de cierre inoperante.
   2. El ID `btnSubmitExcuse` no es único: se usa en la línea 1278 para el botón `"Enviar Excusa"` del aprendiz (mientras que en la línea 506 está `btnSubmitEvidence`).
@@ -493,7 +493,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-18` — Sanitización Permisiva de Documento en Login (`replace(/\D/g, '')`) y Residuos Visuales tras Logout
 - **Nivel de gravedad:** **BAJO**
-- **Archivo o módulo relacionado:** [auth.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/auth.js#L29) (`login`, `studentLogin`) y [app.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/frontend/app.js#L1023-L1031) (`btnLogout`).
+- **Archivo o módulo relacionado:** [auth.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/auth.js#L29) (`login`, `studentLogin`) y [app.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/frontend/app.js#L1023-L1031) (`btnLogout`).
 - **Descripción detallada:**
   1. En `auth.js:29`, cuando `identifier` no contiene `@`, el backend ejecuta `const cleanDoc = cleanIdentifier.replace(/\D/g, '')`. Esto hace que cualquier cadena con letras y símbolos que contenga los dígitos de un documento (por ejemplo `"hack-9999999999-xyz"`) sea aceptada como válida y autentique al usuario (`TC-AUTH-006`).
   2. Al cerrar sesión (`#btnLogout`), no se limpia el valor de `#loginDoc` ni se restablece `#headerSubtitle` a `"Servicio Nacional de Aprendizaje · SENA"`, quedando visible el rol anterior (`"Coordinación Académica"` o `"Instructor SENA"`) en la pantalla de login.
@@ -503,7 +503,7 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 #### `HALL-19` — Deuda Arquitectónica (`controllers.js` Monolítico), Esquema SQL Documental Desactualizado y Vulnerabilidades en `npm audit`
 - **Nivel de gravedad:** **MEJORA**
-- **Archivo o módulo relacionado:** [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js), [schema.sql](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/database/schema.sql) y [backend/package.json](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/package.json).
+- **Archivo o módulo relacionado:** [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js), [schema.sql](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/database/schema.sql) y [backend/package.json](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/package.json).
 - **Descripción detallada:**
   1. **Desacople de Capas 3 y 6:** Aunque se crearon las carpetas de las 7 capas, el 95% de las rutas HTTP en `bootstrap/routes.js` siguen delegando en `backend/src/controllers.js` (2.670 líneas con SQL embebido).
   2. **Sincronización de `database/schema.sql`:** Faltan las tablas `holidays`, `audit_logs`, `deletion_requests` y `password_resets` en `database/schema.sql`.
@@ -550,9 +550,9 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 ## 15. Recomendaciones de Mejora (Plan de Acción Priorizado)
 
 ### Prioridad 1 — Correcciones Bloqueantes e Inmediatas (Seguridad y Operación)
-1. **Eliminar el borrado de aprendices en `initDb()` (`HALL-04`):** Suprimir las líneas 714-734 de [db.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/db.js#L714-L734).
-2. **Cerrar el Account Takeover en `selfRegisterCheckin` (`HALL-02`):** En [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L1315), si `person` ya existe, retornar `HTTP 409` sin emitir token JWT.
-3. **Cerrar el Bypass de QR en `checkin` (`HALL-03`):** En [controllers.js](file:///C:/Users/PC/.gemini/antigravity/scratch/Sistema-de-asistencia/backend/src/controllers.js#L512-L529), validar siempre el token QR contra `generateQrToken(session.id, offset)` aunque se reciba `sessionId` en el body.
+1. **Eliminar el borrado de aprendices en `initDb()` (`HALL-04`):** Suprimir las líneas 714-734 de [db.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/db.js#L714-L734).
+2. **Cerrar el Account Takeover en `selfRegisterCheckin` (`HALL-02`):** En [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L1315), si `person` ya existe, retornar `HTTP 409` sin emitir token JWT.
+3. **Cerrar el Bypass de QR en `checkin` (`HALL-03`):** En [controllers.js](https://github.com/SantiagoJavelaOspino/Sistema-de-asistencia/blob/main/backend/src/controllers.js#L512-L529), validar siempre el token QR contra `generateQrToken(session.id, offset)` aunque se reciba `sessionId` en el body.
 4. **Reparar el bloqueo de botones por CSP (`HALL-01`):** Eliminar los 23 atributos `onclick="..."` de `frontend/app.js` y el `<script>` inline de `frontend/index.html:10`, reemplazándolos por delegación de eventos con `addEventListener`.
 5. **Corregir la pantalla en blanco del código QR/manual (`HALL-06`):** Redirigir `showStudentLogin()` hacia `showPortal()` y mostrar el aviso del token pendiente en `#loginFeedback`.
 6. **Impedir bloqueo por `UNIQUE(session_id, person_id)` tras intento fallido (`HALL-05`):** Hacer que el índice único ignore registros con `status = 'rejected'` o no insertar `person_id` en filas de rechazo.
@@ -587,9 +587,9 @@ Se identificaron y comprobaron **19 hallazgos técnicos**, clasificados por su n
 
 ### 17.1 Evidencia Visual de Pruebas E2E en Navegador Real
 
-![Verificación E2E del Portal del Aprendiz y Compuerta de Seguridad en 2 Pasos](file:///C:/Users/PC/.gemini/antigravity/brain/7fd0eabb-c5a4-4e87-b7f6-7581ebbfc130/evidencia_portal_aprendiz_2fa.png)
+![Verificación E2E del Portal del Aprendiz y Compuerta de Seguridad en 2 Pasos](./evidencia_portal_aprendiz_2fa.png)
 
 ### 17.2 Artefactos y Scripts de Prueba Generados Durante la Auditoría
-- Script de Pruebas E2E y Negativas (Lote 1 - 19 pruebas): [deep-audit-e2e.mjs](file:///C:/Users/PC/.gemini/antigravity/brain/7fd0eabb-c5a4-4e87-b7f6-7581ebbfc130/scratch/deep-audit-e2e.mjs)
-- Script de Pruebas E2E y Negativas (Lote 2 - 9 pruebas): [deep-audit-e2e-batch2.mjs](file:///C:/Users/PC/.gemini/antigravity/brain/7fd0eabb-c5a4-4e87-b7f6-7581ebbfc130/scratch/deep-audit-e2e-batch2.mjs)
-- Registro JSON de Evidencias de Ejecución: [audit_results.json](file:///C:/Users/PC/.gemini/antigravity/brain/7fd0eabb-c5a4-4e87-b7f6-7581ebbfc130/scratch/audit_results.json)
+- Script de Pruebas E2E y Negativas (Lote 1 - 19 pruebas): [deep-audit-e2e.mjs](./deep-audit-e2e.mjs)
+- Script de Pruebas E2E y Negativas (Lote 2 - 9 pruebas): [deep-audit-e2e-batch2.mjs](./deep-audit-e2e-batch2.mjs)
+- Registro JSON de Evidencias de Ejecución: [audit_results.json](./audit_results.json)
