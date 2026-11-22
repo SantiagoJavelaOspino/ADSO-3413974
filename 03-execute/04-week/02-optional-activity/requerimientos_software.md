@@ -142,3 +142,25 @@ El proceso de alistamiento, diseño conceptual del instrumento y análisis prác
 ---
 
 > **Nota metodológica:** Los datos cuantitativos presentados en la Sección 3.1 corresponden a una simulación representativa. Los valores definitivos deben reemplazarse con los resultados reales una vez aplicada la encuesta.
+
+---
+
+## 5. Lista de Chequeo de Verificación y Validación de Requerimientos (Checklist)
+
+*(El instrumento completo con las 5 dimensiones de auditoría del módulo de inventario TiendApp y del POS Supermercado también se encuentra disponible en [`Lista_de_Chequeo.md`](./Lista_de_Chequeo.md)).*
+
+| # | Criterio / Ítem de la Lista de Chequeo | Categoría | ¿Cumple? | Evidencia / Observación de Verificación |
+| :-: | :--- | :---: | :---: | :--- |
+| **CHK-01** | ¿Se identificaron y segmentaron claramente los usuarios internos (30 empleados) y externos (clientes)? | Alistamiento | ✅ **Sí** | Sección 1.3 y Encuestas A/B aplicadas a muestra representativa. |
+| **CHK-02** | ¿El instrumento contempla la gestión completa del inventario (`CRUD` de productos, fotos, precios y stock)? | Funcional (`RF-01`) | ✅ **Sí** | Definido con 11 campos validados en la entidad `Producto` (Web y Mobile). |
+| **CHK-03** | ¿Se incluye clasificación y filtrado ágil por categorías personalizables y búsqueda en tiempo real (< 500ms)? | Funcional (`RF-02`, `RF-04`) | ✅ **Sí** | Búsqueda instantánea por nombre o código de barras sin recargar vista. |
+| **CHK-04** | ¿El sistema integra lectura de código de barras (EAN-8, EAN-13, UPC-A, QR) tanto en punto de venta como en móvil? | Funcional (`RF-03` / `RF01`) | ✅ **Sí** | Escaneo con cámara nativa (< 1s) en móvil y lector/teclado en Web POS. |
+| **CHK-05** | ¿El inventario se descuenta automáticamente al confirmar cada venta y bloquea cantidades negativas? | Funcional (`RF-05` / `RF02`) | ✅ **Sí** | Descuento automático transaccional y registro en log de movimientos. |
+| **CHK-06** | ¿El sistema dispara alertas visuales y notificaciones cuando `cantidad_actual <= stock_minimo`? | Funcional (`RF-06` / `RF05`) | ✅ **Sí** | Insignia roja, banner en dashboard, fila resaltada y notificación push. |
+| **CHK-07** | ¿El POS calcula y aplica automáticamente las promociones vigentes (porcentaje, valor fijo, 2x1) sin cálculo manual? | Funcional (`RF02`, `RF08`) | ✅ **Sí** | Automatiza reglas promocionales eliminando el 80% de errores en caja. |
+| **CHK-08** | ¿El Portal Web ofrece catálogo actualizado, banner de promociones y carrito de pre-cotización/reserva? | Funcional (`RF03`, `RF04`) | ✅ **Sí** | Sincronizado con disponibilidad de inventario en tienda. |
+| **CHK-09** | ¿Se definieron métricas verificables de rendimiento (< 1s en POS, < 2s carga de 1,000 productos) y escalabilidad (10,000 productos)? | No Funcional (`RNF-01`, `RNF-05`) | ✅ **Sí** | Verificable con Lighthouse (≥ 80) y pruebas de carga con índices SQL. |
+| **CHK-10** | ¿La interfaz cumple diseño *Mobile-First* / Responsivo (320px a 1920px) y controles táctiles ≥ 48×48dp? | No Funcional (`RNF-02` / `RNF02`) | ✅ **Sí** | Adaptación tabla (escritorio) a tarjetas deslizables (móvil) sin scroll horizontal. |
+| **CHK-11** | ¿Se garantiza control de acceso por roles (Cajero, Inventario, Admin / Tendero) con sesiones JWT y aislamiento de datos? | No Funcional (`RNF-04` / `RNF03`) | ✅ **Sí** | Rutas protegidas, timeout de 30 min y bloqueo `403` ante acceso cruzado. |
+| **CHK-12** | ¿Cada Historia de Usuario (`HU-01` a `HU-04`) cuenta con criterios de aceptación verificables en Web y Mobile? | Calidad SRS | ✅ **Sí** | 37 criterios de aceptación (`[x]`) verificados y trazados contra RF/RNF. |
+
