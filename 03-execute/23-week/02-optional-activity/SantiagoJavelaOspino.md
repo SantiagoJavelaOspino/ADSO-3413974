@@ -103,3 +103,43 @@ A continuación, la correlación de flujos integrales basados en el mockup:
 | **CU-04** | **Gestión y Configuración** | Director de Centro | Entra por `#/admin/parametrizacion`. Registra o inhabilita ambientes y programas. Actualiza topes de horas para la sede. | **Mantenibilidad** (Modificabilidad) y **Adecuación Funcional**. |
 | **CU-05** | **Supervisión de Rendimiento** | Director de Centro | Entra por `#/admin/indicadores`. Accede a gráficos dinámicos con los resúmenes estadísticos (horas impartidas, ambientes vacíos). | **Eficiencia de Desempeño** (Uso óptimo de datos agregados). |
 | **CU-06** | **Soporte de Documentos** | Administrador | Navega por `#/backoffice/documentos`. Revisa peticiones y cruces con problemas reportados. Aplica filtros a la tabla de reportes. | **Usabilidad** (Operabilidad y filtros eficientes). |
+
+---
+
+## 7. Ingeniería Inversa y Mejoras UX/UI (Design Thinking + MoSCoW)
+
+El análisis detallado de ingeniería inversa sobre las **53 pantallas y 7 roles** del mockup de Gestión de Horarios SENA (`design-software-mockup`) y sobre el **Sistema de Asistencia de Ambiente** se encuentra desarrollado en [`Ingenieria_Inversa.md`](./Ingenieria_Inversa.md).
+
+### Resumen de Hallazgos Clave:
+1. **Prevención de Colisiones en UI (`Must Have`):** Deshabilitación preventiva en tiempo real de ambientes e instructores ya ocupados en la franja seleccionada, respaldada por restricciones `UNIQUE` en base de datos.
+2. **Persistencia Intermedia (`Should Have`):** Guardado automático (`auto-save`) en formularios extensos de programación para evitar pérdida de trabajo ante desconexiones.
+3. **Adaptabilidad Móvil (`Must Have`):** Vista móvil por pestañas diarias (Lunes a Sábado) en resoluciones `390×844` para eliminar el scroll horizontal en la consulta de horarios de aprendices e instructores.
+4. **Integridad de Datos en Asistencia (`Must Have`):** Validación estricta de `tipo_documento` (`CC`, `TI`, `CE`, `PEP`, `PPT`), unicidad de asistencia por sesión para evitar duplicados/homónimos, baja lógica con principio de 4 ojos para fichas y cumplimiento de la **Ley 1581 de 2012** (Habeas Data).
+
+---
+
+## 8. Plan de Contingencia Operativo y de Accesibilidad
+
+El protocolo completo de continuidad operativa se encuentra documentado en [`Plan_de_Contingencia.md`](./Plan_de_Contingencia.md) y cubre:
+
+- **Accesibilidad e Inclusión (CA-01 a CA-04):** Protocolos para aprendices sin teléfono celular, o con discapacidad visual, auditiva o motriz (registro manual asistido por el instructor, check-in de 1 clic, soporte para lectores de pantalla y alertas visuales de alto contraste).
+- **Fallas Técnicas y de Conectividad (CT-01 a CT-06):** Cola offline idempotente (`offline-queue.js`) ante caída de Internet en el ambiente, código manual de respaldo ante fallo del proyector/QR, ventana de gracia ante expiración de token y bloqueo idempotente de registros duplicados.
+- **Contingencias en Gestión de Horarios (CH-01 a CH-05):** Flujos BPMN de excepción ante incapacidad repentina de instructor (`PROC_I2` / `PROC_C3`), inhabilitación o mantenimiento de ambientes (`PROC_C2`), protección contra borrado accidental de fichas/horarios publicados (`PROC_S2`) y aislamiento de fallos en el Shell-Host.
+
+---
+
+## 9. Estrategia de Pensamiento y Gestión del Conocimiento
+
+El marco metodológico completo se encuentra en [`Estrategia_Pensamiento_y_Gestion_del_Conocimiento.md`](./Estrategia_Pensamiento_y_Gestion_del_Conocimiento.md) e integra:
+
+1. **Cuatro Estrategias de Pensamiento:**
+   - **Pensamiento Analítico y Crítico:** Deconstrucción mediante ingeniería inversa.
+   - **Pensamiento de Diseño (Design Thinking):** Empatía por rol (Aprendiz, Instructor, Coordinador, Director, Soporte).
+   - **Pensamiento Sistémico:** Modelado de procesos BPMN 2.0 (`SENA_BPMN_Horarios.zip`), modelo lógico/relacional y calidad ISO/IEC 25010.
+   - **Pensamiento Estratégico y Convergente:** Priorización MoSCoW y diseño de planes de contingencia.
+2. **Espiral del Conocimiento SECI (Nonaka & Takeuchi):**
+   - **Socialización** (Tácito → Tácito en sesiones de equipo y revisión de MVPs),
+   - **Exteriorización** (Tácito → Explícito en diagramas BPMN e historias de usuario),
+   - **Combinación** (Explícito → Explícito en arquitectura SDD, ADRs y especificación ISO 25010),
+   - **Interiorización** (Explícito → Tácito en implementación de código, pruebas QA/E2E y operación real).
+
