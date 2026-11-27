@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototipo Inicial (Mockup) · Gestión Neiva POS SaaS — G1-P2</title>
+  <style>
+    :root { --bg:#f4f6f9; --card:#ffffff; --primary:#1d4ed8; --accent:#0f766e; --warn:#b45309; --danger:#b91c1c; --text:#1e293b; --muted:#64748b; --border:#cbd5e1; }
+    * { box-sizing:border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--text); }
+    header { background:#0f172a; color:#fff; padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    header h1 { margin:0; font-size:1.15rem; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    nav a { color:#e2e8f0; text-decoration:none; background:#1e293b; padding:8px 12px; border-radius:6px; font-size:0.88rem; border:1px solid #334155; }
+    nav a:hover { background:var(--primary); color:#fff; }
+    main { max-width:1100px; margin:24px auto; padding:0 16px 48px; display:flex; flex-direction:column; gap:32px; }
+    section.screen { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(15,23,42,0.06); }
+    .screen-header { background:#eff6ff; border-bottom:1px solid var(--border); padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    .badge { background:var(--primary); color:#fff; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:600; }
+    .badge.green { background:var(--accent); }
+    .badge.warn { background:var(--warn); }
+    .badge.danger { background:var(--danger); }
+    .screen-body { padding:20px; display:grid; gap:16px; }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .panel { border:1px solid var(--border); border-radius:8px; padding:14px; background:#f8fafc; }
+    .panel h3 { margin:0 0 10px; font-size:0.95rem; color:#0f172a; }
+    label { display:block; font-size:0.82rem; color:var(--muted); margin:8px 0 4px; }
+    input, select { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:0.9rem; }
+    table { width:100%; border-collapse:collapse; font-size:0.86rem; background:#fff; }
+    th, td { border:1px solid var(--border); padding:8px; text-align:left; }
+    th { background:#e2e8f0; }
+    .btn { display:inline-block; background:var(--primary); color:#fff; border:none; padding:9px 14px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.88rem; }
+    .btn.secondary { background:#475569; }
+    .kpi { background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px; }
+    .kpi .val { font-size:1.4rem; font-weight:700; margin-top:4px; }
+    footer { text-align:center; color:var(--muted); font-size:0.82rem; padding:16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Gestión Neiva · Prototipo Inicial de Análisis (G1-P2)</h1>
+      <small>Autor: @SantiagoJavelaOspino · 3 pantallas rotuladas con su caso de uso</small>
+    </div>
+    <nav>
+      <a href="#cu-06">Pantalla 1 · CU-06 Venta POS</a>
+      <a href="#cu-07">Pantalla 2 · CU-07 Reabastecimiento</a>
+      <a href="#cu-09">Pantalla 3 · CU-09 Panel y Alertas</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- PANTALLA 1: CU-06 -->
+    <section id="cu-06" class="screen">
+      <div class="screen-header">
+        <div>
+          <span class="badge">Pantalla 1 · CU-06: Registrar venta en POS (incluye CU-05 y CU-10; extiende CU-11)</span>
+          <h2 style="margin:6px 0 0; font-size:1.1rem;">Terminal Punto de Venta (POS) — Tienda Piloto Neiva</h2>
+        </div>
+        <span class="badge green">Actor: Cajero · RF-05, RF-06, RF-07</span>
+      </div>
+      <div class="screen-body grid-2">
+        <div class="panel">
+          <h3>Búsqueda rápida / Escáner de código de barras (CU-05)</h3>
+          <label>Código de barras (EAN/UPC) o nombre del producto</label>
+          <input type="text" value="7702001054321 · Arroz Diana 500 g" readonly />
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button class="btn" type="button">Escanear con cámara</button>
+            <button class="btn secondary" type="button">Agregar al carrito</button>
+          </div>
+          <table style="margin-top:12px;">
+            <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th></tr></thead>
+            <tbody>
+              <tr><td>Arroz Diana 500 g (Unidad)</td><td>$ 2.600</td><td>42 u</td></tr>
+              <tr><td>Leche Entera 1 L (Unidad)</td><td>$ 4.200</td><td>5 u</td></tr>
+              <tr><td>Papa Pastusa (Granel kg)</td><td>$ 3.400</td><td>18.5 kg</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <h3>Carrito de venta y cobro atómico (CU-06 / CU-10)</h3>
+          <table>
+            <thead><tr><th>Producto (Snapshot)</th><th>Cant.</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead>
+            <tbody>
+              <tr><td>Arroz Diana 500 g</td><td>3</td><td>$ 2.600</td><td>$ 7.800</td></tr>
+              <tr><td>Papa Pastusa (kg)</td><td>1.5</td><td>$ 3.400</td><td>$ 5.100</td></tr>
+            </tbody>
+          </table>
+          <label>Política de descuento (CU-11 opcional)</label>
+          <select><option>Sin descuento promocional (0 %)</option><option>Descuento por volumen (5 % si cant. >= 10)</option></select>
+          <label>Medio de pago</label>
+          <select><option>Efectivo</option><option>Nequi</option><option>Tarjeta</option></select>
+          <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+            <strong>Total derivado: $ 12.900</strong>
+            <button class="btn" type="button">Confirmar venta</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: CU-07 -->
+    <section id="cu-07" class="screen">
+      <div class="screen-header">
+        <div>
+          <span class="badge">Pantalla 2 · CU-07: Registrar reabastecimiento y lotes</span>
+          <h2 style="margin:6px 0 0; font-size:1.1rem;">Entrada de Mercancía a Proveedores y Control de Caducidad</h2>
+        </div>
+        <span class="badge green">Actor: Administrador de Tienda · RF-08, RF-03, RF-04</span>
+      </div>
+      <div class="screen-body grid-2">
+        <div class="panel">
+          <h3>Datos del reabastecimiento</h3>
+          <label>Proveedor</label>
+          <select><option>Distribuidora Surabasto Huila</option><option>Lácteos del Sur S.A.S.</option><option>+ Registrar nuevo proveedor (Flujo alterno 1a)</option></select>
+          <label>Producto del catálogo</label>
+          <select><option>Leche Entera 1 L (Perecedero)</option><option>Arroz Diana 500 g</option></select>
+          <label>Cantidad recibida</label>
+          <input type="number" value="24" readonly />
+          <label>Costo unitario de adquisición</label>
+          <input type="text" value="$ 3.300" readonly />
+        </div>
+        <div class="panel">
+          <h3>Datos del lote perecedero</h3>
+          <label>Código de lote</label>
+          <input type="text" value="LOT-2026-1127-A" readonly />
+          <label>Fecha de vencimiento (debe ser posterior a hoy)</label>
+          <input type="date" value="2026-12-18" readonly />
+          <p style="font-size:0.82rem; color:var(--muted); margin-top:10px;">
+            Regla RN-07: Si faltan 15 días o menos para el vencimiento, el Planificador Automático (CU-08) generará alerta preventiva.
+          </p>
+          <button class="btn" type="button">Guardar reabastecimiento y actualizar stock</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 3: CU-09 / CU-08 -->
+    <section id="cu-09" class="screen">
+      <div class="screen-header">
+        <div>
+          <span class="badge">Pantalla 3 · CU-09: Consultar panel financiero (extiende CU-12; visualiza alertas CU-08)</span>
+          <h2 style="margin:6px 0 0; font-size:1.1rem;">Panel Financiero, Alertas Tempranas y Exportación de Cuadre</h2>
+        </div>
+        <span class="badge green">Actor: Administrador de Tienda · RF-09, RF-10</span>
+      </div>
+      <div class="screen-body">
+        <div class="grid-3" style="display:grid; gap:12px;">
+          <div class="kpi"><small>Ventas del día</small><div class="val">$ 648.500</div></div>
+          <div class="kpi"><small>Utilidad neta estimada</small><div class="val" style="color:#0f766e;">$ 142.300</div></div>
+          <div class="kpi"><small>Alertas activas (CU-08)</small><div class="val" style="color:#b91c1c;">3 alertas</div></div>
+        </div>
+        <div class="panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <h3 style="margin:0;">Alertas activas de stock mínimo y vencimiento próximo</h3>
+            <button class="btn" type="button">Exportar cuadre de caja a hoja de cálculo (CU-12)</button>
+          </div>
+          <table>
+            <thead><tr><th>Tipo</th><th>Producto / Lote</th><th>Detalle</th><th>Prioridad</th></tr></thead>
+            <tbody>
+              <tr><td>Stock mínimo</td><td>Leche Entera 1 L</td><td>Stock actual: 5 u (mínimo: 10 u)</td><td><span class="badge danger">Crítica</span></td></tr>
+              <tr><td>Vencimiento ≤ 15 días</td><td>Yogurt Fresa · LOT-2611-B</td><td>Vence en 9 días (2026-12-06)</td><td><span class="badge warn">Preventiva</span></td></tr>
+              <tr><td>Stock mínimo</td><td>Aceite Girasol 1 L</td><td>Stock actual: 3 u (mínimo: 6 u)</td><td><span class="badge danger">Crítica</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Prototipo inicial de análisis (G1-P2) · Gestión Neiva POS SaaS · Sin pantallas huérfanas · Autor: @SantiagoJavelaOspino</footer>
+</body>
+</html>

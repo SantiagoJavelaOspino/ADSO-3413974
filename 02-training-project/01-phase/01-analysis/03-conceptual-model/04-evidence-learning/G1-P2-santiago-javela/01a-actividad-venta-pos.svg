@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="820" viewBox="0 0 1180 820">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1180" height="820" fill="#ffffff"/>
+  <rect x="0" y="0" width="1180" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Diagrama de Actividades UML · CU-06 Registrar Venta en POS</text>
+  <text x="1160" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="20" y="60" width="420" height="740" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="1.8"/><text x="34" y="82" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Calle 1: Cajero</text>
+  <rect x="440" y="60" width="720" height="740" rx="8" fill="#eff6ff" stroke="#1e40af" stroke-width="1.8"/><text x="454" y="82" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Calle 2: Sistema Gestión Neiva</text>
+  <circle cx="230" cy="110" r="11" fill="#0f172a"/>
+  <rect x="110" y="145" width="240" height="44" rx="14" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="230" y="164" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Escanear o buscar producto</text>
+  <text x="230" y="179" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">y abrir carrito POS</text>
+  <line x1="230" y1="121" x2="230" y2="145" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="540" y="145" width="250" height="44" rx="14" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="665" y="164" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Buscar producto activo</text>
+  <text x="665" y="179" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">en catálogo de la tienda</text>
+  <line x1="350" y1="167" x2="540" y2="167" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <polygon points="665,208 711,240 665,272 619,240" fill="#fef3c7" stroke="#b45309" stroke-width="1.8"/>
+  <text x="665" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">¿Producto</text>
+  <text x="665" y="251" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">encontrado?</text>
+  <line x1="665" y1="189" x2="665" y2="208" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="880" y="218" width="240" height="44" rx="14" fill="#fff7ed" stroke="#b45309" stroke-width="1.8"/>
+  <text x="1000" y="237" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Informar no encontrado y</text>
+  <text x="1000" y="252" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">permitir búsqueda manual</text>
+  <line x1="711" y1="240" x2="880" y2="240" stroke="#b45309" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="717.1" y="219" width="156.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="795.5" y="230" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">[producto no encontrado]</text>
+  <line x1="1000" y1="218" x2="280" y2="145" stroke="#b45309" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="615" y="109" width="70" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="650" y="120" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">reintentar</text>
+  <rect x="110" y="300" width="240" height="44" rx="14" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="230" y="319" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Indicar cantidad (unidad/granel)</text>
+  <text x="230" y="334" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">y agregar al carrito</text>
+  <line x1="665" y1="272" x2="350" y2="322" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="440.9" y="281" width="138.20000000000002" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="510" y="292" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">[producto encontrado]</text>
+  <polygon points="665,311 713,345 665,379 617,345" fill="#fef3c7" stroke="#b45309" stroke-width="1.8"/>
+  <text x="665" y="343" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">¿Aplica promo</text>
+  <text x="665" y="356" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">por volumen?</text>
+  <line x1="350" y1="328" x2="619" y2="345" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="880" y="323" width="240" height="44" rx="14" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.8"/>
+  <text x="1000" y="342" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Aplicar descuento por</text>
+  <text x="1000" y="357" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">volumen (CU-11)</text>
+  <line x1="713" y1="345" x2="880" y2="345" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="727.4" y="324" width="138.20000000000002" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="796.5" y="335" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">[promoción aplicable]</text>
+  <rect x="110" y="415" width="240" height="44" rx="14" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="230" y="434" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Seleccionar medio de pago</text>
+  <text x="230" y="449" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">y confirmar venta</text>
+  <line x1="665" y1="379" x2="350" y2="437" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="459.5" y="393" width="101" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="510" y="404" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">[sin promoción]</text>
+  <line x1="1000" y1="367" x2="350" y2="425" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <polygon points="665,426 713,460 665,494 617,460" fill="#fef3c7" stroke="#b45309" stroke-width="1.8"/>
+  <text x="665" y="458" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">¿Stock suficiente</text>
+  <text x="665" y="471" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#78350f">y pago válido?</text>
+  <line x1="350" y1="440" x2="619" y2="460" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="880" y="438" width="240" height="48" rx="14" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+  <text x="1000" y="459" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Cancelar transacción (RN-01)</text>
+  <text x="1000" y="474" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">e informar producto agotado</text>
+  <line x1="713" y1="460" x2="880" y2="460" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="699.5" y="439" width="194" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="796.5" y="450" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b91c1c">[stock insuf. / pago inválido]</text>
+  <circle cx="1000" cy="525" r="12" fill="#fff" stroke="#0f172a" stroke-width="2"/><circle cx="1000" cy="525" r="7" fill="#0f172a"/>
+  <line x1="1000" y1="486" x2="1000" y2="513" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="520" y="535" width="300" height="7" rx="2" fill="#0f172a"/>
+  <line x1="665" y1="494" x2="665" y2="535" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="555.6" y="507" width="218.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="665" y="518" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">[stock suficiente y pago validado]</text>
+  <rect x="480" y="575" width="190" height="54" rx="14" fill="#dcfce7" stroke="#15803d" stroke-width="1.8"/>
+  <text x="575" y="599" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Descontar stock y guardar</text>
+  <text x="575" y="614" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">venta + snapshot (RN-02)</text>
+  <rect x="700" y="575" width="190" height="54" rx="14" fill="#dcfce7" stroke="#15803d" stroke-width="1.8"/>
+  <text x="795" y="599" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Evaluar stock mínimo y</text>
+  <text x="795" y="614" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">registrar alerta temprana</text>
+  <line x1="575" y1="542" x2="575" y2="575" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="770" y1="542" x2="770" y2="575" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="520" y="660" width="300" height="7" rx="2" fill="#0f172a"/>
+  <line x1="575" y1="629" x2="575" y2="660" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="770" y1="629" x2="770" y2="660" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="540" y="695" width="250" height="42" rx="14" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="665" y="720" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Emitir comprobante con total derivado</text>
+  <line x1="665" y1="667" x2="665" y2="695" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <circle cx="665" cy="768" r="12" fill="#fff" stroke="#0f172a" stroke-width="2"/><circle cx="665" cy="768" r="7" fill="#0f172a"/>
+  <line x1="665" y1="737" x2="665" y2="756" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+</svg>

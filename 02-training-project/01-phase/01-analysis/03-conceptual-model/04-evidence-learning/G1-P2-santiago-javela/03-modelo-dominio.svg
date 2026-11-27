@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="840" fill="#ffffff"/>
+  <rect x="0" y="0" width="1280" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Modelo de Dominio Conceptual · Gestión Neiva (Sin métodos ni claves técnicas)</text>
+  <text x="1260" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="40" y="80" width="210" height="105" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="40" y="80" width="210" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="145" y="99" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Tienda</text>
+  <text x="50" y="123" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nit</text>
+  <text x="50" y="138" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">razonSocial</text>
+  <text x="50" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estadoSuscripcion</text>
+  <text x="50" y="168" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaRegistro</text>
+  <rect x="330" y="80" width="210" height="90" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="330" y="80" width="210" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="435" y="99" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Usuario</text>
+  <text x="340" y="123" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombreUsuario</text>
+  <text x="340" y="138" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">correo</text>
+  <text x="340" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estadoActivo</text>
+  <rect x="240" y="225" width="180" height="75" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="1.8"/>
+  <rect x="240" y="225" width="180" height="28" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="330" y="244" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Administrador</text>
+  <text x="250" y="268" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nivelAutorizacion</text>
+  <text x="250" y="283" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaAsignacion</text>
+  <rect x="445" y="225" width="180" height="75" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="1.8"/>
+  <rect x="445" y="225" width="180" height="28" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="535" y="244" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Cajero</text>
+  <text x="455" y="268" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">turnoAsignado</text>
+  <text x="455" y="283" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cajaAsignada</text>
+  <rect x="680" y="80" width="200" height="80" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="680" y="80" width="200" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="780" y="99" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Categoria</text>
+  <text x="690" y="123" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="690" y="138" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">descripcion</text>
+  <rect x="970" y="80" width="220" height="95" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="970" y="80" width="220" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="1080" y="99" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Proveedor</text>
+  <text x="980" y="123" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombreComercial</text>
+  <text x="980" y="138" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">telefonoContacto</text>
+  <text x="980" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">ciudad</text>
+  <rect x="660" y="270" width="230" height="165" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="660" y="270" width="230" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="775" y="289" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Producto</text>
+  <text x="670" y="313" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">codigoBarras</text>
+  <text x="670" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="670" y="343" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">precioCosto</text>
+  <text x="670" y="358" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">precioVenta</text>
+  <text x="670" y="373" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">unidadMedida</text>
+  <text x="670" y="388" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">stockActual</text>
+  <text x="670" y="403" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">stockMinimo</text>
+  <text x="670" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estadoActivo</text>
+  <rect x="980" y="250" width="220" height="95" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="980" y="250" width="220" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="1090" y="269" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">CompraReabastecimiento</text>
+  <text x="990" y="293" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaCompra</text>
+  <text x="990" y="308" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidadIngresada</text>
+  <text x="990" y="323" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">costoUnitario</text>
+  <rect x="980" y="395" width="220" height="95" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="980" y="395" width="220" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="1090" y="414" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">LoteProducto</text>
+  <text x="990" y="438" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">codigoLote</text>
+  <text x="990" y="453" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaVencimiento</text>
+  <text x="990" y="468" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidadDisponible</text>
+  <rect x="160" y="490" width="220" height="95" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="160" y="490" width="220" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="270" y="509" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Venta</text>
+  <text x="170" y="533" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaHora</text>
+  <text x="170" y="548" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">medioPago</text>
+  <text x="170" y="563" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">descuentoAplicado</text>
+  <rect x="430" y="635" width="250" height="95" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <rect x="430" y="635" width="250" height="28" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="555" y="654" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«clase de asociación» LineaVenta</text>
+  <text x="440" y="678" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombreHistorico</text>
+  <text x="440" y="693" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">precioUnitarioHistorico</text>
+  <text x="440" y="708" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidad</text>
+  <rect x="960" y="565" width="250" height="120" rx="6" fill="#ffffff" stroke="#b91c1c" stroke-width="1.8"/>
+  <rect x="960" y="565" width="250" height="28" rx="6" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="1085" y="584" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">AlertaInventario</text>
+  <text x="970" y="608" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">tipoAlerta</text>
+  <text x="970" y="623" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">prioridad</text>
+  <text x="970" y="638" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">mensaje</text>
+  <text x="970" y="653" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fechaGeneracion</text>
+  <text x="970" y="668" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estadoAtencion</text>
+  <line x1="250" y1="125" x2="330" y2="125" stroke="#334155" stroke-width="1.6"/>
+  <rect x="227.1" y="109" width="125.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="290" y="120" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  administra  0..*</text>
+  <line x1="330" y1="225" x2="410" y2="170" stroke="#15803d" stroke-width="1.6" marker-end="url(#inherit)"/>
+  <line x1="535" y1="225" x2="460" y2="170" stroke="#15803d" stroke-width="1.6" marker-end="url(#inherit)"/>
+  <line x1="145" y1="185" x2="660" y2="345" stroke="#334155" stroke-width="1.6"/>
+  <rect x="332.6" y="329" width="94.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="380" y="340" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  posee  0..*</text>
+  <line x1="780" y1="160" x2="780" y2="270" stroke="#334155" stroke-width="1.6"/>
+  <rect x="770.2" y="204" width="119.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="830" y="215" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  clasifica  0..*</text>
+  <line x1="880" y1="100" x2="920" y2="130" stroke="#334155" stroke-width="1.6"/>
+  <rect x="815.4" y="59" width="169.20000000000002" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="900" y="70" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">subcategoría (0..1 / 0..*)</text>
+  <line x1="1080" y1="175" x2="1080" y2="250" stroke="#334155" stroke-width="1.6"/>
+  <rect x="1072.1" y="201" width="125.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="1135" y="212" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  suministra  0..*</text>
+  <line x1="980" y1="300" x2="890" y2="320" stroke="#334155" stroke-width="1.6"/>
+  <rect x="881.4" y="279" width="107.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="935" y="290" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">0..*  ingresa  1</text>
+  <line x1="890" y1="415" x2="980" y2="435" stroke="#334155" stroke-width="1.6"/>
+  <rect x="878.3" y="397" width="113.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="935" y="408" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  controla  0..*</text>
+  <line x1="820" y1="435" x2="960" y2="615" stroke="#334155" stroke-width="1.6"/>
+  <rect x="821.4" y="524" width="107.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="875" y="535" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  origina  0..*</text>
+  <line x1="510" y1="300" x2="270" y2="490" stroke="#334155" stroke-width="1.6"/>
+  <rect x="313.3" y="404" width="113.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="370" y="415" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">1  registra  0..*</text>
+  <line x1="380" y1="535" x2="660" y2="410" stroke="#334155" stroke-width="1.6"/>
+  <rect x="467.1" y="454" width="125.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="530" y="465" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">0..*  incluye  1..*</text>
+  <line x1="555" y1="635" x2="535" y2="470" stroke="#b45309" stroke-width="1.6" stroke-dasharray="6,4"/>
+  <rect x="510" y="536.5" width="70" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="545" y="547.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">asociación</text>
+</svg>
