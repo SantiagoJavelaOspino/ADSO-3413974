@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="760" viewBox="0 0 1260 760">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1260" height="760" fill="#ffffff"/>
+  <rect x="0" y="0" width="1260" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">A5 · Vista de Componentes UML (6 Componentes, Interfaces y Dependencias)</text>
+  <text x="1240" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="40" y="290" width="230" height="120" rx="6" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8"/>
+  <rect x="40" y="290" width="230" height="28" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="155" y="309" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» InterfazWebPWA</text>
+  <text x="50" y="333" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee: UI_POS_Admin</text>
+  <text x="50" y="348" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Requiere: IAuthAPI,</text>
+  <text x="50" y="363" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">ICatalogoAPI, IVentasAPI,</text>
+  <text x="50" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">IReportesAPI</text>
+  <rect x="370" y="90" width="270" height="120" rx="6" fill="#ffffff" stroke="#6d28d9" stroke-width="1.8"/>
+  <rect x="370" y="90" width="270" height="28" rx="6" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="505" y="109" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» CompAutenticacionRBAC</text>
+  <text x="380" y="133" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee: IAuthAPI, ITenantContext</text>
+  <text x="380" y="148" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Requiere: IRepositorioUsuarios,</text>
+  <text x="380" y="163" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">ICacheSesiones</text>
+  <text x="380" y="178" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">RF-01, RF-02, RNF-01</text>
+  <rect x="370" y="250" width="270" height="130" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="1.8"/>
+  <rect x="370" y="250" width="270" height="28" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="505" y="269" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» CompCatalogoInventario</text>
+  <text x="380" y="293" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee: ICatalogoAPI, IGestionStock</text>
+  <text x="380" y="308" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Requiere: ITenantContext,</text>
+  <text x="380" y="323" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">IRepositorioInventario, ICacheCatalogo</text>
+  <text x="380" y="338" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">RF-03, RF-04, RF-05, RF-08, RNF-02</text>
+  <rect x="370" y="420" width="270" height="135" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <rect x="370" y="420" width="270" height="28" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="505" y="439" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» CompVentasPOS</text>
+  <text x="380" y="463" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee: IVentasAPI</text>
+  <text x="380" y="478" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Requiere: ITenantContext, IGestionStock,</text>
+  <text x="380" y="493" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">IAlertasService, IRepositorioVentas</text>
+  <text x="380" y="508" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">RF-06, RF-07, RNF-03</text>
+  <rect x="370" y="595" width="270" height="120" rx="6" fill="#ffffff" stroke="#b91c1c" stroke-width="1.8"/>
+  <rect x="370" y="595" width="270" height="28" rx="6" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="505" y="614" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» CompAlertasReportes</text>
+  <text x="380" y="638" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee: IAlertasService, IReportesAPI</text>
+  <text x="380" y="653" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Requiere: ITenantContext,</text>
+  <text x="380" y="668" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">IRepositorioAlertas, IRepositorioVentas</text>
+  <text x="380" y="683" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">RF-09, RF-10, RNF-04</text>
+  <rect x="840" y="260" width="360" height="200" rx="6" fill="#ffffff" stroke="#c2410c" stroke-width="1.8"/>
+  <rect x="840" y="260" width="360" height="28" rx="6" fill="#ffedd5" stroke="#c2410c" stroke-width="1.5"/>
+  <text x="1020" y="279" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">«component» CompPersistenciaBD</text>
+  <text x="850" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Provee:</text>
+  <text x="850" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">- IRepositorioUsuarios</text>
+  <text x="850" y="333" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">- IRepositorioInventario</text>
+  <text x="850" y="348" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">- IRepositorioVentas</text>
+  <text x="850" y="363" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">- IRepositorioAlertas</text>
+  <text x="850" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">- ICacheSesiones, ICacheCatalogo</text>
+  <text x="850" y="393" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">Motores: PostgreSQL 16 + Redis 7</text>
+  <line x1="270" y1="310" x2="370" y2="150" stroke="#334155" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="291.2" y="214" width="57.6" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="320" y="225" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">IAuthAPI</text>
+  <line x1="270" y1="340" x2="370" y2="315" stroke="#334155" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="278.8" y="311.5" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="320" y="322.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">ICatalogoAPI</text>
+  <line x1="270" y1="370" x2="370" y2="480" stroke="#334155" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="285" y="409" width="70" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="320" y="420" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">IVentasAPI</text>
+  <line x1="270" y1="395" x2="370" y2="650" stroke="#334155" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="278.8" y="506.5" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="320" y="517.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">IReportesAPI</text>
+  <line x1="505" y1="420" x2="505" y2="380" stroke="#15803d" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="460.7" y="384" width="88.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="505" y="395" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#15803d">IGestionStock</text>
+  <line x1="505" y1="555" x2="505" y2="595" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="454.5" y="559" width="101" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="505" y="570" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b91c1c">IAlertasService</text>
+  <line x1="640" y1="150" x2="840" y2="300" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="667.8" y="209" width="144.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="740" y="220" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#c2410c">IRepoUsuarios / ICache</text>
+  <line x1="640" y1="315" x2="840" y2="345" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="661.6" y="314" width="156.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="740" y="325" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#c2410c">IRepoInventario / ICache</text>
+  <line x1="640" y1="485" x2="840" y2="395" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="701.9" y="424" width="76.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="740" y="435" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#c2410c">IRepoVentas</text>
+  <line x1="640" y1="650" x2="840" y2="440" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="670.9" y="529" width="138.20000000000002" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="740" y="540" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#c2410c">IRepoAlertas / Ventas</text>
+</svg>

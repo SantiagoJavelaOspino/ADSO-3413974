@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="720" viewBox="0 0 1160 720">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1160" height="720" fill="#ffffff"/>
+  <rect x="0" y="0" width="1160" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">A4 · Arquitectura del Software: Monolito Modular en 4 Capas (Sin saltos)</text>
+  <text x="1140" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="80" y="75" width="1000" height="120" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.8"/><text x="94" y="97" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Capa 1 · Presentación (React 19 PWA + Routers HTTP FastAPI — HTTPS 443 / JSON)</text>
+  <rect x="120" y="115" width="270" height="58" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="255" y="141" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Vistas PWA (POS, Lotes, Dashboard)</text>
+  <text x="255" y="156" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">React 19 + Escáner Cámara</text>
+  <rect x="450" y="115" width="270" height="58" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="585" y="141" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">API REST (Routers FastAPI)</text>
+  <text x="585" y="156" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Validación Pydantic + CORS</text>
+  <rect x="780" y="115" width="260" height="58" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="910" y="141" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Middleware Auth JWT</text>
+  <text x="910" y="156" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Inyección obligatoria id_tienda</text>
+  <line x1="390" y1="144" x2="450" y2="144" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="400.5" y="128" width="39" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="420" y="139" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">HTTPS</text>
+  <line x1="720" y1="144" x2="780" y2="144" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="736.7" y="128" width="26.6" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="750" y="139" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#334155">JWT</text>
+  <rect x="80" y="230" width="1000" height="115" rx="8" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.8"/><text x="94" y="252" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Capa 2 · Aplicación / Orquestación (Fachadas y Casos de Uso — Llamadas internas)</text>
+  <rect x="120" y="268" width="280" height="56" rx="6" fill="#ffffff" stroke="#6d28d9" stroke-width="1.8"/>
+  <text x="260" y="293" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">PosVentaFacade (Patrón Fachada)</text>
+  <text x="260" y="308" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Orquesta venta, stock y alertas</text>
+  <rect x="445" y="268" width="280" height="56" rx="6" fill="#ffffff" stroke="#6d28d9" stroke-width="1.8"/>
+  <text x="585" y="293" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Servicio Inventario y Lotes</text>
+  <text x="585" y="308" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Reabastecimientos y catálogo</text>
+  <rect x="770" y="268" width="270" height="56" rx="6" fill="#ffffff" stroke="#6d28d9" stroke-width="1.8"/>
+  <text x="905" y="293" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Servicio Alertas y Reportes</text>
+  <text x="905" y="308" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Planificador diario y exportación</text>
+  <rect x="80" y="380" width="1000" height="120" rx="8" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.8"/><text x="94" y="402" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Capa 3 · Dominio Puro (Entidades OO y Reglas de Negocio RN-01..RN-07 — Sin FastAPI)</text>
+  <rect x="120" y="420" width="290" height="58" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="1.8"/>
+  <text x="265" y="446" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Entidades de Dominio</text>
+  <text x="265" y="461" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Tienda, Usuario, Producto, Venta, Lote</text>
+  <rect x="450" y="420" width="290" height="58" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="1.8"/>
+  <text x="595" y="446" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Políticas de Descuento (Patrón Estrategia)</text>
+  <text x="595" y="461" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">IPoliticaDescuento + Implementaciones</text>
+  <rect x="780" y="420" width="260" height="58" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="1.8"/>
+  <text x="910" y="446" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Reglas de Integridad</text>
+  <text x="910" y="461" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Snapshot RN-02, Stock&gt;=0, Total derivado</text>
+  <rect x="80" y="535" width="1000" height="130" rx="8" fill="#fff7ed" stroke="#b45309" stroke-width="1.8"/><text x="94" y="557" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Capa 4 · Infraestructura y Persistencia (SQLAlchemy 2.0 Async + Redis 7)</text>
+  <rect x="150" y="578" width="380" height="64" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <text x="340" y="607" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Repositorios SQLAlchemy 2.0 → PostgreSQL 16</text>
+  <text x="340" y="622" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Bloqueo FOR UPDATE + Índices (id_tienda, ...)</text>
+  <rect x="610" y="578" width="380" height="64" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <text x="800" y="607" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Adaptador Caché → Redis 7</text>
+  <text x="800" y="622" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Catálogo por tienda + Revocación JWT</text>
+  <line x1="260" y1="195" x2="260" y2="230" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="200.2" y="196.5" width="119.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="260" y="207.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">solo capa contigua</text>
+  <line x1="260" y1="345" x2="260" y2="380" stroke="#6d28d9" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="218.8" y="346.5" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="260" y="357.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6d28d9">reglas puras</text>
+  <line x1="585" y1="195" x2="585" y2="230" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="525.2" y="196.5" width="119.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="585" y="207.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">solo capa contigua</text>
+  <line x1="585" y1="345" x2="585" y2="380" stroke="#6d28d9" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="543.8" y="346.5" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="585" y="357.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6d28d9">reglas puras</text>
+  <line x1="905" y1="195" x2="905" y2="230" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="845.2" y="196.5" width="119.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="905" y="207.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">solo capa contigua</text>
+  <line x1="905" y1="345" x2="905" y2="380" stroke="#6d28d9" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="863.8" y="346.5" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="905" y="357.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6d28d9">reglas puras</text>
+  <line x1="340" y1="500" x2="340" y2="535" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="274" y="501.5" width="132" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="340" y="512.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">puertos/repositorios</text>
+  <line x1="800" y1="500" x2="800" y2="535" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="755.7" y="501.5" width="88.60000000000001" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="800" y="512.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">puertos/caché</text>
+</svg>
