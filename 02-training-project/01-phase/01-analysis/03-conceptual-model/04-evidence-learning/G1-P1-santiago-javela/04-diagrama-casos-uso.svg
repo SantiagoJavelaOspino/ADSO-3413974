@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="820" fill="#ffffff"/>
+  <rect x="0" y="0" width="1240" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Diagrama de Casos de Uso UML · Gestión Neiva (POS SaaS Multi-Tenant)</text>
+  <text x="1220" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="220" y="65" width="760" height="730" rx="8" fill="#f8fafc" stroke="#1e3a8a" stroke-width="1.8"/><text x="234" y="87" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Frontera del Sistema: Gestión Neiva (POS SaaS Multi-Tenant)</text>
+  <circle cx="77" cy="122" r="10" fill="#fff" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="132" x2="77" y2="160" stroke="#0f172a" stroke-width="1.8"/><line x1="61" y1="142" x2="93" y2="142" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="160" x2="63" y2="178" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="160" x2="91" y2="178" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="77" y="194" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Superadmin</text>
+  <text x="77" y="208" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">SaaS</text>
+  <circle cx="77" cy="302" r="10" fill="#fff" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="312" x2="77" y2="340" stroke="#0f172a" stroke-width="1.8"/><line x1="61" y1="322" x2="93" y2="322" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="340" x2="63" y2="358" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="340" x2="91" y2="358" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="77" y="374" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Administrador</text>
+  <text x="77" y="388" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">de Tienda</text>
+  <circle cx="77" cy="522" r="10" fill="#fff" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="532" x2="77" y2="560" stroke="#0f172a" stroke-width="1.8"/><line x1="61" y1="542" x2="93" y2="542" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="560" x2="63" y2="578" stroke="#0f172a" stroke-width="1.8"/><line x1="77" y1="560" x2="91" y2="578" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="77" y="594" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Cajero /</text>
+  <text x="77" y="608" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Ayudante</text>
+  <circle cx="1082" cy="452" r="10" fill="#fff" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="462" x2="1082" y2="490" stroke="#0f172a" stroke-width="1.8"/><line x1="1066" y1="472" x2="1098" y2="472" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="490" x2="1068" y2="508" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="490" x2="1096" y2="508" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="1082" y="524" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Planificador</text>
+  <text x="1082" y="538" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Automático</text>
+  <circle cx="1082" cy="632" r="10" fill="#fff" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="642" x2="1082" y2="670" stroke="#0f172a" stroke-width="1.8"/><line x1="1066" y1="652" x2="1098" y2="652" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="670" x2="1068" y2="688" stroke="#0f172a" stroke-width="1.8"/><line x1="1082" y1="670" x2="1096" y2="688" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="1082" y="704" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Servicio de</text>
+  <text x="1082" y="718" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#0f172a">Notif./Export.</text>
+  <line x1="77" y1="405" x2="77" y2="505" stroke="#1e40af" stroke-width="1.6" marker-end="url(#inherit)"/>
+  <rect x="92.4" y="444" width="45.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="115" y="455" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">hereda</text>
+  <ellipse cx="370" cy="131" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="135" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-01 · Gestionar tiendas</text>
+  <ellipse cx="370" cy="206" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="203" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-02 · Gestionar usuarios</text>
+  <text x="370" y="217" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">y roles</text>
+  <ellipse cx="370" cy="281" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="278" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-03 · Gestionar categorías</text>
+  <text x="370" y="292" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">y proveedores</text>
+  <ellipse cx="370" cy="356" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="353" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-04 · Gestionar catálogo</text>
+  <text x="370" y="367" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">de productos</text>
+  <ellipse cx="370" cy="431" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="428" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-07 · Registrar</text>
+  <text x="370" y="442" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">reabastecimiento y lotes</text>
+  <ellipse cx="370" cy="676" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="673" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-09 · Consultar panel</text>
+  <text x="370" y="687" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">financiero</text>
+  <ellipse cx="740" cy="676" rx="110" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="740" y="673" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-12 · Exportar cuadre</text>
+  <text x="740" y="687" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">de caja</text>
+  <ellipse cx="370" cy="543" rx="110" ry="28" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="370" y="540" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-06 · Registrar venta</text>
+  <text x="370" y="554" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">en POS</text>
+  <ellipse cx="745" cy="490" rx="115" ry="25" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="745" y="487" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-05 · Consultar catálogo</text>
+  <text x="745" y="501" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">en POS</text>
+  <ellipse cx="745" cy="561" rx="115" ry="26" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="745" y="558" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-10 · Validar disponibilidad</text>
+  <text x="745" y="572" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">y descontar stock</text>
+  <ellipse cx="745" cy="410" rx="115" ry="25" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="745" y="407" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-11 · Aplicar descuento</text>
+  <text x="745" y="421" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">por volumen</text>
+  <ellipse cx="745" cy="267" rx="115" ry="27" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="745" y="264" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">CU-08 · Generar alertas</text>
+  <text x="745" y="278" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" fill="#0f172a">de inventario</text>
+  <line x1="100" y1="145" x2="260" y2="131" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="325" x2="260" y2="206" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="325" x2="260" y2="281" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="325" x2="260" y2="356" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="325" x2="260" y2="431" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="325" x2="260" y2="676" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="545" x2="260" y2="543" stroke="#334155" stroke-width="1.6"/>
+  <line x1="100" y1="545" x2="630" y2="490" stroke="#64748b" stroke-width="1.6"/>
+  <line x1="1060" y1="470" x2="860" y2="267" stroke="#334155" stroke-width="1.6"/>
+  <line x1="860" y1="267" x2="1060" y2="650" stroke="#64748b" stroke-width="1.6"/>
+  <line x1="850" y1="676" x2="1060" y2="655" stroke="#64748b" stroke-width="1.6"/>
+  <line x1="480" y1="532" x2="630" y2="495" stroke="#0f766e" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="523.1" y="497.5" width="63.800000000000004" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="555" y="508.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">«include»</text>
+  <line x1="480" y1="550" x2="630" y2="560" stroke="#0f766e" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="523.1" y="539" width="63.800000000000004" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="555" y="550" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">«include»</text>
+  <line x1="630" y1="415" x2="460" y2="520" stroke="#b45309" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="516.2" y="451.5" width="57.6" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="545" y="462.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">«extend»</text>
+  <line x1="630" y1="676" x2="480" y2="676" stroke="#b45309" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <rect x="526.2" y="660" width="57.6" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="555" y="671" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">«extend»</text>
+</svg>
