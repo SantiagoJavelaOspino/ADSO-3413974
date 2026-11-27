@@ -1,0 +1,30 @@
+============================================================================
+EVIDENCIA DE EJECUCION REAL DEL SCRIPT SQL (B5 - G2-P2)
+Motor: SQLite 3.53.4 (Node.js v26.9.0 node:sqlite, PRAGMA foreign_keys = ON)
+Fecha de ejecucion: 2026-11-27 17:16:11 UTC
+Archivo ejecutado: 05-script-creacion.sql
+============================================================================
+
+[OK] Script DDL ejecutado sin errores (0 errores, 0 advertencias).
+
+Tablas creadas (11/11):
+  - alerta_inventario (9 columnas, 3 FKs)
+  - categoria (5 columnas, 2 FKs)
+  - compra_reabastecimiento (7 columnas, 3 FKs)
+  - detalle_venta (5 columnas, 2 FKs)
+  - lote_producto (5 columnas, 1 FKs)
+  - producto (11 columnas, 2 FKs)
+  - proveedor (6 columnas, 1 FKs)
+  - telefono_usuario (4 columnas, 1 FKs)
+  - tienda (5 columnas, 0 FKs)
+  - usuario (7 columnas, 1 FKs)
+  - venta (6 columnas, 2 FKs)
+
+Totales verificados: 11 tablas, 70 columnas, 18 llaves foraneas.
+Indices compuestos creados (4): idx_alerta_tienda_estado, idx_producto_tienda_activo, idx_producto_tienda_codigo, idx_venta_tienda_fecha
+
+[OK] Insercion de prueba exitosa en las 11 tablas respetando PK, FK, UNIQUE y CHECK.
+[OK] Restriccion CHECK verificada (stock negativo rechazado): CHECK constraint failed: ck_producto_stock
+[OK] Integridad referencial FK verificada (ON DELETE RESTRICT): FOREIGN KEY constraint failed
+
+RESULTADO FINAL: EXITO TOTAL (11/11 tablas, 0 errores).

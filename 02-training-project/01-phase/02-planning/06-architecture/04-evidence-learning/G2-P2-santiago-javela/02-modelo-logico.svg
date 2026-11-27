@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="900" viewBox="0 0 1360 900">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1360" height="900" fill="#ffffff"/>
+  <rect x="0" y="0" width="1360" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">B2 · Modelo Lógico Relacional (11 Tablas Normalizadas en 3FN · PK/FK)</text>
+  <text x="1340" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="25" y="70" width="210" height="115" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="25" y="70" width="210" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="130" y="89" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">tienda</text>
+  <text x="35" y="113" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_tienda</text>
+  <text x="35" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">UK nit</text>
+  <text x="35" y="143" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="35" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estado_activo</text>
+  <text x="35" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fecha_registro</text>
+  <rect x="280" y="70" width="230" height="145" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="280" y="70" width="230" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="395" y="89" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">usuario</text>
+  <text x="290" y="113" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_usuario</text>
+  <text x="290" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="290" y="143" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">UK username, correo</text>
+  <text x="290" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">password_hash</text>
+  <text x="290" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">rol (CHECK)</text>
+  <text x="290" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estado_activo</text>
+  <rect x="280" y="245" width="230" height="100" rx="6" fill="#ffffff" stroke="#0f766e" stroke-width="1.8"/>
+  <rect x="280" y="245" width="230" height="28" rx="6" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.5"/>
+  <text x="395" y="264" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">telefono_usuario</text>
+  <text x="290" y="288" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_telefono</text>
+  <text x="290" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_usuario</text>
+  <text x="290" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">numero</text>
+  <text x="290" y="333" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">tipo_telefono (CHECK)</text>
+  <rect x="570" y="70" width="235" height="115" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="570" y="70" width="235" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="687.5" y="89" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">categoria</text>
+  <text x="580" y="113" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_categoria</text>
+  <text x="580" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="580" y="143" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_categoria_padre (NULL)</text>
+  <text x="580" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="580" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">descripcion</text>
+  <rect x="870" y="70" width="220" height="125" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="870" y="70" width="220" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="980" y="89" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">proveedor</text>
+  <text x="880" y="113" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_proveedor</text>
+  <text x="880" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="880" y="143" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="880" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">telefono</text>
+  <text x="880" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">ciudad, departamento</text>
+  <rect x="570" y="260" width="260" height="195" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="570" y="260" width="260" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="700" y="279" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">producto</text>
+  <text x="580" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_producto</text>
+  <text x="580" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="580" y="333" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_categoria</text>
+  <text x="580" y="348" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">UK (id_tienda, codigo_barras)</text>
+  <text x="580" y="363" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre</text>
+  <text x="580" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">precio_costo, precio_venta</text>
+  <text x="580" y="393" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">unidad_medida (CHECK)</text>
+  <text x="580" y="408" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">stock_actual, stock_minimo</text>
+  <text x="580" y="423" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">estado_activo</text>
+  <rect x="900" y="250" width="250" height="145" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="900" y="250" width="250" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="1025" y="269" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">compra_reabastecimiento</text>
+  <text x="910" y="293" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_compra</text>
+  <text x="910" y="308" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="910" y="323" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_proveedor</text>
+  <text x="910" y="338" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_producto</text>
+  <text x="910" y="353" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fecha_compra</text>
+  <text x="910" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidad_ingresada (&gt;0)</text>
+  <text x="910" y="383" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">costo_unitario (&gt;=0)</text>
+  <rect x="900" y="430" width="250" height="120" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <rect x="900" y="430" width="250" height="28" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="1025" y="449" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">lote_producto</text>
+  <text x="910" y="473" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_lote</text>
+  <text x="910" y="488" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_producto</text>
+  <text x="910" y="503" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">UK (id_producto, codigo_lote)</text>
+  <text x="910" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fecha_vencimiento</text>
+  <text x="910" y="533" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidad_lote (&gt;=0)</text>
+  <rect x="35" y="480" width="235" height="135" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <rect x="35" y="480" width="235" height="28" rx="6" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="152.5" y="499" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">venta</text>
+  <text x="45" y="523" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_venta</text>
+  <text x="45" y="538" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="45" y="553" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_usuario</text>
+  <text x="45" y="568" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fecha_venta</text>
+  <text x="45" y="583" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">medio_pago (CHECK)</text>
+  <text x="45" y="598" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">porcentaje_descuento (CHECK)</text>
+  <rect x="350" y="560" width="250" height="130" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="1.8"/>
+  <rect x="350" y="560" width="250" height="28" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="475" y="579" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">detalle_venta</text>
+  <text x="360" y="603" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK,FK id_venta</text>
+  <text x="360" y="618" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK,FK id_producto</text>
+  <text x="360" y="633" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">nombre_historico</text>
+  <text x="360" y="648" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">precio_unitario (&gt;=0)</text>
+  <text x="360" y="663" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">cantidad (&gt;0)</text>
+  <rect x="890" y="600" width="270" height="165" rx="6" fill="#ffffff" stroke="#b91c1c" stroke-width="1.8"/>
+  <rect x="890" y="600" width="270" height="28" rx="6" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="1025" y="619" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#0f172a">alerta_inventario</text>
+  <text x="900" y="643" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">PK id_alerta</text>
+  <text x="900" y="658" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_tienda</text>
+  <text x="900" y="673" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_producto</text>
+  <text x="900" y="688" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">FK id_lote (NULL)</text>
+  <text x="900" y="703" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">tipo_alerta (CHECK)</text>
+  <text x="900" y="718" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">prioridad (CHECK)</text>
+  <text x="900" y="733" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">mensaje</text>
+  <text x="900" y="748" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#1e293b">fecha_generacion, atendida</text>
+  <line x1="280" y1="125" x2="235" y2="125" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="247.3" y="109" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="257.5" y="120" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">FK</text>
+  <line x1="395" y1="245" x2="395" y2="215" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="360" y="214" width="70" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="395" y="225" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">FK CASCADE</text>
+  <line x1="685" y1="260" x2="685" y2="185" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="674.8" y="206.5" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="685" y="217.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">FK</text>
+  <line x1="805" y1="95" x2="835" y2="135" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="788.8" y="54" width="82.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="830" y="65" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#64748b">FK recursiva</text>
+  <line x1="1025" y1="250" x2="1025" y2="195" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="1014.8" y="206.5" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="1025" y="217.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">FK</text>
+  <line x1="900" y1="320" x2="830" y2="330" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="854.8" y="309" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="865" y="320" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">FK</text>
+  <line x1="900" y1="485" x2="830" y2="420" stroke="#b45309" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="854.8" y="436.5" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="865" y="447.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b45309">FK</text>
+  <line x1="150" y1="480" x2="330" y2="215" stroke="#1e40af" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="229.8" y="331.5" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="240" y="342.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1e40af">FK</text>
+  <line x1="350" y1="620" x2="270" y2="560" stroke="#15803d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="275" y="574" width="70" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="310" y="585" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#15803d">FK CASCADE</text>
+  <line x1="600" y1="610" x2="690" y2="455" stroke="#15803d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="606.9" y="516.5" width="76.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="645" y="527.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#15803d">FK RESTRICT</text>
+  <line x1="890" y1="660" x2="770" y2="455" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="819.8" y="541.5" width="20.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="830" y="552.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b91c1c">FK</text>
+  <line x1="1025" y1="600" x2="1025" y2="550" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="986.9" y="559" width="76.2" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="1025" y="570" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b91c1c">FK SET NULL</text>
+</svg>
