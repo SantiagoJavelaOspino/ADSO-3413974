@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="640" viewBox="0 0 1240 640">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+    </marker>
+    <marker id="inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffffff" stroke="#1e40af" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="640" fill="#ffffff"/>
+  <rect x="0" y="0" width="1240" height="44" fill="#0f172a"/>
+  <text x="20" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">A6 · Vista de Despliegue UML (4 Nodos, Artefactos y Protocolos)</text>
+  <text x="1220" y="28" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cbd5e1">Autor: @SantiagoJavelaOspino · Ficha 3413974</text>
+  <rect x="30" y="180" width="260" height="230" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.8"/><text x="44" y="202" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">«device» NodoClientePWA</text>
+  <rect x="50" y="225" width="220" height="75" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="160" y="259.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» App Web React 19</text>
+  <text x="160" y="274.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">(Navegador Móvil / PC)</text>
+  <rect x="50" y="315" width="220" height="70" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="160" y="347" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Lector EAN/UPC</text>
+  <text x="160" y="362" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Cámara Web (ZXing)</text>
+  <rect x="400" y="130" width="340" height="340" rx="8" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.8"/><text x="414" y="152" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">«executionEnvironment» NodoServidorAplicacion</text>
+  <rect x="425" y="175" width="290" height="65" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="570" y="204.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Proxy Inverso Nginx</text>
+  <text x="570" y="219.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Terminación TLS 1.3 + Rate Limit</text>
+  <rect x="425" y="260" width="290" height="95" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="570" y="297.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Backend FastAPI (Uvicorn)</text>
+  <text x="570" y="312.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Auth RBAC · Catálogo · Ventas POS</text>
+  <text x="570" y="327.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Alertas/Reportes · /health</text>
+  <rect x="425" y="375" width="290" height="70" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="570" y="407" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Planificador Diario</text>
+  <text x="570" y="422" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Evaluación stock mínimo y vencimientos</text>
+  <rect x="860" y="90" width="340" height="185" rx="8" fill="#fff7ed" stroke="#c2410c" stroke-width="1.8"/><text x="874" y="112" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">«executionEnvironment» NodoCacheRedis (Red Privada)</text>
+  <rect x="885" y="135" width="290" height="115" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="1030" y="175.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Redis 7</text>
+  <text x="1030" y="190.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Caché catálogo por id_tienda</text>
+  <text x="1030" y="205.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Revocación tokens JWT</text>
+  <text x="1030" y="220.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">(Sin exposición a internet)</text>
+  <rect x="860" y="330" width="340" height="235" rx="8" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.8"/><text x="874" y="352" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">«executionEnvironment» NodoBaseDatosPostgreSQL (Red Privada)</text>
+  <rect x="885" y="375" width="290" height="90" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="1030" y="410" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» PostgreSQL 16</text>
+  <text x="1030" y="425" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">11 tablas 3FN + Índices compuestos</text>
+  <text x="1030" y="440" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Bloqueo FOR UPDATE (RNF-03)</text>
+  <rect x="885" y="480" width="290" height="65" rx="6" fill="#ffffff" stroke="#1e40af" stroke-width="1.8"/>
+  <text x="1030" y="509.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">«artifact» Respaldo Diario pg_dump</text>
+  <text x="1030" y="524.5" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Copia externa cifrada + Prueba mensual</text>
+  <line x1="290" y1="295" x2="400" y2="295" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="282.1" y="269" width="125.8" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="345" y="280" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1d4ed8">HTTPS 443 (TLS 1.3)</text>
+  <line x1="740" y1="230" x2="860" y2="185" stroke="#c2410c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="727.8" y="179" width="144.4" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="800" y="190" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#c2410c">TCP 6379 (Red Privada)</text>
+  <line x1="740" y1="360" x2="860" y2="425" stroke="#0f766e" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="715.4" y="404" width="169.20000000000002" height="15" rx="3" fill="#ffffff" fill-opacity="0.9"/><text x="800" y="415" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#0f766e">TCP 5432 (Red Privada TLS)</text>
+</svg>
